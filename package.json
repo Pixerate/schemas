@@ -23,6 +23,12 @@
   "homepage": "https://github.com/Pixerate/schemas#readme",
   "author": "Pixerate",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "zod": "^3.23.8"
   },
