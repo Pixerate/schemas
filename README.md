@@ -29,10 +29,15 @@ src/
 - **Schema**: `VideoAspectRatioSchema`
 - **Type**: `VideoAspectRatio` (`"9:16" | "16:9"`)
 
-### 4. Generation & Transformation Payloads
+### 4. Service Client
+- **Schema**: `ServiceClientSchema`
+- **Type**: `ServiceClient` (`"pixerate" | "slopmachine" | "social" | "unknown"`)
+
+### 5. Generation & Transformation Payloads
 - **Image Generation**: `ImageGenerationPayload` (`ImageGenerationSchema`)
 - **Image Transformation**: `ImageTransformationPayload` (`ImageTransformationSchema`)
 - **Video Analysis**: `VideoAnalysisPayload` (`VideoAnalysisSchema`)
+- **Queue / Media Jobs**: `QueueJob` (`QueueJobSchema`, includes optional `client: ServiceClient`)
 
 ---
 
