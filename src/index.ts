@@ -63,7 +63,7 @@ export const VideoAnalysisSchema = z.object({
 export type VideoAnalysisPayload = z.infer<typeof VideoAnalysisSchema>;
 
 // --- Service Client ---
-export const ServiceClientSchema = z.enum(["pixerate", "slopmachine", "social", "unknown"]);
+export const ServiceClientSchema = z.enum(["pixerate", "slopmachine", "social", "surrealui", "surreal-ui", "unknown"]);
 export type ServiceClient = z.infer<typeof ServiceClientSchema>;
 
 // --- Queue / Media Jobs ---

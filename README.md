@@ -31,7 +31,7 @@ src/
 
 ### 4. Service Client
 - **Schema**: `ServiceClientSchema`
-- **Type**: `ServiceClient` (`"pixerate" | "slopmachine" | "social" | "unknown"`)
+- **Type**: `ServiceClient` (`"pixerate" | "slopmachine" | "social" | "surrealui" | "surreal-ui" | "unknown"`)
 
 ### 5. Generation & Transformation Payloads
 - **Image Generation**: `ImageGenerationPayload` (`ImageGenerationSchema`)
