@@ -19,7 +19,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install Dependencies
         run: npm ci
@@ -36,7 +37,7 @@ jobs:
             echo "Version $PACKAGE_VERSION is already published to npm. Skipping publish."
           else
             echo "Publishing $PACKAGE_NAME@$PACKAGE_VERSION to npm via Trusted Publishing..."
-            unset NPM_CONFIG_USERCONFIG
-            rm -f .npmrc ~/.npmrc
             npm publish --access public --provenance
           fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
