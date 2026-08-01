@@ -30,10 +30,6 @@ jobs:
 
       - name: Publish to NPM if Version Bumped
         run: |
-          if [ -z "$NODE_AUTH_TOKEN" ]; then
-            echo "::warning::NPM_TOKEN secret is not set in GitHub repository settings. Skipping npm publish."
-            exit 0
-          fi
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           PACKAGE_NAME=$(node -p "require('./package.json').name")
           echo "Checking if $PACKAGE_NAME@$PACKAGE_VERSION is already published on npm..."
@@ -41,7 +37,7 @@ jobs:
             echo "Version $PACKAGE_VERSION is already published to npm. Skipping publish."
           else
             echo "Publishing $PACKAGE_NAME@$PACKAGE_VERSION to npm..."
-            npm publish --access public
+            npm publish --access public --provenance
           fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
