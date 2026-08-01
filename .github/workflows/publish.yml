@@ -37,7 +37,5 @@ jobs:
             echo "Version $PACKAGE_VERSION is already published to npm. Skipping publish."
           else
             echo "Publishing $PACKAGE_NAME@$PACKAGE_VERSION to npm via Trusted Publishing..."
-            # Remove empty _authToken from .npmrc if present so npm uses OIDC token
-            sed -i '/_authToken=/d' ~/.npmrc 2>/dev/null || true
             npm publish --access public --provenance
           fi
