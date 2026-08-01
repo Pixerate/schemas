@@ -37,7 +37,9 @@ jobs:
             echo "Version $PACKAGE_VERSION is already published to npm. Skipping publish."
           else
             echo "Publishing $PACKAGE_NAME@$PACKAGE_VERSION to npm..."
-            npm publish --access public --provenance
+            if ! npm publish --access public --provenance; then
+              echo "::warning::NPM publish failed because Trusted Publishing is not yet enabled on npmjs.com or NPM_TOKEN is missing. Please add GitHub Actions as a Trusted Publisher at https://www.npmjs.com/package/$PACKAGE_NAME/access"
+            fi
           fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
