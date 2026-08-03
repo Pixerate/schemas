@@ -69,7 +69,7 @@ export type ServiceClient = z.infer<typeof ServiceClientSchema>;
 // --- Queue / Media Jobs ---
 export const QueueJobSchema = z.object({
   id: z.string(),
-  type: z.enum(["text", "image", "video", "analysis"]),
+  type: z.enum(["text", "image", "video", "analysis", "audio"]),
   status: z.enum(["queued", "processing", "completed", "failed"]),
   client: ServiceClientSchema.optional(),
   payload: z.record(z.any()).optional(),
