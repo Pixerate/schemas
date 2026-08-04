@@ -80,10 +80,80 @@ export type JsonGenerationPayload = z.infer<typeof JsonGenerationSchema>;
 export const ServiceClientSchema = z.enum(["pixerate", "slopmachine", "social", "surrealui", "surreal-ui", "unknown"]);
 export type ServiceClient = z.infer<typeof ServiceClientSchema>;
 
+// --- Agentic Interactions ---
+export const AgentToolTypeSchema = z.enum(["code_execution", "google_search", "url_context", "file_search", "custom"]);
+export type AgentToolType = z.infer<typeof AgentToolTypeSchema>;
+
+export const AgentToolSchema = z.object({
+  type: z.string(),
+  config: z.record(z.any()).optional()
+});
+export type AgentTool = z.infer<typeof AgentToolSchema>;
+
+export const AgentNetworkTransformRuleSchema = z.object({
+  key: z.string(),
+  value: z.string()
+});
+export type AgentNetworkTransformRule = z.infer<typeof AgentNetworkTransformRuleSchema>;
+
+export const AgentNetworkAllowlistRuleSchema = z.object({
+  domain: z.string(),
+  transform: z.array(AgentNetworkTransformRuleSchema).optional()
+});
+export type AgentNetworkAllowlistRule = z.infer<typeof AgentNetworkAllowlistRuleSchema>;
+
+export const AgentEnvironmentSchema = z.object({
+  type: z.enum(["remote", "local"]).optional(),
+  network: z.object({
+    allowlist: z.array(AgentNetworkAllowlistRuleSchema).optional()
+  }).optional()
+});
+export type AgentEnvironment = z.infer<typeof AgentEnvironmentSchema>;
+
+export const AgentConfigSchema = z.object({
+  type: z.string().optional(),
+  model: z.string().optional(),
+  options: z.record(z.any()).optional()
+});
+export type AgentConfig = z.infer<typeof AgentConfigSchema>;
+
+export const AgentInteractionStatusSchema = z.enum([
+  "queued",
+  "in_progress",
+  "completed",
+  "failed",
+  "cancelled"
+]);
+export type AgentInteractionStatus = z.infer<typeof AgentInteractionStatusSchema>;
+
+export const AgentInteractionRequestSchema = z.object({
+  agent: z.string().default("antigravity-preview-05-2026"),
+  input: z.string(),
+  systemInstruction: z.string().optional(),
+  background: z.boolean().default(true),
+  tools: z.array(AgentToolSchema).optional(),
+  agentConfig: AgentConfigSchema.optional(),
+  environment: AgentEnvironmentSchema.optional()
+});
+export type AgentInteractionRequest = z.infer<typeof AgentInteractionRequestSchema>;
+
+export const AgentInteractionResultSchema = z.object({
+  id: z.string(),
+  agent: z.string(),
+  status: AgentInteractionStatusSchema,
+  outputText: z.string().optional(),
+  error: z.string().optional(),
+  latencyMs: z.number().optional(),
+  metadata: z.record(z.any()).optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional()
+});
+export type AgentInteractionResult = z.infer<typeof AgentInteractionResultSchema>;
+
 // --- Queue / Media Jobs ---
 export const QueueJobSchema = z.object({
   id: z.string(),
-  type: z.enum(["text", "image", "video", "analysis", "audio"]),
+  type: z.enum(["text", "image", "video", "analysis", "audio", "agent"]),
   status: z.enum(["queued", "processing", "completed", "failed"]),
   client: ServiceClientSchema.optional(),
   payload: z.record(z.any()).optional(),
@@ -91,3 +161,4 @@ export const QueueJobSchema = z.object({
   updatedAt: z.any().optional()
 });
 export type QueueJob = z.infer<typeof QueueJobSchema>;
+
