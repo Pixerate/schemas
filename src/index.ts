@@ -62,6 +62,20 @@ export const VideoAnalysisSchema = z.object({
 });
 export type VideoAnalysisPayload = z.infer<typeof VideoAnalysisSchema>;
 
+// --- Code Generation ---
+export const CodeGenerationSchema = z.object({
+  prompt: z.string(),
+  language: z.string()
+});
+export type CodeGenerationPayload = z.infer<typeof CodeGenerationSchema>;
+
+// --- JSON Generation ---
+export const JsonGenerationSchema = z.object({
+  prompt: z.string(),
+  schema: z.record(z.any()).optional()
+});
+export type JsonGenerationPayload = z.infer<typeof JsonGenerationSchema>;
+
 // --- Service Client ---
 export const ServiceClientSchema = z.enum(["pixerate", "slopmachine", "social", "surrealui", "surreal-ui", "unknown"]);
 export type ServiceClient = z.infer<typeof ServiceClientSchema>;
@@ -69,7 +83,7 @@ export type ServiceClient = z.infer<typeof ServiceClientSchema>;
 // --- Queue / Media Jobs ---
 export const QueueJobSchema = z.object({
   id: z.string(),
-  type: z.enum(["text", "image", "video", "analysis"]),
+  type: z.enum(["text", "image", "video", "analysis", "audio"]),
   status: z.enum(["queued", "processing", "completed", "failed"]),
   client: ServiceClientSchema.optional(),
   payload: z.record(z.any()).optional(),
