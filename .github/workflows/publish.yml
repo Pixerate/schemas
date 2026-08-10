@@ -38,6 +38,17 @@ jobs:
           else
             echo "Publishing $PACKAGE_NAME@$PACKAGE_VERSION to npm via Trusted Publishing..."
             npm publish --access public --provenance
+
+            TAG_NAME="v$PACKAGE_VERSION"
+            echo "Tagging commit with $TAG_NAME in GitHub..."
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            if git rev-parse "$TAG_NAME" >/dev/null 2>&1 || git ls-remote --tags origin "refs/tags/$TAG_NAME" | grep -q "$TAG_NAME"; then
+              echo "Tag $TAG_NAME already exists. Skipping tag creation."
+            else
+              git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
+              git push origin "$TAG_NAME"
+            fi
           fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
