@@ -77,12 +77,20 @@ export const JsonGenerationSchema = z.object({
 export type JsonGenerationPayload = z.infer<typeof JsonGenerationSchema>;
 
 // --- Service Client ---
-export const ServiceClientSchema = z.enum(["pixerate", "slopmachine", "social", "surrealui", "surreal-ui", "unknown"]);
+export const ServiceClientSchema = z.enum(["pixerate", "slopmachine", "social", "surrealui", "surreal-ui", "symphonia", "unknown"]);
 export type ServiceClient = z.infer<typeof ServiceClientSchema>;
 
 // --- Agentic Interactions ---
 export const AgentToolTypeSchema = z.enum(["code_execution", "google_search", "url_context", "file_search", "custom"]);
 export type AgentToolType = z.infer<typeof AgentToolTypeSchema>;
+
+export const AgentDocumentAttachmentSchema = z.object({
+  data: z.string().optional(),
+  uri: z.string().optional(),
+  mimeType: z.string(),
+  fileName: z.string().optional()
+});
+export type AgentDocumentAttachment = z.infer<typeof AgentDocumentAttachmentSchema>;
 
 export const AgentToolSchema = z.object({
   type: z.string(),
@@ -133,7 +141,9 @@ export const AgentInteractionRequestSchema = z.object({
   background: z.boolean().default(true),
   tools: z.array(AgentToolSchema).optional(),
   agentConfig: AgentConfigSchema.optional(),
-  environment: AgentEnvironmentSchema.optional()
+  environment: AgentEnvironmentSchema.optional(),
+  documents: z.array(AgentDocumentAttachmentSchema).optional(),
+  coachingRules: z.array(z.string()).optional()
 });
 export type AgentInteractionRequest = z.infer<typeof AgentInteractionRequestSchema>;
 
