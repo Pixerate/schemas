@@ -77,7 +77,7 @@ export const JsonGenerationSchema = z.object({
 export type JsonGenerationPayload = z.infer<typeof JsonGenerationSchema>;
 
 // --- Service Client ---
-export const ServiceClientSchema = z.enum(["pixerate", "slopmachine", "social", "surrealui", "surreal-ui", "symphonia", "flair", "Flair", "unknown"]);
+export const ServiceClientSchema = z.enum(["pixerate", "slopmachine", "social", "surrealui", "surreal-ui", "symphonia", "flair", "unknown"]);
 export type ServiceClient = z.infer<typeof ServiceClientSchema>;
 
 // --- Agentic Interactions ---
