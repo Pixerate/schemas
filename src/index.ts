@@ -69,6 +69,26 @@ export const CodeGenerationSchema = z.object({
 });
 export type CodeGenerationPayload = z.infer<typeof CodeGenerationSchema>;
 
+// --- Multi-Platform UI Component Synthesis ---
+export const ComponentPropDefinitionSchema = z.object({
+  name: z.string(),
+  type: z.string(),
+  default: z.string().optional(),
+  description: z.string().optional()
+});
+export type ComponentPropDefinition = z.infer<typeof ComponentPropDefinitionSchema>;
+
+export const ComponentSynthesisSchema = z.object({
+  svelte5: z.string().describe("Synthesized Svelte 5 component implementation using runes"),
+  reactTsx: z.string().describe("Synthesized React 19 TSX component implementation"),
+  webComponent: z.string().describe("Synthesized WebComponent custom element implementation"),
+  usageDocs: z.string().describe("Markdown documentation detailing props and usage patterns"),
+  propsSummary: z.array(ComponentPropDefinitionSchema).describe("List of prop definitions and types"),
+  supportedThemes: z.enum(["default", "light-and-dark"]).describe("Color theme support classification"),
+  previewHtml: z.string().optional().describe("Self-contained interactive preview HTML harness")
+});
+export type ComponentSynthesisPayload = z.infer<typeof ComponentSynthesisSchema>;
+
 // --- JSON Generation ---
 export const JsonGenerationSchema = z.object({
   prompt: z.string(),
@@ -161,10 +181,16 @@ export const AgentInteractionResultSchema = z.object({
 export type AgentInteractionResult = z.infer<typeof AgentInteractionResultSchema>;
 
 // --- Queue / Media Jobs ---
+export const QueueJobTypeSchema = z.enum(["text", "image", "video", "analysis", "audio", "agent", "code", "component"]);
+export type QueueJobType = z.infer<typeof QueueJobTypeSchema>;
+
+export const QueueJobStatusSchema = z.enum(["queued", "processing", "completed", "failed"]);
+export type QueueJobStatus = z.infer<typeof QueueJobStatusSchema>;
+
 export const QueueJobSchema = z.object({
   id: z.string(),
-  type: z.enum(["text", "image", "video", "analysis", "audio", "agent"]),
-  status: z.enum(["queued", "processing", "completed", "failed"]),
+  type: QueueJobTypeSchema,
+  status: QueueJobStatusSchema,
   client: ServiceClientSchema.optional(),
   payload: z.record(z.any()).optional(),
   createdAt: z.any().optional(),
