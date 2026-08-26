@@ -22,6 +22,69 @@ export type AspectRatio = z.infer<typeof AspectRatioSchema>;
 export const VideoAspectRatioSchema = z.enum(["9:16", "16:9"]);
 export type VideoAspectRatio = z.infer<typeof VideoAspectRatioSchema>;
 
+// --- Video Generation & Social Clip Schemas ---
+export const VideoGenerationSchema = z.object({
+  prompt: z.string(),
+  aspectRatio: VideoAspectRatioSchema.optional(),
+  durationSeconds: z.number().int().optional(),
+  generateAudio: z.boolean().optional(),
+  modelName: z.string().optional(),
+  resolution: z.string().optional()
+});
+export type VideoGenerationPayload = z.infer<typeof VideoGenerationSchema>;
+
+export const VideoOverlayStyleSchema = z.enum([
+  "neubrutalist",
+  "neubrutalist-dark",
+  "badge",
+  "meme",
+  "none"
+]);
+export type VideoOverlayStyle = z.infer<typeof VideoOverlayStyleSchema>;
+
+export const WatermarkPositionSchema = z.enum([
+  "bottom-right",
+  "bottom-left",
+  "top-right",
+  "top-left",
+  "center"
+]);
+export type WatermarkPosition = z.infer<typeof WatermarkPositionSchema>;
+
+export const VideoWatermarkSchema = z.object({
+  text: z.string().optional(),
+  imagePath: z.string().optional(),
+  font: z.string().optional(),
+  position: WatermarkPositionSchema.optional(),
+  color: z.string().optional(),
+  strokeWidth: z.number().optional(),
+  fontSize: z.number().optional(),
+  transparentBg: z.boolean().optional(),
+  opacity: z.number().optional()
+});
+export type VideoWatermark = z.infer<typeof VideoWatermarkSchema>;
+
+export const VideoTextOverlaySchema = z.object({
+  text: z.string(),
+  style: VideoOverlayStyleSchema.optional(),
+  containerBgColor: z.string().optional(),
+  textColor: z.string().optional(),
+  fontSize: z.number().optional(),
+  topY: z.number().optional(),
+  badgeTag: z.string().optional()
+});
+export type VideoTextOverlay = z.infer<typeof VideoTextOverlaySchema>;
+
+export const SocialVideoGenerationSchema = z.object({
+  prompt: z.string(),
+  audioPrompt: z.string().optional(),
+  aspectRatio: VideoAspectRatioSchema.optional(),
+  durationSeconds: z.number().int().optional(),
+  hook: z.union([z.string(), VideoTextOverlaySchema]).optional(),
+  watermark: z.union([z.string(), VideoWatermarkSchema]).optional()
+});
+export type SocialVideoGenerationPayload = z.infer<typeof SocialVideoGenerationSchema>;
+
 // --- Image Generation ---
 export const ImageGenerationSchema = z.object({
   prompt: z.string(),
