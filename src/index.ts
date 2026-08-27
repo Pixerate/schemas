@@ -22,6 +22,19 @@ export type AspectRatio = z.infer<typeof AspectRatioSchema>;
 export const VideoAspectRatioSchema = z.enum(["9:16", "16:9"]);
 export type VideoAspectRatio = z.infer<typeof VideoAspectRatioSchema>;
 
+export const VideoResolutionSchema = z.enum(["720p", "1080p", "4k", "720P", "1080P", "4K"]);
+export type VideoResolution = z.infer<typeof VideoResolutionSchema>;
+
+export const VideoFrameImageSchema = z.union([
+  z.string(),
+  z.object({
+    bytesBase64Encoded: z.string().optional(),
+    data: z.string().optional(),
+    mimeType: z.string().optional()
+  })
+]);
+export type VideoFrameImage = z.infer<typeof VideoFrameImageSchema>;
+
 // --- Video Generation & Social Clip Schemas ---
 export const VideoGenerationSchema = z.object({
   prompt: z.string(),
@@ -29,9 +42,24 @@ export const VideoGenerationSchema = z.object({
   durationSeconds: z.number().int().optional(),
   generateAudio: z.boolean().optional(),
   modelName: z.string().optional(),
-  resolution: z.string().optional()
+  resolution: VideoResolutionSchema.optional(),
+  fps: z.number().optional(),
+  isMultimedia: z.boolean().optional(),
+  multimedia: z.boolean().optional(),
+  firstFrame: VideoFrameImageSchema.optional(),
+  lastFrame: VideoFrameImageSchema.optional()
 });
 export type VideoGenerationPayload = z.infer<typeof VideoGenerationSchema>;
+
+// --- Video Upscaling ---
+export const VideoUpscaleSchema = z.object({
+  video: z.string().optional(),
+  mimeType: z.string().optional(),
+  prompt: z.string().optional(),
+  targetResolution: z.enum(["1080p", "4k", "1080P", "4K"]).default("1080p"),
+  modelName: z.string().optional()
+});
+export type VideoUpscalePayload = z.infer<typeof VideoUpscaleSchema>;
 
 export const VideoOverlayStyleSchema = z.enum([
   "neubrutalist",
@@ -315,7 +343,7 @@ export const AgentInteractionResultSchema = z.object({
 export type AgentInteractionResult = z.infer<typeof AgentInteractionResultSchema>;
 
 // --- Queue / Media Jobs ---
-export const QueueJobTypeSchema = z.enum(["text", "image", "video", "analysis", "audio", "agent", "code", "component"]);
+export const QueueJobTypeSchema = z.enum(["text", "image", "video", "analysis", "audio", "agent", "code", "component", "upscale"]);
 export type QueueJobType = z.infer<typeof QueueJobTypeSchema>;
 
 export const QueueJobStatusSchema = z.enum(["queued", "processing", "completed", "failed"]);
