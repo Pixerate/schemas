@@ -360,3 +360,289 @@ export const QueueJobSchema = z.object({
 });
 export type QueueJob = z.infer<typeof QueueJobSchema>;
 
+// --- Generative Forms Schemas ---
+export const ConditionOperatorSchema = z.enum([
+  "equals",
+  "notEquals",
+  "not_equals",
+  "includes",
+  "contains",
+  "greaterThan",
+  "greater_than",
+  "lessThan",
+  "less_than",
+  "exists"
+]);
+export type ConditionOperator = z.infer<typeof ConditionOperatorSchema>;
+
+export const ConditionSchema = z.object({
+  field: z.string().optional(),
+  fieldId: z.string().optional(),
+  operator: ConditionOperatorSchema,
+  value: z.union([z.string(), z.number(), z.boolean()]).optional()
+});
+export type Condition = z.infer<typeof ConditionSchema>;
+
+export const ControlValidationSchema = z.object({
+  min: z.number().optional(),
+  max: z.number().optional(),
+  minLength: z.number().optional(),
+  maxLength: z.number().optional(),
+  pattern: z.string().optional(),
+  message: z.string().optional(),
+  unit: z.string().optional()
+});
+export type ControlValidation = z.infer<typeof ControlValidationSchema>;
+
+export const FormOptionSchema = z.object({
+  label: z.string(),
+  value: z.string()
+});
+export type FormOption = z.infer<typeof FormOptionSchema>;
+
+export const ReferenceDataSourceSchema = z.enum(["companies", "users"]);
+export type ReferenceDataSource = z.infer<typeof ReferenceDataSourceSchema>;
+
+export const FormControlTypeSchema = z.enum([
+  "text",
+  "textarea",
+  "number",
+  "select",
+  "multiselect",
+  "radio",
+  "checkbox",
+  "date",
+  "file",
+  "company",
+  "user",
+  "slider",
+  "computed",
+  "repeater"
+]);
+export type FormControlType = z.infer<typeof FormControlTypeSchema>;
+
+export type FormControl = {
+  id: string;
+  type: FormControlType;
+  label: string;
+  description?: string;
+  helperText?: string;
+  placeholder?: string;
+  required?: boolean;
+  defaultValue?: any;
+  options?: FormOption[];
+  dataSource?: ReferenceDataSource;
+  validation?: ControlValidation;
+  pattern?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  minItems?: number;
+  maxItems?: number;
+  formula?: string;
+  computed?: { formula?: string };
+  visibleWhen?: Condition;
+  condition?: Condition;
+  itemControls?: FormControl[];
+  controls?: FormControl[];
+};
+
+export const FormControlSchema: z.ZodType<FormControl> = z.lazy(() =>
+  z.object({
+    id: z.string(),
+    type: FormControlTypeSchema,
+    label: z.string(),
+    description: z.string().optional(),
+    helperText: z.string().optional(),
+    placeholder: z.string().optional(),
+    required: z.boolean().optional(),
+    defaultValue: z.any().optional(),
+    options: z.array(FormOptionSchema).optional(),
+    dataSource: ReferenceDataSourceSchema.optional(),
+    validation: ControlValidationSchema.optional(),
+    pattern: z.string().optional(),
+    min: z.number().optional(),
+    max: z.number().optional(),
+    step: z.number().optional(),
+    minItems: z.number().optional(),
+    maxItems: z.number().optional(),
+    formula: z.string().optional(),
+    computed: z.object({ formula: z.string().optional() }).optional(),
+    visibleWhen: ConditionSchema.optional(),
+    condition: ConditionSchema.optional(),
+    itemControls: z.array(FormControlSchema).optional(),
+    controls: z.array(FormControlSchema).optional()
+  })
+);
+
+export const FormSectionSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string().optional(),
+  controls: z.array(FormControlSchema),
+  visibleWhen: ConditionSchema.optional(),
+  condition: ConditionSchema.optional()
+});
+export type FormSection = z.infer<typeof FormSectionSchema>;
+
+export const FormStageSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string().optional(),
+  sections: z.array(FormSectionSchema),
+  gate: z.string().optional()
+});
+export type FormStage = z.infer<typeof FormStageSchema>;
+
+export const DecisionGateKindSchema = z.enum(["approval", "review", "decision"]);
+export type DecisionGateKind = z.infer<typeof DecisionGateKindSchema>;
+
+export const DecisionGateSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string().optional(),
+  stageId: z.string(),
+  kind: DecisionGateKindSchema.optional(),
+  trigger: z.string().optional(),
+  requiredAction: z.string().optional(),
+  consequence: z.string().optional(),
+  condition: z.union([ConditionSchema, z.string()]).optional(),
+  blocking: z.boolean(),
+  reviewerRole: z.string().optional()
+});
+export type DecisionGate = z.infer<typeof DecisionGateSchema>;
+
+export const ScoringRuleSchema = z.object({
+  field: z.string(),
+  optionPoints: z.record(z.number()).optional(),
+  ranges: z.array(
+    z.object({
+      min: z.number().optional(),
+      max: z.number().optional(),
+      points: z.number()
+    })
+  ).optional(),
+  multiplier: z.number().optional(),
+  truePoints: z.number().optional(),
+  falsePoints: z.number().optional()
+});
+export type ScoringRule = z.infer<typeof ScoringRuleSchema>;
+
+export const ScoringDimensionSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  description: z.string().optional(),
+  weight: z.number().optional(),
+  rules: z.array(ScoringRuleSchema)
+});
+export type ScoringDimension = z.infer<typeof ScoringDimensionSchema>;
+
+export const ScoreBandSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  min: z.number(),
+  max: z.number().optional()
+});
+export type ScoreBand = z.infer<typeof ScoreBandSchema>;
+
+export const ScoringConfigSchema = z.object({
+  description: z.string().optional(),
+  dimensions: z.array(ScoringDimensionSchema),
+  bands: z.array(ScoreBandSchema).optional()
+});
+export type ScoringConfig = z.infer<typeof ScoringConfigSchema>;
+
+export const DimensionScoreSchema = z.object({
+  dimensionId: z.string(),
+  label: z.string(),
+  points: z.number(),
+  weight: z.number(),
+  weighted: z.number()
+});
+export type DimensionScore = z.infer<typeof DimensionScoreSchema>;
+
+export const SubmissionScoreSchema = z.object({
+  total: z.number(),
+  dimensions: z.array(DimensionScoreSchema),
+  band: z.object({ id: z.string(), label: z.string() }).optional(),
+  calculatedAt: z.string(),
+  schemaVersion: z.union([z.string(), z.number()])
+});
+export type SubmissionScore = z.infer<typeof SubmissionScoreSchema>;
+
+export const FormValidatorSchema = z.object({
+  id: z.string(),
+  description: z.string().optional(),
+  fields: z.array(z.string()).optional(),
+  severity: z.union([z.enum(["error", "warning"]), z.string()]).optional(),
+  type: z.string().optional(),
+  config: z.any().optional()
+});
+export type FormValidator = z.infer<typeof FormValidatorSchema>;
+
+export const FormHandoffActionSchema = z.object({
+  id: z.string().optional(),
+  label: z.string().optional(),
+  destination: z.string().optional(),
+  condition: z.union([ConditionSchema, z.string()]).optional(),
+  payloadFields: z.array(z.string()).optional(),
+  type: z.string().optional(),
+  config: z.any().optional()
+});
+export type FormHandoffAction = z.infer<typeof FormHandoffActionSchema>;
+
+export const FormReviewMetaSchema = z.object({
+  humanReviewRequired: z.boolean(),
+  reviewAreas: z.array(z.string())
+});
+export type FormReviewMeta = z.infer<typeof FormReviewMetaSchema>;
+
+export const TechnicalFormSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  version: z.union([z.string(), z.number()]),
+  stages: z.array(FormStageSchema),
+  decisionGates: z.array(DecisionGateSchema).optional(),
+  validators: z.array(FormValidatorSchema).optional(),
+  handoffActions: z.array(FormHandoffActionSchema).optional(),
+  review: FormReviewMetaSchema.optional(),
+  reviewMetadata: z.object({
+    approvers: z.array(z.string()),
+    requirements: z.array(z.string())
+  }).optional(),
+  scoring: ScoringConfigSchema.optional()
+});
+export type TechnicalSchema = z.infer<typeof TechnicalFormSchema>;
+
+export const SemanticReviewStatusSchema = z.enum(["pass", "flagged", "unavailable"]);
+export type SemanticReviewStatus = z.infer<typeof SemanticReviewStatusSchema>;
+
+export const SemanticReviewIssueSchema = z.object({
+  id: z.string(),
+  severity: z.enum(["warning", "error"]),
+  message: z.string(),
+  fieldId: z.string().optional(),
+  fieldLabel: z.string().optional(),
+  suggestion: z.string().optional()
+});
+export type SemanticReviewIssue = z.infer<typeof SemanticReviewIssueSchema>;
+
+export const SemanticReviewResultSchema = z.object({
+  status: SemanticReviewStatusSchema,
+  summary: z.string().optional(),
+  issues: z.array(SemanticReviewIssueSchema)
+});
+export type SemanticReviewResult = z.infer<typeof SemanticReviewResultSchema>;
+
+export const FormSubmissionPayloadSchema = z.object({
+  id: z.string().optional(),
+  answers: z.record(z.any()),
+  stageReviews: z.array(z.any()).optional(),
+  gateDecisions: z.array(z.any()).optional(),
+  submittedAt: z.string().optional(),
+  score: SubmissionScoreSchema.optional()
+});
+export type FormSubmissionPayload = z.infer<typeof FormSubmissionPayloadSchema>;
+
+
