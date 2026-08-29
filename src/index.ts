@@ -231,25 +231,248 @@ export const CodeGenerationSchema = z.object({
 });
 export type CodeGenerationPayload = z.infer<typeof CodeGenerationSchema>;
 
-// --- Multi-Platform UI Component Synthesis ---
-export const ComponentPropDefinitionSchema = z.object({
+// --- Surreal UI & Multi-Platform Component Domain Schemas ---
+export const PlatformLanguageSchema = z.enum(["svelte", "react", "webcomponent"]);
+export type PlatformLanguage = z.infer<typeof PlatformLanguageSchema>;
+
+export const ThemeSupportSchema = z.enum(["default", "light-and-dark"]);
+export type ThemeSupport = z.infer<typeof ThemeSupportSchema>;
+
+export const ComponentPropDocSchema = z.object({
   name: z.string(),
   type: z.string(),
   default: z.string().optional(),
-  description: z.string().optional()
+  description: z.string()
 });
-export type ComponentPropDefinition = z.infer<typeof ComponentPropDefinitionSchema>;
+export type ComponentPropDoc = z.infer<typeof ComponentPropDocSchema>;
+
+// Backward compatibility alias
+export const ComponentPropDefinitionSchema = ComponentPropDocSchema;
+export type ComponentPropDefinition = ComponentPropDoc;
+
+export const ComponentDocsSchema = z.object({
+  usage: z.string().describe("Usage instructions and import examples"),
+  props: z.array(ComponentPropDocSchema).describe("List of prop definitions and types"),
+  notes: z.string().optional().describe("Additional usage or architectural notes")
+});
+export type ComponentDocs = z.infer<typeof ComponentDocsSchema>;
+
+export const PreviewHarnessSchema = z.object({
+  driverCode: z
+    .string()
+    .describe(
+      "Complete, runnable preview driver code harness demonstrating usage of the component with snippets/children or mock props"
+    ),
+  mockProps: z.record(z.any()).describe("JSON map of realistic mock prop values passed to the component"),
+  wrapperClass: z.string().optional().describe("Tailwind CSS class string for wrapping the preview container")
+});
+export type PreviewHarness = z.infer<typeof PreviewHarnessSchema>;
+
+export const GenerateHarnessOptionsSchema = z.object({
+  code: z.string(),
+  language: PlatformLanguageSchema,
+  componentName: z.string(),
+  docsProps: z.array(ComponentPropDocSchema).optional()
+});
+export type GenerateHarnessOptions = z.infer<typeof GenerateHarnessOptionsSchema>;
 
 export const ComponentSynthesisSchema = z.object({
-  svelte5: z.string().describe("Synthesized Svelte 5 component implementation using runes"),
-  reactTsx: z.string().describe("Synthesized React 19 TSX component implementation"),
-  webComponent: z.string().describe("Synthesized WebComponent custom element implementation"),
-  usageDocs: z.string().describe("Markdown documentation detailing props and usage patterns"),
-  propsSummary: z.array(ComponentPropDefinitionSchema).describe("List of prop definitions and types"),
-  supportedThemes: z.enum(["default", "light-and-dark"]).describe("Color theme support classification"),
-  previewHtml: z.string().optional().describe("Self-contained interactive preview HTML harness")
+  title: z.string().describe("Title of the synthesized component"),
+  description: z.string().describe("Detailed description of the component"),
+  tags: z.array(z.string()).describe("Keywords and categorization tags"),
+  platforms: z.object({
+    svelte: z
+      .string()
+      .describe("Self-contained Svelte 5 component with runes ($props, $state, onclick, snippets, etc.)"),
+    react: z.string().describe("Self-contained React 19 TSX component with all subcomponents defined and exported"),
+    webcomponent: z
+      .string()
+      .describe("Self-contained WebComponent custom element extending HTMLElement")
+  }),
+  harnesses: z
+    .object({
+      svelte: PreviewHarnessSchema,
+      react: PreviewHarnessSchema,
+      webcomponent: PreviewHarnessSchema
+    })
+    .optional(),
+  docs: ComponentDocsSchema
 });
 export type ComponentSynthesisPayload = z.infer<typeof ComponentSynthesisSchema>;
+
+export const ComponentTransformationResultSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  tags: z.array(z.string()),
+  platforms: z.record(PlatformLanguageSchema, z.string()),
+  harnesses: z.record(PlatformLanguageSchema, PreviewHarnessSchema),
+  docs: ComponentDocsSchema,
+  detectedLanguage: PlatformLanguageSchema,
+  themeSupport: ThemeSupportSchema
+});
+export type ComponentTransformationResult = z.infer<typeof ComponentTransformationResultSchema>;
+
+export const ComponentPackageSchema = z.object({
+  language: PlatformLanguageSchema,
+  code: z.string().describe("Formatted code bundle with trimmed leading whitespace"),
+  docs: ComponentDocsSchema,
+  screenshot: z.string().describe("Data URI or URL of actual rendered component"),
+  themeSupport: ThemeSupportSchema,
+  tags: z.array(z.string()),
+  previewHarness: PreviewHarnessSchema.optional()
+});
+export type ComponentPackage = z.infer<typeof ComponentPackageSchema>;
+
+export const UIComponentTypeSchema = z.object({
+  id: z.string().describe("Slug, e.g., 'button'"),
+  name: z.string().describe("e.g. 'Button'"),
+  description: z.string().describe("Official description e.g. from Shadcn documentation"),
+  tags: z.array(z.string()).describe("Freeform tags e.g. ['form', 'action']"),
+  createdAt: z.string().describe("ISO timestamp"),
+  updatedAt: z.string().describe("ISO timestamp")
+});
+export type UIComponentType = z.infer<typeof UIComponentTypeSchema>;
+
+export const ComponentVariantSchema = z.object({
+  id: z.string().describe("Slug, e.g., 'glass-card' or 'glassmorphism'"),
+  componentTypeId: z.string().describe("References UIComponentType.id"),
+  name: z.string().describe("e.g. 'Glass Action Button'"),
+  aestheticId: z.string().describe("Style aesthetic, e.g. 'glassmorphism', 'neubrutalism', 'minimalist', 'modern', 'shadcn'"),
+  recommendedThemeId: z.string().optional().describe("Optional recommended theme ID (e.g., 'shadcn-zinc', 'tokyo-night')"),
+  description: z.string().optional().describe("Style & business logic description"),
+  imageUrl: z.string().optional().describe("Optional image URL"),
+  image: z.string().optional(),
+  screenshot: z.string().optional(),
+  createdAt: z.string().describe("ISO timestamp"),
+  updatedAt: z.string().describe("ISO timestamp")
+});
+export type ComponentVariant = z.infer<typeof ComponentVariantSchema>;
+
+export const AestheticSchema = ComponentVariantSchema;
+export type Aesthetic = ComponentVariant;
+
+export const ComponentVersionSchema = z.object({
+  id: z.string().describe("Unique version ID e.g. 'button-glass-action-button-v1.0.0'"),
+  componentTypeId: z.string().describe("References UIComponentType.id"),
+  variantId: z.string().describe("References ComponentVariant.id"),
+  aestheticId: z.string().describe("References Aesthetic style e.g. 'glassmorphism'"),
+  version: z.string().describe("Semver e.g. '1.0.0'"),
+  changelogNote: z.string(),
+  createdBy: z.string(),
+  createdAt: z.string().describe("ISO timestamp"),
+  packages: z.record(PlatformLanguageSchema, ComponentPackageSchema)
+});
+export type ComponentVersion = z.infer<typeof ComponentVersionSchema>;
+
+export const ActivityActionSchema = z.enum([
+  "CREATED",
+  "UPDATED",
+  "REVERTED",
+  "PACKAGE_GENERATED",
+  "DELETED"
+]);
+export type ActivityAction = z.infer<typeof ActivityActionSchema>;
+
+export const ActivityLogSchema = z.object({
+  id: z.string(),
+  componentTypeId: z.string(),
+  componentTypeName: z.string(),
+  variantId: z.string().optional(),
+  aestheticId: z.string(),
+  action: ActivityActionSchema,
+  version: z.string(),
+  details: z.string(),
+  timestamp: z.string()
+});
+export type ActivityLog = z.infer<typeof ActivityLogSchema>;
+
+export const IngestionInputSchema = z.object({
+  codeBundle: z.string().describe("Raw code bundle provided"),
+  css: z.string().optional().describe("Optional raw CSS or CSS bundle to extract and inline"),
+  componentTypeId: z.string().describe("Slug or Name of UI Component Type (e.g., 'button')"),
+  variantName: z.string().describe("Mandatory Variant Name text input (e.g., 'Glass Action Button')"),
+  variantId: z.string().optional().describe("Optional custom slug or ID for variant"),
+  aestheticId: z.string().optional().describe("Dropdown value for aesthetic style (e.g., 'glassmorphism', 'neubrutalism', 'minimalist', 'modern', 'shadcn')"),
+  recommendedThemeId: z.string().optional().describe("Optional recommended theme ID"),
+  componentTypeName: z.string().optional().describe("Optional display name if creating new component type"),
+  componentTypeDescription: z.string().optional().describe("Optional description if creating new component type"),
+  variantDescription: z.string().optional().describe("Optional description if creating new variant"),
+  aestheticName: z.string().optional().describe("Optional display name for aesthetic"),
+  aestheticDescription: z.string().optional().describe("Optional description if creating new aesthetic"),
+  sourcePlatform: PlatformLanguageSchema.optional().describe("Optional source platform - detected automatically if omitted"),
+  changelogNote: z.string().optional(),
+  tags: z.array(z.string()).optional()
+});
+export type IngestionInput = z.infer<typeof IngestionInputSchema>;
+
+// --- Design Tokens & Theme Schemas ---
+export const ThemeColorsSchema = z.object({
+  primary: z.string(),
+  primaryForeground: z.string().optional(),
+  secondary: z.string().optional(),
+  secondaryForeground: z.string().optional(),
+  accent: z.string().optional(),
+  accentForeground: z.string().optional(),
+  background: z.string(),
+  foreground: z.string(),
+  surface: z.string().optional(),
+  surfaceForeground: z.string().optional(),
+  muted: z.string().optional(),
+  mutedForeground: z.string().optional(),
+  destructive: z.string().optional(),
+  destructiveForeground: z.string().optional(),
+  border: z.string().optional(),
+  ring: z.string().optional(),
+  customProperties: z.record(z.string()).optional()
+});
+export type ThemeColors = z.infer<typeof ThemeColorsSchema>;
+
+export const ThemeTypographyTokensSchema = z.object({
+  fontSans: z.string().optional(),
+  fontMono: z.string().optional(),
+  fontHeading: z.string().optional(),
+  fontImports: z.array(z.string()).optional(),
+  fontCss: z.string().optional(),
+  fontSize: z.record(z.string()).optional(),
+  fontWeight: z.record(z.string()).optional()
+});
+export type ThemeTypographyTokens = z.infer<typeof ThemeTypographyTokensSchema>;
+
+export const ThemeTokensSchema = z.object({
+  colors: z.object({
+    light: ThemeColorsSchema,
+    dark: ThemeColorsSchema.partial().optional()
+  }),
+  typography: ThemeTypographyTokensSchema.optional(),
+  radii: z.record(z.string().optional()).optional(),
+  spacing: z.record(z.string()).optional(),
+  paddings: z.record(z.string()).optional(),
+  shadows: z.record(z.string()).optional()
+});
+export type ThemeTokens = z.infer<typeof ThemeTokensSchema>;
+
+export const ThemeSchema = z.object({
+  id: z.string().describe("e.g. 'shadcn-zinc', 'tokyo-night', 'glassmorphism-cyber'"),
+  name: z.string().describe("e.g. 'Shadcn Zinc Modern'"),
+  description: z.string().optional(),
+  tokens: ThemeTokensSchema,
+  supportsDarkMode: z.boolean().optional(),
+  isSystem: z.boolean().optional(),
+  createdAt: z.string().describe("ISO timestamp"),
+  updatedAt: z.string().describe("ISO timestamp")
+});
+export type Theme = z.infer<typeof ThemeSchema>;
+
+export const ThemeIngestionInputSchema = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  description: z.string().optional(),
+  tokens: ThemeTokensSchema.optional(),
+  rawCss: z.string().optional(),
+  supportsDarkMode: z.boolean().optional(),
+  isSystem: z.boolean().optional()
+});
+export type ThemeIngestionInput = z.infer<typeof ThemeIngestionInputSchema>;
 
 // --- JSON Generation ---
 export const JsonGenerationSchema = z.object({
