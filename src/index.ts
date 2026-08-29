@@ -645,4 +645,267 @@ export const FormSubmissionPayloadSchema = z.object({
 });
 export type FormSubmissionPayload = z.infer<typeof FormSubmissionPayloadSchema>;
 
+const formJsonCondition = {
+  type: "object",
+  properties: {
+    field: { type: "string" },
+    fieldId: { type: "string" },
+    operator: {
+      enum: [
+        "equals",
+        "notEquals",
+        "not_equals",
+        "includes",
+        "contains",
+        "greaterThan",
+        "greater_than",
+        "lessThan",
+        "less_than",
+        "exists",
+      ],
+    },
+    value: { type: ["string", "number", "boolean"] },
+  },
+  required: ["operator"],
+} as const;
+
+const formJsonControl = {
+  type: "object",
+  properties: {
+    id: { type: "string" },
+    type: {
+      enum: [
+        "text",
+        "textarea",
+        "number",
+        "select",
+        "multiselect",
+        "radio",
+        "checkbox",
+        "date",
+        "file",
+        "company",
+        "user",
+        "slider",
+        "computed",
+        "repeater",
+      ],
+    },
+    label: { type: "string" },
+    description: { type: "string" },
+    helperText: { type: "string" },
+    placeholder: { type: "string" },
+    required: { type: "boolean" },
+    defaultValue: {},
+    options: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: { label: { type: "string" }, value: { type: "string" } },
+        required: ["label", "value"],
+      },
+    },
+    dataSource: { enum: ["companies", "users"] },
+    validation: {
+      type: "object",
+      properties: {
+        min: { type: "number" },
+        max: { type: "number" },
+        minLength: { type: "number" },
+        maxLength: { type: "number" },
+        pattern: { type: "string" },
+        message: { type: "string" },
+        unit: { type: "string" },
+      },
+    },
+    pattern: { type: "string" },
+    min: { type: "number" },
+    max: { type: "number" },
+    step: { type: "number" },
+    minItems: { type: "number" },
+    maxItems: { type: "number" },
+    formula: { type: "string" },
+    computed: { type: "object", properties: { formula: { type: "string" } } },
+    visibleWhen: formJsonCondition,
+    condition: formJsonCondition,
+    itemControls: { type: "array", items: { $ref: "#/$defs/control" } },
+    controls: { type: "array", items: { $ref: "#/$defs/control" } },
+  },
+  required: ["id", "type", "label"],
+} as const;
+
+/** Canonical Generative Forms contract, JSON Schema draft 2020-12, version 1. */
+export const FORM_SCHEMA_JSON_SCHEMA = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  $id: "https://workspace.local/schemas/generative-forms/form-schema-v1.json",
+  type: "object",
+  $defs: { control: formJsonControl },
+  properties: {
+    id: { type: "string" },
+    title: { type: "string" },
+    description: { type: "string" },
+    version: { type: ["string", "number"] },
+    stages: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          title: { type: "string" },
+          description: { type: "string" },
+          gate: { type: "string" },
+          sections: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                id: { type: "string" },
+                title: { type: "string" },
+                description: { type: "string" },
+                controls: { type: "array", items: { $ref: "#/$defs/control" } },
+                visibleWhen: formJsonCondition,
+                condition: formJsonCondition,
+              },
+              required: ["id", "title", "controls"],
+            },
+          },
+        },
+        required: ["id", "title", "sections"],
+      },
+    },
+    decisionGates: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          title: { type: "string" },
+          description: { type: "string" },
+          stageId: { type: "string" },
+          kind: { enum: ["approval", "review", "decision"] },
+          trigger: { type: "string" },
+          requiredAction: { type: "string" },
+          consequence: { type: "string" },
+          condition: { anyOf: [formJsonCondition, { type: "string" }] },
+          blocking: { type: "boolean" },
+          reviewerRole: { type: "string" },
+        },
+        required: ["id", "title", "stageId", "blocking"],
+      },
+    },
+    validators: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          description: { type: "string" },
+          fields: { type: "array", items: { type: "string" } },
+          severity: { type: "string" },
+          type: { type: "string" },
+          config: {},
+        },
+        required: ["id"],
+      },
+    },
+    handoffActions: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          label: { type: "string" },
+          destination: { type: "string" },
+          condition: { anyOf: [formJsonCondition, { type: "string" }] },
+          payloadFields: { type: "array", items: { type: "string" } },
+          type: { type: "string" },
+          config: {},
+        },
+      },
+    },
+    review: {
+      type: "object",
+      properties: {
+        humanReviewRequired: { type: "boolean" },
+        reviewAreas: { type: "array", items: { type: "string" } },
+      },
+      required: ["humanReviewRequired", "reviewAreas"],
+    },
+    reviewMetadata: {
+      type: "object",
+      properties: {
+        approvers: { type: "array", items: { type: "string" } },
+        requirements: { type: "array", items: { type: "string" } },
+      },
+      required: ["approvers", "requirements"],
+    },
+    scoring: {
+      type: "object",
+      properties: {
+        description: { type: "string" },
+        dimensions: {
+          type: "array",
+          minItems: 1,
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              label: { type: "string" },
+              description: { type: "string" },
+              weight: { type: "number" },
+              rules: {
+                type: "array",
+                minItems: 1,
+                items: {
+                  type: "object",
+                  properties: {
+                    field: { type: "string" },
+                    optionPoints: {
+                      type: "object",
+                      additionalProperties: { type: "number" },
+                    },
+                    ranges: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          min: { type: "number" },
+                          max: { type: "number" },
+                          points: { type: "number" },
+                        },
+                        required: ["points"],
+                      },
+                    },
+                    multiplier: { type: "number" },
+                    truePoints: { type: "number" },
+                    falsePoints: { type: "number" },
+                  },
+                  required: ["field"],
+                },
+              },
+            },
+            required: ["id", "label", "rules"],
+          },
+        },
+        bands: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              label: { type: "string" },
+              min: { type: "number" },
+              max: { type: "number" },
+            },
+            required: ["id", "label", "min"],
+          },
+        },
+      },
+      required: ["dimensions"],
+    },
+  },
+  required: ["version", "stages"],
+} as const;
+
+
 
