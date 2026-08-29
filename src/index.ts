@@ -61,7 +61,7 @@ export const VideoUpscaleSchema = z.object({
 });
 export type VideoUpscalePayload = z.infer<typeof VideoUpscaleSchema>;
 
-export const VideoOverlayStyleSchema = z.enum([
+export const TextOverlayStyleSchema = z.enum([
   "neubrutalist",
   "neubrutalist-dark",
   "badge",
@@ -69,7 +69,9 @@ export const VideoOverlayStyleSchema = z.enum([
   "custom",
   "none"
 ]);
-export type VideoOverlayStyle = z.infer<typeof VideoOverlayStyleSchema>;
+export type TextOverlayStyle = z.infer<typeof TextOverlayStyleSchema>;
+export const VideoOverlayStyleSchema = TextOverlayStyleSchema;
+export type VideoOverlayStyle = TextOverlayStyle;
 
 export const WatermarkPositionSchema = z.union([
   z.enum([
@@ -86,7 +88,7 @@ export const WatermarkPositionSchema = z.union([
 ]);
 export type WatermarkPosition = z.infer<typeof WatermarkPositionSchema>;
 
-export const VideoWatermarkSchema = z.object({
+export const WatermarkSchema = z.object({
   text: z.string().optional(),
   imagePath: z.string().optional(),
   font: z.string().optional(),
@@ -103,7 +105,11 @@ export const VideoWatermarkSchema = z.object({
   marginLeft: z.number().optional(),
   marginTop: z.number().optional()
 });
-export type VideoWatermark = z.infer<typeof VideoWatermarkSchema>;
+export type Watermark = z.infer<typeof WatermarkSchema>;
+export const VideoWatermarkSchema = WatermarkSchema;
+export type VideoWatermark = Watermark;
+export const ImageWatermarkSchema = WatermarkSchema;
+export type ImageWatermark = Watermark;
 
 export const TextOverlayPositionSchema = z.union([
   z.enum(["top", "center", "bottom"]),
@@ -126,9 +132,9 @@ export const DropShadowSchema = z.object({
 });
 export type DropShadow = z.infer<typeof DropShadowSchema>;
 
-export const VideoTextOverlaySchema = z.object({
+export const TextOverlaySchema = z.object({
   text: z.string(),
-  style: VideoOverlayStyleSchema.optional(),
+  style: TextOverlayStyleSchema.optional(),
   font: z.string().optional(),
   fontPath: z.string().optional(),
   position: TextOverlayPositionSchema.optional(),
@@ -152,20 +158,92 @@ export const VideoTextOverlaySchema = z.object({
   badgeBgColor: z.string().optional(),
   badgeTextColor: z.string().optional(),
   badgeFont: z.string().optional(),
+  badgeFontSize: z.number().optional(),
   badgePosition: z.enum(["top-left", "top-right", "top-center", "bottom-left", "bottom-right", "bottom-center"]).optional(),
-  watermark: z.union([z.string(), VideoWatermarkSchema]).optional()
+  watermark: z.union([z.string(), WatermarkSchema]).optional()
 });
-export type VideoTextOverlay = z.infer<typeof VideoTextOverlaySchema>;
+export type TextOverlay = z.infer<typeof TextOverlaySchema>;
+export const VideoTextOverlaySchema = TextOverlaySchema;
+export type VideoTextOverlay = TextOverlay;
+export const ImageTextOverlaySchema = TextOverlaySchema;
+export type ImageTextOverlay = TextOverlay;
 
 export const SocialVideoGenerationSchema = z.object({
   prompt: z.string(),
   audioPrompt: z.string().optional(),
   aspectRatio: VideoAspectRatioSchema.optional(),
   durationSeconds: z.number().int().optional(),
-  hook: z.union([z.string(), VideoTextOverlaySchema]).optional(),
-  watermark: z.union([z.string(), VideoWatermarkSchema]).optional()
+  hook: z.union([z.string(), TextOverlaySchema]).optional(),
+  watermark: z.union([z.string(), WatermarkSchema]).optional()
 });
 export type SocialVideoGenerationPayload = z.infer<typeof SocialVideoGenerationSchema>;
+
+// --- Video Transcoding & Compression ---
+export const VideoTranscodeSchema = z.object({
+  crf: z.number().min(0).max(51).optional(),
+  preset: z.string().optional(),
+  videoCodec: z.string().optional(),
+  audioCodec: z.string().optional()
+});
+export type VideoTranscodePayload = z.infer<typeof VideoTranscodeSchema>;
+export const VideoCompressionSchema = VideoTranscodeSchema;
+export type VideoCompressionPayload = VideoTranscodePayload;
+
+// --- Video Compositing ---
+export const VideoOverlayOptionsSchema = z.object({
+  x: z.union([z.number(), z.string()]).optional(),
+  y: z.union([z.number(), z.string()]).optional(),
+  crf: z.number().optional(),
+  preset: z.string().optional(),
+  videoCodec: z.string().optional(),
+  audioCodec: z.string().optional()
+});
+export type VideoOverlayOptions = z.infer<typeof VideoOverlayOptionsSchema>;
+
+export const VideoScaleAndPadSchema = z.object({
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  fit: z.enum(["contain", "cover", "fill"]).optional(),
+  background: z.string().optional(),
+  crf: z.number().optional(),
+  preset: z.string().optional(),
+  videoCodec: z.string().optional(),
+  audioCodec: z.string().optional()
+});
+export type VideoScaleAndPad = z.infer<typeof VideoScaleAndPadSchema>;
+
+export const AudioMixTrackSchema = z.object({
+  path: z.string(),
+  volume: z.number().min(0).max(1).optional(),
+  delayMs: z.number().optional()
+});
+export type AudioMixTrack = z.infer<typeof AudioMixTrackSchema>;
+
+export const AudioMixOptionsSchema = z.object({
+  tracks: z.array(AudioMixTrackSchema),
+  videoVolume: z.number().optional(),
+  crf: z.number().optional(),
+  preset: z.string().optional(),
+  videoCodec: z.string().optional(),
+  audioCodec: z.string().optional()
+});
+export type AudioMixOptions = z.infer<typeof AudioMixOptionsSchema>;
+
+export const VideoPipelineSchema = z.object({
+  scaleAndPad: VideoScaleAndPadSchema.optional(),
+  textOverlay: TextOverlaySchema.optional(),
+  watermark: z.union([WatermarkSchema, z.string()]).optional(),
+  imageOverlays: z.array(z.object({
+    imagePath: z.string(),
+    options: VideoOverlayOptionsSchema.optional()
+  })).optional(),
+  audioMix: AudioMixOptionsSchema.optional(),
+  compress: VideoTranscodeSchema.optional()
+});
+export type VideoPipeline = z.infer<typeof VideoPipelineSchema>;
+
+export const VideoCompositingSchema = VideoPipelineSchema;
+export type VideoCompositingPayload = z.infer<typeof VideoCompositingSchema>;
 
 // --- Image Generation ---
 export const ImageGenerationSchema = z.object({
@@ -185,15 +263,9 @@ export const ImageTransformationSchema = z.object({
 });
 export type ImageTransformationPayload = z.infer<typeof ImageTransformationSchema>;
 
-export const ImageTextOverlaySchema = VideoTextOverlaySchema;
-export type ImageTextOverlay = z.infer<typeof ImageTextOverlaySchema>;
-
-export const ImageWatermarkSchema = VideoWatermarkSchema;
-export type ImageWatermark = z.infer<typeof ImageWatermarkSchema>;
-
 export const ImageCompositingSchema = z.object({
-  textOverlay: ImageTextOverlaySchema.optional(),
-  watermark: ImageWatermarkSchema.optional(),
+  textOverlay: TextOverlaySchema.optional(),
+  watermark: WatermarkSchema.optional(),
   fit: z.enum(["cover", "contain", "fill", "inside", "outside"]).optional(),
   targetWidth: z.number().int().optional(),
   targetHeight: z.number().int().optional(),
