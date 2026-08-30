@@ -69,3 +69,26 @@ npm run build
 ```
 
 The compiled bundles and types will reside in the `dist/` directory.
+
+## Contributing & Releases
+
+This repository mandates [Changesets](https://github.com/changesets/changesets) for tracking versioning and generating changelogs.
+
+### Creating a Changeset
+
+When submitting a pull request that introduces changes, generate a changeset:
+
+```bash
+npm run changeset
+```
+
+1. Select the bump type (`patch`, `minor`, or `major`).
+2. Provide a summary message describing the changes.
+3. Commit the generated `.changeset/*.md` file with your pull request.
+
+If a PR does not require a release bump (e.g. CI adjustments or documentation fixes), generate an empty changeset:
+
+```bash
+npx changeset --empty
+```
+

@@ -14,7 +14,10 @@
   },
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "npm run build && changeset publish"
   },
   "repository": {
     "type": "git",
@@ -27,7 +30,8 @@
   "author": "Pixerate",
   "license": "MIT",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": [
     "dist"
@@ -36,7 +40,8 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "typescript": "^5.4.5",
-    "tsup": "^8.0.2"
+    "@changesets/cli": "^3.0.1",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5"
   }
 }
