@@ -546,6 +546,43 @@ export const ThemeIngestionInputSchema = z.object({
 });
 export type ThemeIngestionInput = z.infer<typeof ThemeIngestionInputSchema>;
 
+// --- UI Component Generation ---
+export const UIGenerationOptionsSchema = z.object({
+  prompt: z.string().describe("User prompt or instruction for component generation/modification"),
+  currentCode: z.string().optional().describe("Existing component code for iterative modification"),
+  platform: PlatformLanguageSchema.optional().default("svelte").describe("Target component platform language"),
+  theme: z.string().optional().describe("Theme identifier or token reference"),
+  systemPrompt: z.string().optional().describe("Custom or override system prompt"),
+  maxRetries: z.number().int().nonnegative().optional().default(3).describe("Maximum retry attempts for iterative auto-repair validation"),
+  temperature: z.number().optional().describe("Model temperature")
+});
+export type UIGenerationOptionsPayload = z.infer<typeof UIGenerationOptionsSchema>;
+
+export const UIExtractionResultSchema = z.object({
+  code: z.string().describe("Clean extracted component code without markdown fences"),
+  postamble: z.string().optional().describe("Conversational explanation or summary after the code block"),
+  rawText: z.string().optional().describe("Complete raw output from the model")
+});
+export type UIExtractionResult = z.infer<typeof UIExtractionResultSchema>;
+
+export const UIValidationResultSchema = z.object({
+  valid: z.boolean().describe("Whether the component passed syntax and linter validation"),
+  error: z.string().optional().describe("Error output from validation if failed"),
+  errors: z.array(z.string()).optional().describe("List of parsed validation errors"),
+  formattedCode: z.string().optional().describe("Prettier-formatted component code if available")
+});
+export type UIValidationResult = z.infer<typeof UIValidationResultSchema>;
+
+export const UIGenerationResultSchema = z.object({
+  code: z.string().describe("Final validated component code"),
+  postamble: z.string().optional().describe("Conversational explanation or summary"),
+  rawText: z.string().optional().describe("Complete raw model output"),
+  isValid: z.boolean().optional().describe("Whether the final code passed validation"),
+  validationAttempts: z.number().int().optional().describe("Total number of generation/repair attempts"),
+  validationError: z.string().optional().describe("Validation error if still failing after max retries")
+});
+export type UIGenerationResult = z.infer<typeof UIGenerationResultSchema>;
+
 // --- JSON Generation ---
 export const JsonGenerationSchema = z.object({
   prompt: z.string(),
