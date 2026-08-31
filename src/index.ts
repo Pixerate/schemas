@@ -238,6 +238,10 @@ export const VideoPipelineSchema = z.object({
     options: VideoOverlayOptionsSchema.optional()
   })).optional(),
   audioMix: AudioMixOptionsSchema.optional(),
+  subtitles: z.lazy(() => SubtitleBurnOptionsSchema).optional(),
+  visualizer: z.lazy(() => AudioVisualizerOptionsSchema).optional(),
+  kenBurns: z.lazy(() => KenBurnsOptionsSchema).optional(),
+  ducking: z.lazy(() => AudioDuckingOptionsSchema).optional(),
   compress: VideoTranscodeSchema.optional()
 });
 export type VideoPipeline = z.infer<typeof VideoPipelineSchema>;
@@ -349,8 +353,9 @@ export const ImagePipelineSchema = z.object({
   arcDistort: ArcDistortSchema.optional(),
   autoFitCaption: AutoFitCaptionSchema.optional(),
   animatedGif: AnimatedGifCompositeSchema.optional(),
+  traceVector: z.lazy(() => VectorTraceOptionsSchema).optional(),
   output: z.object({
-    format: z.enum(["png", "jpeg", "webp", "avif", "gif"]).optional(),
+    format: z.enum(["png", "jpeg", "webp", "avif", "gif", "svg"]).optional(),
     quality: z.number().int().min(1).max(100).optional()
   }).optional()
 });
@@ -362,13 +367,14 @@ export const ImageCompositingSchema = z.object({
   fit: z.enum(["cover", "contain", "fill", "inside", "outside"]).optional(),
   targetWidth: z.number().int().optional(),
   targetHeight: z.number().int().optional(),
-  format: z.enum(["png", "jpeg", "webp", "avif", "gif"]).optional(),
+  format: z.enum(["png", "jpeg", "webp", "avif", "gif", "svg"]).optional(),
   quality: z.number().int().min(1).max(100).optional(),
   perspectiveWarp: PerspectiveWarpSchema.optional(),
   displacementMap: DisplacementMapSchema.optional(),
   arcDistort: ArcDistortSchema.optional(),
   autoFitCaption: AutoFitCaptionSchema.optional(),
-  animatedGif: AnimatedGifCompositeSchema.optional()
+  animatedGif: AnimatedGifCompositeSchema.optional(),
+  traceVector: z.lazy(() => VectorTraceOptionsSchema).optional()
 });
 export type ImageCompositingPayload = z.infer<typeof ImageCompositingSchema>;
 
@@ -1347,5 +1353,126 @@ export const FORM_SCHEMA_JSON_SCHEMA = {
   required: ["version", "stages"],
 } as const;
 
+// --- Subtitles & Captions ---
+export const SubtitleFormatSchema = z.enum(["srt", "vtt", "ass"]);
+export type SubtitleFormat = z.infer<typeof SubtitleFormatSchema>;
 
+export const SubtitleBurnOptionsSchema = z.object({
+  subtitlePath: z.string().optional(),
+  subtitleContent: z.string().optional(),
+  format: SubtitleFormatSchema.optional(),
+  fontSize: z.number().optional(),
+  fontName: z.string().optional(),
+  primaryColor: z.string().optional(),
+  outlineColor: z.string().optional(),
+  outlineWidth: z.number().optional(),
+  alignment: z.number().int().optional(),
+  marginV: z.number().int().optional(),
+  karaoke: z.boolean().optional()
+});
+export type SubtitleBurnOptions = z.infer<typeof SubtitleBurnOptionsSchema>;
+
+// --- Audio Visualizers ---
+export const AudioVisualizerTypeSchema = z.enum(["waves", "spectrum", "bars"]);
+export type AudioVisualizerType = z.infer<typeof AudioVisualizerTypeSchema>;
+
+export const AudioVisualizerOptionsSchema = z.object({
+  type: AudioVisualizerTypeSchema.optional().default("waves"),
+  width: z.number().int().positive().optional().default(1280),
+  height: z.number().int().positive().optional().default(720),
+  fps: z.number().int().positive().optional().default(30),
+  colors: z.string().optional(),
+  mode: z.enum(["point", "line", "p2p", "cline"]).optional(),
+  scale: z.enum(["lin", "sqrt", "cbrt", "log"]).optional(),
+  background: z.string().optional()
+});
+export type AudioVisualizerOptions = z.infer<typeof AudioVisualizerOptionsSchema>;
+
+// --- Ken Burns Motion ---
+export const KenBurnsOptionsSchema = z.object({
+  durationSeconds: z.number().positive().optional().default(5),
+  fps: z.number().int().positive().optional().default(30),
+  width: z.number().int().positive().optional().default(1920),
+  height: z.number().int().positive().optional().default(1080),
+  zoomDirection: z.enum(["in", "out", "none"]).optional().default("in"),
+  panDirection: z.enum(["top-to-bottom", "bottom-to-top", "left-to-right", "right-to-left", "center", "none"]).optional().default("center"),
+  maxZoom: z.number().min(1).max(3).optional().default(1.2)
+});
+export type KenBurnsOptions = z.infer<typeof KenBurnsOptionsSchema>;
+
+// --- Audio Ducking, Mastering & Normalization ---
+export const AudioDuckingOptionsSchema = z.object({
+  duckingDb: z.number().optional().default(14),
+  attackMs: z.number().optional().default(20),
+  releaseMs: z.number().optional().default(250),
+  threshold: z.number().optional().default(0.125)
+});
+export type AudioDuckingOptions = z.infer<typeof AudioDuckingOptionsSchema>;
+
+export const AudioNormalizationOptionsSchema = z.object({
+  targetLufs: z.number().optional().default(-14),
+  truePeak: z.number().optional().default(-1.5),
+  loudnessRange: z.number().optional().default(11),
+  audioCodec: z.string().optional().default("aac")
+});
+export type AudioNormalizationOptions = z.infer<typeof AudioNormalizationOptionsSchema>;
+
+export const AudioSilenceTrimOptionsSchema = z.object({
+  silenceThresholdDb: z.number().optional().default(-50),
+  minSilenceDuration: z.number().optional().default(0.5)
+});
+export type AudioSilenceTrimOptions = z.infer<typeof AudioSilenceTrimOptionsSchema>;
+
+// --- Media Probing ---
+export const MediaProbeResultSchema = z.object({
+  format: z.string().optional(),
+  durationSeconds: z.number().optional(),
+  width: z.number().int().optional(),
+  height: z.number().int().optional(),
+  fps: z.number().optional(),
+  bitrate: z.number().optional(),
+  videoCodec: z.string().optional(),
+  audioCodec: z.string().optional(),
+  audioChannels: z.number().int().optional(),
+  sampleRate: z.number().int().optional(),
+  sizeBytes: z.number().int().optional()
+});
+export type MediaProbeResult = z.infer<typeof MediaProbeResultSchema>;
+
+// --- Vector Tracing & Perceptual Hashing ---
+export const VectorTraceOptionsSchema = z.object({
+  colorMode: z.enum(["color", "binary"]).optional().default("color"),
+  hierarchical: z.enum(["stacked", "cutout"]).optional().default("stacked"),
+  filterSpeckle: z.number().int().min(0).optional().default(4),
+  cornerThreshold: z.number().int().min(0).max(180).optional().default(60),
+  segmentLength: z.number().min(0).optional().default(4),
+  spliceThreshold: z.number().int().min(0).max(180).optional().default(45),
+  scale: z.number().positive().optional().default(1)
+});
+export type VectorTraceOptions = z.infer<typeof VectorTraceOptionsSchema>;
+
+export const PerceptualHashAlgorithmSchema = z.enum(["ahash", "dhash"]);
+export type PerceptualHashAlgorithm = z.infer<typeof PerceptualHashAlgorithmSchema>;
+
+export const PerceptualHashOptionsSchema = z.object({
+  algorithm: PerceptualHashAlgorithmSchema.optional().default("dhash"),
+  hashSize: z.number().int().min(8).max(64).optional().default(8)
+});
+export type PerceptualHashOptions = z.infer<typeof PerceptualHashOptionsSchema>;
+
+// --- Document Generation ---
+export const DocumentGenerationOptionsSchema = z.object({
+  title: z.string().optional(),
+  author: z.string().optional(),
+  pageSize: z.enum(["A4", "A3", "A5", "LETTER", "LEGAL"]).optional().default("A4"),
+  margins: z.object({
+    top: z.number(),
+    bottom: z.number(),
+    left: z.number(),
+    right: z.number()
+  }).optional(),
+  enableSyntaxHighlighting: z.boolean().optional().default(true),
+  theme: z.enum(["light", "dark", "corporate", "minimal"]).optional().default("light")
+});
+export type DocumentGenerationOptions = z.infer<typeof DocumentGenerationOptionsSchema>;
 
