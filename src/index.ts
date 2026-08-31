@@ -296,6 +296,16 @@ export const VideoAnalysisSchema = z.object({
 });
 export type VideoAnalysisPayload = z.infer<typeof VideoAnalysisSchema>;
 
+// --- Video Modification ---
+export const VideoModificationSchema = z.object({
+  prompt: z.string(),
+  changes: z.string().optional(),
+  aspectRatio: VideoAspectRatioSchema.optional(),
+  durationSeconds: z.number().optional(),
+  seed: z.number().int().optional()
+});
+export type VideoModificationPayload = z.infer<typeof VideoModificationSchema>;
+
 // --- Code Generation ---
 export const CodeGenerationSchema = z.object({
   prompt: z.string(),
