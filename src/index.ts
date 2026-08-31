@@ -263,14 +263,112 @@ export const ImageTransformationSchema = z.object({
 });
 export type ImageTransformationPayload = z.infer<typeof ImageTransformationSchema>;
 
+// --- Image Compositing & Advanced Distortions ---
+export const Point2DSchema = z.tuple([z.number(), z.number()]);
+export type Point2D = z.infer<typeof Point2DSchema>;
+
+export const PerspectiveQuadSchema = z.tuple([
+  Point2DSchema,
+  Point2DSchema,
+  Point2DSchema,
+  Point2DSchema
+]);
+export type PerspectiveQuad = z.infer<typeof PerspectiveQuadSchema>;
+
+export const PerspectiveWarpSchema = z.object({
+  srcQuad: PerspectiveQuadSchema.optional(),
+  dstQuad: PerspectiveQuadSchema,
+  resample: z.enum(["ewa", "bicubic", "bilinear", "point"]).optional().default("ewa"),
+  background: z.string().optional()
+});
+export type PerspectiveWarp = z.infer<typeof PerspectiveWarpSchema>;
+
+export const DisplacementMapSchema = z.object({
+  mapImage: z.string().describe("Path, URL, or base64 data URI of the displacement map image"),
+  xScale: z.number().describe("Horizontal displacement scale in pixels"),
+  yScale: z.number().describe("Vertical displacement scale in pixels")
+});
+export type DisplacementMap = z.infer<typeof DisplacementMapSchema>;
+
+export const ArcDistortSchema = z.object({
+  angle: z.number().describe("Arc angle in degrees (e.g. 60, 180, 360)"),
+  rotation: z.number().optional().default(0).describe("Starting angle rotation in degrees"),
+  radius: z.number().optional().describe("Top radius in pixels"),
+  background: z.string().optional()
+});
+export type ArcDistort = z.infer<typeof ArcDistortSchema>;
+
+export const AutoFitCaptionSchema = z.object({
+  text: z.string(),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  font: z.string().optional(),
+  textColor: z.string().optional(),
+  backgroundColor: z.string().optional(),
+  gravity: z.enum(["NorthWest", "North", "NorthEast", "West", "Center", "East", "SouthWest", "South", "SouthEast"]).optional().default("Center"),
+  position: z.object({
+    x: z.number().optional(),
+    y: z.number().optional()
+  }).optional()
+});
+export type AutoFitCaption = z.infer<typeof AutoFitCaptionSchema>;
+
+export const AnimatedGifCompositeSchema = z.object({
+  delayMs: z.number().int().positive().optional(),
+  loop: z.number().int().min(0).optional().default(0),
+  dither: z.enum(["FloydSteinberg", "Riemersma", "None"]).optional().default("FloydSteinberg"),
+  coalesce: z.boolean().optional().default(true)
+});
+export type AnimatedGifComposite = z.infer<typeof AnimatedGifCompositeSchema>;
+
+export const ImageOverlayOptionsSchema = z.object({
+  x: z.union([z.number(), z.string()]).optional(),
+  y: z.union([z.number(), z.string()]).optional(),
+  gravity: z.enum(["northwest", "north", "northeast", "west", "center", "east", "southwest", "south", "southeast"]).optional(),
+  blend: z.enum(["over", "in", "out", "atop", "xor", "multiply", "screen", "overlay", "darken", "lighten"]).optional(),
+  opacity: z.number().min(0).max(1).optional()
+});
+export type ImageOverlayOptions = z.infer<typeof ImageOverlayOptionsSchema>;
+
+export const ImagePipelineSchema = z.object({
+  fit: z.object({
+    width: z.number().int().positive().optional(),
+    height: z.number().int().positive().optional(),
+    aspectRatio: AspectRatioSchema.optional(),
+    fit: z.enum(["cover", "contain", "fill", "inside", "outside"]).optional(),
+    background: z.string().optional()
+  }).optional(),
+  textOverlay: TextOverlaySchema.optional(),
+  watermark: z.union([WatermarkSchema, z.string()]).optional(),
+  imageOverlays: z.array(z.object({
+    image: z.string(),
+    options: ImageOverlayOptionsSchema.optional()
+  })).optional(),
+  perspectiveWarp: PerspectiveWarpSchema.optional(),
+  displacementMap: DisplacementMapSchema.optional(),
+  arcDistort: ArcDistortSchema.optional(),
+  autoFitCaption: AutoFitCaptionSchema.optional(),
+  animatedGif: AnimatedGifCompositeSchema.optional(),
+  output: z.object({
+    format: z.enum(["png", "jpeg", "webp", "avif", "gif"]).optional(),
+    quality: z.number().int().min(1).max(100).optional()
+  }).optional()
+});
+export type ImagePipeline = z.infer<typeof ImagePipelineSchema>;
+
 export const ImageCompositingSchema = z.object({
   textOverlay: TextOverlaySchema.optional(),
   watermark: WatermarkSchema.optional(),
   fit: z.enum(["cover", "contain", "fill", "inside", "outside"]).optional(),
   targetWidth: z.number().int().optional(),
   targetHeight: z.number().int().optional(),
-  format: z.enum(["png", "jpeg", "webp", "avif"]).optional(),
-  quality: z.number().int().min(1).max(100).optional()
+  format: z.enum(["png", "jpeg", "webp", "avif", "gif"]).optional(),
+  quality: z.number().int().min(1).max(100).optional(),
+  perspectiveWarp: PerspectiveWarpSchema.optional(),
+  displacementMap: DisplacementMapSchema.optional(),
+  arcDistort: ArcDistortSchema.optional(),
+  autoFitCaption: AutoFitCaptionSchema.optional(),
+  animatedGif: AnimatedGifCompositeSchema.optional()
 });
 export type ImageCompositingPayload = z.infer<typeof ImageCompositingSchema>;
 
