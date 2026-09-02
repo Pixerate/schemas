@@ -35,6 +35,17 @@ export const VideoFrameImageSchema = z.union([
 ]);
 export type VideoFrameImage = z.infer<typeof VideoFrameImageSchema>;
 
+export const VideoAttachmentSchema = z.union([
+  z.string(),
+  z.object({
+    bytesBase64Encoded: z.string().optional(),
+    data: z.any().optional(),
+    mimeType: z.string().optional(),
+    url: z.string().optional()
+  })
+]);
+export type VideoAttachment = z.infer<typeof VideoAttachmentSchema>;
+
 // --- Video Generation & Social Clip Schemas ---
 export const VideoGenerationSchema = z.object({
   prompt: z.string(),
@@ -47,7 +58,10 @@ export const VideoGenerationSchema = z.object({
   isMultimedia: z.boolean().optional(),
   multimedia: z.boolean().optional(),
   firstFrame: VideoFrameImageSchema.optional(),
-  lastFrame: VideoFrameImageSchema.optional()
+  lastFrame: VideoFrameImageSchema.optional(),
+  image: VideoAttachmentSchema.optional(),
+  images: z.array(VideoAttachmentSchema).optional(),
+  attachments: z.array(VideoAttachmentSchema).optional()
 });
 export type VideoGenerationPayload = z.infer<typeof VideoGenerationSchema>;
 
