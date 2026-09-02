@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.11.0
+
+### Minor Changes
+
+- a8a3fc8: Add VideoAttachmentSchema and add image, images, and attachments fields to VideoGenerationSchema
+
 ## 1.10.0
 
 ### Minor Changes
