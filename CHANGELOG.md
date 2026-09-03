@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.12.0
+
+### Minor Changes
+
+- 910b0cf: Add 360p/360P to VideoResolutionSchema and add resolution, task, and previousInteractionId to VideoModificationSchema.
+
 ## 1.11.0
 
 ### Minor Changes
