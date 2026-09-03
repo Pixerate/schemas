@@ -22,7 +22,7 @@ export type AspectRatio = z.infer<typeof AspectRatioSchema>;
 export const VideoAspectRatioSchema = z.enum(["9:16", "16:9"]);
 export type VideoAspectRatio = z.infer<typeof VideoAspectRatioSchema>;
 
-export const VideoResolutionSchema = z.enum(["720p", "1080p", "4k", "720P", "1080P", "4K"]);
+export const VideoResolutionSchema = z.enum(["360p", "720p", "1080p", "4k", "360P", "720P", "1080P", "4K"]);
 export type VideoResolution = z.infer<typeof VideoResolutionSchema>;
 
 export const VideoFrameImageSchema = z.union([
@@ -420,6 +420,9 @@ export const VideoModificationSchema = z.object({
   changes: z.string().optional(),
   aspectRatio: VideoAspectRatioSchema.optional(),
   durationSeconds: z.number().optional(),
+  resolution: VideoResolutionSchema.optional(),
+  task: z.enum(["modify", "extend"]).optional(),
+  previousInteractionId: z.string().optional(),
   seed: z.number().int().optional()
 });
 export type VideoModificationPayload = z.infer<typeof VideoModificationSchema>;
