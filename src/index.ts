@@ -479,6 +479,31 @@ export const GenerateHarnessOptionsSchema = z.object({
 });
 export type GenerateHarnessOptions = z.infer<typeof GenerateHarnessOptionsSchema>;
 
+export const InternalComponentDependencySchema = z.object({
+  type: z.literal("surreal"),
+  componentTypeId: z.string().describe("Slug of target component type (e.g. 'button')"),
+  aestheticId: z.string().optional().describe("Aesthetic style ID (e.g. 'glassmorphism')"),
+  variantId: z.string().optional().describe("Variant ID (e.g. 'glass-action-button')"),
+  versionRange: z.string().default("^1.0.0").describe("Semver range required"),
+  importedAs: z.string().describe("Local identifier name (e.g. 'Button')")
+});
+export type InternalComponentDependency = z.infer<typeof InternalComponentDependencySchema>;
+
+export const ExternalPackageDependencySchema = z.object({
+  type: z.literal("npm"),
+  packageName: z.string().describe("NPM package name (e.g. 'bits-ui', '@radix-ui/react-dialog')"),
+  versionRange: z.string().default("^1.0.0").describe("Semver range (e.g. '^1.0.0', '^1.1.2')"),
+  isPeerDependency: z.boolean().default(false),
+  importSpecifiers: z.array(z.string()).optional()
+});
+export type ExternalPackageDependency = z.infer<typeof ExternalPackageDependencySchema>;
+
+export const ComponentDependencySchema = z.discriminatedUnion("type", [
+  InternalComponentDependencySchema,
+  ExternalPackageDependencySchema
+]);
+export type ComponentDependency = z.infer<typeof ComponentDependencySchema>;
+
 export const ComponentSynthesisSchema = z.object({
   title: z.string().describe("Title of the synthesized component"),
   description: z.string().describe("Detailed description of the component"),
@@ -499,6 +524,13 @@ export const ComponentSynthesisSchema = z.object({
       webcomponent: PreviewHarnessSchema
     })
     .optional(),
+  dependencies: z
+    .object({
+      svelte: z.array(ComponentDependencySchema).default([]),
+      react: z.array(ComponentDependencySchema).default([]),
+      webcomponent: z.array(ComponentDependencySchema).default([])
+    })
+    .optional(),
   docs: ComponentDocsSchema
 });
 export type ComponentSynthesisPayload = z.infer<typeof ComponentSynthesisSchema>;
@@ -509,6 +541,13 @@ export const ComponentTransformationResultSchema = z.object({
   tags: z.array(z.string()),
   platforms: z.record(PlatformLanguageSchema, z.string()),
   harnesses: z.record(PlatformLanguageSchema, PreviewHarnessSchema),
+  dependencies: z
+    .object({
+      svelte: z.array(ComponentDependencySchema).default([]),
+      react: z.array(ComponentDependencySchema).default([]),
+      webcomponent: z.array(ComponentDependencySchema).default([])
+    })
+    .optional(),
   docs: ComponentDocsSchema,
   detectedLanguage: PlatformLanguageSchema,
   themeSupport: ThemeSupportSchema
@@ -522,6 +561,7 @@ export const ComponentPackageSchema = z.object({
   screenshot: z.string().describe("Data URI or URL of actual rendered component"),
   themeSupport: ThemeSupportSchema,
   tags: z.array(z.string()),
+  dependencies: z.array(ComponentDependencySchema).default([]),
   previewHarness: PreviewHarnessSchema.optional()
 });
 export type ComponentPackage = z.infer<typeof ComponentPackageSchema>;
