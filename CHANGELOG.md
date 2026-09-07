@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.13.0
+
+### Minor Changes
+
+- e3c6953: Add component dependency schemas (`InternalComponentDependencySchema`, `ExternalPackageDependencySchema`, `ComponentDependencySchema`) and add dependencies field to `ComponentPackageSchema` and synthesis schemas.
+
 ## 1.12.0
 
 ### Minor Changes
