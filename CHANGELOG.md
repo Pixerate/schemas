@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.15.0
+
+### Minor Changes
+
+- 01de124: Add comprehensive notification, email message, user preference, and task unread summary schemas and types
+
 ## 1.14.0
 
 ### Minor Changes
