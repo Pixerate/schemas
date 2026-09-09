@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.14.0
+
+### Minor Changes
+
+- a10318a: Add schemas and TypeScript types for AuthUser, UserProfile, Organization, OrgMember, Team, TeamMember, Invite, WaitlistEntry, and FuelTransaction
+
 ## 1.13.0
 
 ### Minor Changes
