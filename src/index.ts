@@ -2078,3 +2078,122 @@ export type FuelPlan = z.infer<typeof FuelPlanSchema>;
 export const FuelCostMapSchema = z.record(z.number().nonnegative());
 export type FuelCostMap = z.infer<typeof FuelCostMapSchema>;
 
+// --- Notifications & Messaging Schemas ---
+export const NotificationChannelSchema = z.enum(["in_app", "email", "web_push", "webhook", "sms"]);
+export type NotificationChannel = z.infer<typeof NotificationChannelSchema>;
+
+export const NotificationPrioritySchema = z.enum(["low", "normal", "high", "urgent"]);
+export type NotificationPriority = z.infer<typeof NotificationPrioritySchema>;
+
+export const NotificationCategorySchema = z.enum([
+  "mention",
+  "reply",
+  "team_invite",
+  "fuel_alert",
+  "system",
+  "job_completed",
+  "job_failed",
+  "custom"
+]);
+export type NotificationCategory = z.infer<typeof NotificationCategorySchema>;
+
+export const NotificationStatusSchema = z.enum(["unread", "read", "archived"]);
+export type NotificationStatus = z.infer<typeof NotificationStatusSchema>;
+
+export const NotificationDeliveryStateSchema = z.enum(["pending", "sent", "delivered", "failed", "skipped"]);
+export type NotificationDeliveryState = z.infer<typeof NotificationDeliveryStateSchema>;
+
+export const NotificationActorSchema = z.object({
+  id: z.string(),
+  name: z.string().optional(),
+  email: z.string().optional(),
+  avatarUrl: z.string().optional(),
+  type: z.enum(["user", "agent", "system"]).optional().default("user")
+});
+export type NotificationActor = z.infer<typeof NotificationActorSchema>;
+
+export const NotificationSchema = z.object({
+  id: z.string(),
+  recipientId: z.string(),
+  recipientEmail: z.string().optional(),
+  title: z.string(),
+  body: z.string(),
+  richContent: z.string().optional(),
+  category: NotificationCategorySchema.default("system"),
+  priority: NotificationPrioritySchema.default("normal"),
+  channels: z.array(NotificationChannelSchema).default(["in_app"]),
+  status: NotificationStatusSchema.default("unread"),
+  actor: NotificationActorSchema.optional(),
+  targetType: z.string().optional(),
+  targetId: z.string().optional(),
+  actionUrl: z.string().optional(),
+  metadata: z.record(z.unknown()).optional().default({}),
+  createdAt: z.union([z.string(), z.number(), z.date()]).default(() => new Date().toISOString()),
+  readAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  archivedAt: z.union([z.string(), z.number(), z.date()]).optional()
+});
+export type Notification = z.infer<typeof NotificationSchema>;
+
+export const NotificationDeliveryRecordSchema = z.object({
+  id: z.string(),
+  notificationId: z.string(),
+  channel: NotificationChannelSchema,
+  state: NotificationDeliveryStateSchema,
+  error: z.string().optional(),
+  sentAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  deliveredAt: z.union([z.string(), z.number(), z.date()]).optional()
+});
+export type NotificationDeliveryRecord = z.infer<typeof NotificationDeliveryRecordSchema>;
+
+export const ChannelPreferencesSchema = z.object({
+  in_app: z.boolean().default(true),
+  email: z.boolean().default(true),
+  web_push: z.boolean().default(false),
+  webhook: z.boolean().default(false)
+});
+export type ChannelPreferences = z.infer<typeof ChannelPreferencesSchema>;
+
+export const NotificationPreferencesSchema = z.object({
+  userId: z.string(),
+  channels: z.record(NotificationCategorySchema, ChannelPreferencesSchema).optional().default({}),
+  emailDigest: z.enum(["instant", "hourly", "daily", "weekly", "never"]).default("instant"),
+  quietHours: z.object({
+    enabled: z.boolean().default(false),
+    startHourUtc: z.number().int().min(0).max(23).default(22),
+    endHourUtc: z.number().int().min(0).max(23).default(8)
+  }).optional(),
+  updatedAt: z.union([z.string(), z.number(), z.date()]).default(() => new Date().toISOString())
+});
+export type NotificationPreferences = z.infer<typeof NotificationPreferencesSchema>;
+
+export const EmailAttachmentSchema = z.object({
+  filename: z.string(),
+  content: z.union([z.string(), z.instanceof(Uint8Array)]),
+  contentType: z.string().optional()
+});
+export type EmailAttachment = z.infer<typeof EmailAttachmentSchema>;
+
+export const EmailMessageSchema = z.object({
+  to: z.union([z.string(), z.array(z.string())]),
+  from: z.string().optional(),
+  cc: z.union([z.string(), z.array(z.string())]).optional(),
+  bcc: z.union([z.string(), z.array(z.string())]).optional(),
+  subject: z.string(),
+  text: z.string().optional(),
+  html: z.string().optional(),
+  replyTo: z.string().optional(),
+  headers: z.record(z.string()).optional(),
+  templateId: z.string().optional(),
+  templateVariables: z.record(z.unknown()).optional(),
+  attachments: z.array(EmailAttachmentSchema).optional()
+});
+export type EmailMessage = z.infer<typeof EmailMessageSchema>;
+
+export const TaskUnreadSummarySchema = z.object({
+  mentions: z.number().nonnegative().default(0),
+  replies: z.number().nonnegative().default(0),
+  total: z.number().nonnegative().default(0)
+});
+export type TaskUnreadSummary = z.infer<typeof TaskUnreadSummarySchema>;
+
+
