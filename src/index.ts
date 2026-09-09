@@ -1866,5 +1866,215 @@ export const CRDTSnapshotSchema = z.object({
 });
 export type CRDTSnapshot = z.infer<typeof CRDTSnapshotSchema>;
 
+// --- Auth & Identity ---
+export const AuthUserSchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  displayName: z.string().optional(),
+  photoURL: z.string().url().optional().nullable(),
+  emailVerified: z.boolean().default(false),
+  provider: z.string().default("password"),
+  createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  metadata: z.record(z.unknown()).optional().default({})
+});
+export type AuthUser = z.infer<typeof AuthUserSchema>;
 
+// --- User Profile & Preferences ---
+export const UserPreferencesSchema = z.record(z.unknown()).default({});
+export type UserPreferences = z.infer<typeof UserPreferencesSchema>;
+
+export const UserProfileSchema = z.object({
+  id: z.string(),
+  displayName: z.string().default(""),
+  photoURL: z.string().url().optional().nullable(),
+  email: z.string().email().optional(),
+  defaultOrgId: z.string().optional(),
+  defaultTeamId: z.string().optional(),
+  orgIds: z.array(z.string()).default([]),
+  teamIds: z.array(z.string()).default([]),
+  preferences: UserPreferencesSchema,
+  onboarding: z.object({
+    completed: z.boolean().default(false),
+    rolePreference: z.string().optional(),
+    milestones: z.array(z.string()).default([]),
+    skipped: z.boolean().default(false)
+  }).optional(),
+  createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  updatedAt: z.union([z.string(), z.number(), z.date()]).optional()
+});
+export type UserProfile = z.infer<typeof UserProfileSchema>;
+
+// --- Roles & Permissions ---
+export const TeamRoleSchema = z.enum(["owner", "admin", "editor", "viewer", "member"]);
+export type TeamRole = z.infer<typeof TeamRoleSchema>;
+
+// --- Organization ---
+export const OrgMemberSchema = z.object({
+  id: z.string(),
+  orgId: z.string(),
+  userId: z.string(),
+  email: z.string().email(),
+  role: TeamRoleSchema.default("member"),
+  status: z.enum(["active", "invited", "suspended"]).default("active"),
+  teamIds: z.array(z.string()).default([]),
+  joinedAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  invitedBy: z.string().optional()
+});
+export type OrgMember = z.infer<typeof OrgMemberSchema>;
+
+export const OrganizationSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  slug: z.string(),
+  description: z.string().optional(),
+  ownerId: z.string(),
+  memberIds: z.array(z.string()).default([]),
+  planId: z.string().default("free"),
+  fuelBalance: z.number().default(0),
+  stripeCustomerId: z.string().optional(),
+  stripeSubscriptionId: z.string().optional(),
+  cancelAtPeriodEnd: z.boolean().optional(),
+  billingPeriodStart: z.union([z.string(), z.number(), z.date()]).optional(),
+  billingPeriodEnd: z.union([z.string(), z.number(), z.date()]).optional(),
+  metadata: z.record(z.unknown()).optional().default({}),
+  createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  updatedAt: z.union([z.string(), z.number(), z.date()]).optional()
+});
+export type Organization = z.infer<typeof OrganizationSchema>;
+
+// --- Team & Team Members ---
+export const TeamMemberDocSchema = z.object({
+  role: TeamRoleSchema.default("member"),
+  status: z.enum(["active", "invited", "suspended"]).default("active"),
+  email: z.string().email().optional(),
+  joinedAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  invitedBy: z.string().optional()
+});
+export type TeamMemberDoc = z.infer<typeof TeamMemberDocSchema>;
+
+export const TeamMemberSchema = TeamMemberDocSchema.extend({
+  id: z.string(),
+  userId: z.string(),
+  teamId: z.string(),
+  displayName: z.string().optional(),
+  photoURL: z.string().url().optional().nullable()
+});
+export type TeamMember = z.infer<typeof TeamMemberSchema>;
+
+export const TeamSchema = z.object({
+  id: z.string(),
+  orgId: z.string().optional(),
+  name: z.string(),
+  slug: z.string().optional(),
+  description: z.string().optional(),
+  ownerId: z.string(),
+  memberIds: z.array(z.string()).default([]),
+  planId: z.string().optional().default("free"),
+  fuelBalance: z.number().optional().default(0),
+  metadata: z.record(z.unknown()).optional().default({}),
+  createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  updatedAt: z.union([z.string(), z.number(), z.date()]).optional()
+});
+export type Team = z.infer<typeof TeamSchema>;
+
+// --- Invites ---
+export const InviteTargetTypeSchema = z.enum(["organization", "team"]);
+export type InviteTargetType = z.infer<typeof InviteTargetTypeSchema>;
+
+export const InviteStatusSchema = z.enum(["pending", "accepted", "revoked", "expired"]);
+export type InviteStatus = z.infer<typeof InviteStatusSchema>;
+
+export const InviteSchema = z.object({
+  id: z.string(),
+  token: z.string(),
+  targetType: InviteTargetTypeSchema,
+  targetId: z.string(),
+  email: z.string().email().optional().nullable(),
+  role: TeamRoleSchema.default("member"),
+  invitedBy: z.string(),
+  status: InviteStatusSchema.default("pending"),
+  maxUses: z.number().int().positive().default(1),
+  useCount: z.number().int().nonnegative().default(0),
+  acceptedBy: z.array(z.string()).default([]),
+  expiresAt: z.union([z.string(), z.number(), z.date()]),
+  metadata: z.record(z.unknown()).optional().default({}),
+  createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  updatedAt: z.union([z.string(), z.number(), z.date()]).optional()
+});
+export type Invite = z.infer<typeof InviteSchema>;
+
+// --- Waitlist ---
+export const WaitlistStatusSchema = z.enum(["pending", "approved", "rejected", "onboarded"]);
+export type WaitlistStatus = z.infer<typeof WaitlistStatusSchema>;
+
+export const WaitlistEntrySchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  name: z.string().optional(),
+  status: WaitlistStatusSchema.default("pending"),
+  referralCode: z.string().optional(),
+  referredBy: z.string().optional(),
+  referralCount: z.number().int().nonnegative().default(0),
+  position: z.number().int().positive().optional(),
+  priorityScore: z.number().default(0),
+  metadata: z.record(z.unknown()).optional().default({}),
+  approvedAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  onboardedAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  updatedAt: z.union([z.string(), z.number(), z.date()]).optional()
+});
+export type WaitlistEntry = z.infer<typeof WaitlistEntrySchema>;
+
+// --- Fuel & Quotas ---
+export const FuelTransactionTypeSchema = z.enum([
+  "usage",
+  "consumption",
+  "top_up",
+  "topup",
+  "proration",
+  "adjustment",
+  "allocation",
+  "bonus",
+  "refund"
+]);
+export type FuelTransactionType = z.infer<typeof FuelTransactionTypeSchema>;
+
+export const FuelTransactionSchema = z.object({
+  id: z.string(),
+  orgId: z.string().optional(),
+  teamId: z.string().optional(),
+  targetType: z.enum(["organization", "team", "user"]).optional(),
+  targetId: z.string().optional(),
+  userId: z.string().optional().nullable(),
+  amount: z.number(),
+  balanceAfter: z.number().optional(),
+  type: FuelTransactionTypeSchema,
+  reason: z.string().optional(),
+  description: z.string().optional(),
+  resultType: z.string().optional(),
+  resultId: z.string().optional(),
+  client: z.string().optional().default("unknown"),
+  metadata: z.record(z.unknown()).optional().default({}),
+  createdAt: z.union([z.string(), z.number(), z.date()]).default(() => new Date())
+});
+export type FuelTransaction = z.infer<typeof FuelTransactionSchema>;
+
+export const FuelPlanSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  monthlyAllocation: z.number().nonnegative().optional(),
+  monthlyFuel: z.number().nonnegative().optional(),
+  allowRollover: z.boolean().optional().default(false),
+  rolloverFuel: z.boolean().optional().default(false),
+  maxRolloverFuel: z.number().nonnegative().optional(),
+  maxTeamMembers: z.number().int().positive().optional(),
+  priceMonthlyCents: z.number().int().nonnegative().optional(),
+  features: z.array(z.string()).default([]),
+  stripePriceId: z.string().optional(),
+  rateLimits: z.record(z.number()).optional()
+});
+export type FuelPlan = z.infer<typeof FuelPlanSchema>;
+
+export const FuelCostMapSchema = z.record(z.number().nonnegative());
+export type FuelCostMap = z.infer<typeof FuelCostMapSchema>;
 
