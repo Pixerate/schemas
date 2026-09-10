@@ -53,6 +53,7 @@ export const VideoGenerationSchema = z.object({
   durationSeconds: z.number().int().optional(),
   generateAudio: z.boolean().optional(),
   modelName: z.string().optional(),
+  lowCost: z.boolean().optional(),
   resolution: VideoResolutionSchema.optional(),
   fps: z.number().optional(),
   isMultimedia: z.boolean().optional(),
@@ -187,6 +188,7 @@ export const SocialVideoGenerationSchema = z.object({
   audioPrompt: z.string().optional(),
   aspectRatio: VideoAspectRatioSchema.optional(),
   durationSeconds: z.number().int().optional(),
+  lowCost: z.boolean().optional(),
   hook: z.union([z.string(), TextOverlaySchema]).optional(),
   watermark: z.union([z.string(), WatermarkSchema]).optional()
 });
