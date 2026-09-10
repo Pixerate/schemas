@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.16.0
+
+### Minor Changes
+
+- 7f45d01: Add optional `lowCost` flag to `VideoGenerationSchema` and `SocialVideoGenerationSchema`.
+
 ## 1.15.0
 
 ### Minor Changes
