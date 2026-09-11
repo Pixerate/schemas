@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.17.0
+
+### Minor Changes
+
+- 647bccc: Add `uchiage` client to `ServiceClientSchema` enum (formerly `operative`).
+
 ## 1.16.0
 
 ### Minor Changes
