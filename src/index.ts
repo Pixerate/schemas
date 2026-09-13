@@ -952,33 +952,34 @@ export type FormControl = {
   controls?: FormControl[];
 };
 
-export const FormControlSchema: z.ZodType<FormControl> = z.lazy(() =>
-  z.object({
-    id: z.string(),
-    type: FormControlTypeSchema,
-    label: z.string(),
-    description: z.string().optional(),
-    helperText: z.string().optional(),
-    placeholder: z.string().optional(),
-    required: z.boolean().optional(),
-    defaultValue: z.any().optional(),
-    options: z.array(FormOptionSchema).optional(),
-    dataSource: ReferenceDataSourceSchema.optional(),
-    validation: ControlValidationSchema.optional(),
-    pattern: z.string().optional(),
-    min: z.number().optional(),
-    max: z.number().optional(),
-    step: z.number().optional(),
-    minItems: z.number().optional(),
-    maxItems: z.number().optional(),
-    formula: z.string().optional(),
-    computed: z.object({ formula: z.string().optional() }).optional(),
-    visibleWhen: ConditionSchema.optional(),
-    condition: ConditionSchema.optional(),
-    itemControls: z.array(FormControlSchema).optional(),
-    controls: z.array(FormControlSchema).optional()
-  })
-);
+export const BaseFormControlSchema = z.object({
+  id: z.string(),
+  type: FormControlTypeSchema,
+  label: z.string(),
+  description: z.string().optional(),
+  helperText: z.string().optional(),
+  placeholder: z.string().optional(),
+  required: z.boolean().optional(),
+  defaultValue: z.any().optional(),
+  options: z.array(FormOptionSchema).optional(),
+  dataSource: ReferenceDataSourceSchema.optional(),
+  validation: ControlValidationSchema.optional(),
+  pattern: z.string().optional(),
+  min: z.number().optional(),
+  max: z.number().optional(),
+  step: z.number().optional(),
+  minItems: z.number().optional(),
+  maxItems: z.number().optional(),
+  formula: z.string().optional(),
+  computed: z.object({ formula: z.string().optional() }).optional(),
+  visibleWhen: ConditionSchema.optional(),
+  condition: ConditionSchema.optional()
+});
+
+export const FormControlSchema: z.ZodType<FormControl> = BaseFormControlSchema.extend({
+  itemControls: z.array(BaseFormControlSchema).optional(),
+  controls: z.array(BaseFormControlSchema).optional()
+});
 
 export const FormSectionSchema = z.object({
   id: z.string(),
