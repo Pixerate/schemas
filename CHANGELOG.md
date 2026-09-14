@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.17.1
+
+### Patch Changes
+
+- 8b6a50e: Prevent recursive schema warnings and generation failures in \`FormControlSchema\` by extracting non-recursive \`BaseFormControlSchema\` for repeater controls.
+
 ## 1.17.0
 
 ### Minor Changes
