@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.18.0
+
+### Minor Changes
+
+- ab4b43f: Add examples and suggestions fields to FormControl and BaseFormControlSchema
+
 ## 1.17.1
 
 ### Patch Changes
