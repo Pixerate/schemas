@@ -933,6 +933,8 @@ export type FormControl = {
   description?: string;
   helperText?: string;
   placeholder?: string;
+  examples?: string[];
+  suggestions?: string[];
   required?: boolean;
   defaultValue?: any;
   options?: FormOption[];
@@ -959,6 +961,8 @@ export const BaseFormControlSchema = z.object({
   description: z.string().optional(),
   helperText: z.string().optional(),
   placeholder: z.string().optional(),
+  examples: z.array(z.string()).optional(),
+  suggestions: z.array(z.string()).optional(),
   required: z.boolean().optional(),
   defaultValue: z.any().optional(),
   options: z.array(FormOptionSchema).optional(),
