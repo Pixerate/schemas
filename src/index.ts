@@ -209,6 +209,12 @@ export type VideoCompressionPayload = VideoTranscodePayload;
 export const VideoOverlayOptionsSchema = z.object({
   x: z.union([z.number(), z.string()]).optional(),
   y: z.union([z.number(), z.string()]).optional(),
+  position: z.union([z.string(), z.object({ x: z.number().optional(), y: z.number().optional() })]).optional(),
+  padding: z.number().optional(),
+  scale: z.number().optional(),
+  opacity: z.number().optional(),
+  width: z.number().optional(),
+  height: z.number().optional(),
   crf: z.number().optional(),
   preset: z.string().optional(),
   videoCodec: z.string().optional(),
@@ -344,9 +350,14 @@ export type AnimatedGifComposite = z.infer<typeof AnimatedGifCompositeSchema>;
 export const ImageOverlayOptionsSchema = z.object({
   x: z.union([z.number(), z.string()]).optional(),
   y: z.union([z.number(), z.string()]).optional(),
+  position: z.union([z.string(), z.object({ x: z.number().optional(), y: z.number().optional() })]).optional(),
+  padding: z.number().optional(),
+  scale: z.number().optional(),
+  width: z.number().optional(),
+  height: z.number().optional(),
   gravity: z.enum(["northwest", "north", "northeast", "west", "center", "east", "southwest", "south", "southeast"]).optional(),
   blend: z.enum(["over", "in", "out", "atop", "xor", "multiply", "screen", "overlay", "darken", "lighten"]).optional(),
-  opacity: z.number().min(0).max(1).optional()
+  opacity: z.number().optional()
 });
 export type ImageOverlayOptions = z.infer<typeof ImageOverlayOptionsSchema>;
 
