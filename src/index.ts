@@ -740,7 +740,8 @@ export const UIGenerationOptionsSchema = z.object({
   maxRetries: z.number().int().nonnegative().optional().default(3).describe("Maximum retry attempts for iterative auto-repair validation"),
   temperature: z.number().optional().describe("Model temperature")
 });
-export type UIGenerationOptionsPayload = z.infer<typeof UIGenerationOptionsSchema>;
+export type UIGenerationOptionsPayload = z.input<typeof UIGenerationOptionsSchema>;
+
 
 export const UIExtractionResultSchema = z.object({
   code: z.string().describe("Clean extracted component code without markdown fences"),
@@ -1438,6 +1439,7 @@ export const SubtitleBurnOptionsSchema = z.object({
   format: SubtitleFormatSchema.optional(),
   fontSize: z.number().optional(),
   fontName: z.string().optional(),
+  fontColor: z.string().optional(),
   primaryColor: z.string().optional(),
   outlineColor: z.string().optional(),
   outlineWidth: z.number().optional(),
@@ -1459,9 +1461,12 @@ export const AudioVisualizerOptionsSchema = z.object({
   colors: z.string().optional(),
   mode: z.enum(["point", "line", "p2p", "cline"]).optional(),
   scale: z.enum(["lin", "sqrt", "cbrt", "log"]).optional(),
-  background: z.string().optional()
+  background: z.string().optional(),
+  crf: z.number().optional(),
+  preset: z.string().optional()
 });
-export type AudioVisualizerOptions = z.infer<typeof AudioVisualizerOptionsSchema>;
+export type AudioVisualizerOptions = z.input<typeof AudioVisualizerOptionsSchema>;
+
 
 // --- Ken Burns Motion ---
 export const KenBurnsOptionsSchema = z.object({
@@ -1469,34 +1474,48 @@ export const KenBurnsOptionsSchema = z.object({
   fps: z.number().int().positive().optional().default(30),
   width: z.number().int().positive().optional().default(1920),
   height: z.number().int().positive().optional().default(1080),
+  direction: z.enum(["in", "out"]).optional(),
   zoomDirection: z.enum(["in", "out", "none"]).optional().default("in"),
+  zoomSpeed: z.number().optional(),
+  pan: z.enum(["center", "left-to-right", "right-to-left", "top-to-bottom", "bottom-to-top"]).optional(),
   panDirection: z.enum(["top-to-bottom", "bottom-to-top", "left-to-right", "right-to-left", "center", "none"]).optional().default("center"),
   maxZoom: z.number().min(1).max(3).optional().default(1.2)
 });
-export type KenBurnsOptions = z.infer<typeof KenBurnsOptionsSchema>;
+export type KenBurnsOptions = z.input<typeof KenBurnsOptionsSchema>;
 
 // --- Audio Ducking, Mastering & Normalization ---
 export const AudioDuckingOptionsSchema = z.object({
   duckingDb: z.number().optional().default(14),
   attackMs: z.number().optional().default(20),
   releaseMs: z.number().optional().default(250),
-  threshold: z.number().optional().default(0.125)
+  threshold: z.number().optional().default(0.125),
+  crf: z.number().optional(),
+  preset: z.string().optional(),
+  videoCodec: z.string().optional(),
+  audioCodec: z.string().optional()
 });
-export type AudioDuckingOptions = z.infer<typeof AudioDuckingOptionsSchema>;
+export type AudioDuckingOptions = z.input<typeof AudioDuckingOptionsSchema>;
 
 export const AudioNormalizationOptionsSchema = z.object({
   targetLufs: z.number().optional().default(-14),
   truePeak: z.number().optional().default(-1.5),
   loudnessRange: z.number().optional().default(11),
-  audioCodec: z.string().optional().default("aac")
+  audioCodec: z.string().optional().default("aac"),
+  bitrate: z.string().optional()
 });
-export type AudioNormalizationOptions = z.infer<typeof AudioNormalizationOptionsSchema>;
+export type AudioNormalizationOptions = z.input<typeof AudioNormalizationOptionsSchema>;
 
 export const AudioSilenceTrimOptionsSchema = z.object({
   silenceThresholdDb: z.number().optional().default(-50),
-  minSilenceDuration: z.number().optional().default(0.5)
+  minSilenceDuration: z.number().optional().default(0.5),
+  startThresholdDb: z.number().optional(),
+  startDurationSeconds: z.number().optional(),
+  stopThresholdDb: z.number().optional(),
+  stopDurationSeconds: z.number().optional(),
+  trimBeginning: z.boolean().optional(),
+  trimEnding: z.boolean().optional()
 });
-export type AudioSilenceTrimOptions = z.infer<typeof AudioSilenceTrimOptionsSchema>;
+export type AudioSilenceTrimOptions = z.input<typeof AudioSilenceTrimOptionsSchema>;
 
 // --- Media Probing ---
 export const MediaProbeResultSchema = z.object({
@@ -1505,35 +1524,51 @@ export const MediaProbeResultSchema = z.object({
   width: z.number().int().optional(),
   height: z.number().int().optional(),
   fps: z.number().optional(),
+  framerate: z.number().optional(),
   bitrate: z.number().optional(),
+  aspectRatio: z.string().optional(),
   videoCodec: z.string().optional(),
   audioCodec: z.string().optional(),
   audioChannels: z.number().int().optional(),
   sampleRate: z.number().int().optional(),
-  sizeBytes: z.number().int().optional()
+  audioSampleRate: z.number().int().optional(),
+  sizeBytes: z.number().int().optional(),
+  streams: z.array(z.record(z.unknown())).optional()
 });
 export type MediaProbeResult = z.infer<typeof MediaProbeResultSchema>;
 
 // --- Vector Tracing & Perceptual Hashing ---
 export const VectorTraceOptionsSchema = z.object({
+  engine: z.enum(["vtracer", "potrace"]).optional(),
   colorMode: z.enum(["color", "binary"]).optional().default("color"),
   hierarchical: z.enum(["stacked", "cutout"]).optional().default("stacked"),
   filterSpeckle: z.number().int().min(0).optional().default(4),
+  colorPrecision: z.number().optional(),
+  layerDifference: z.number().optional(),
   cornerThreshold: z.number().int().min(0).max(180).optional().default(60),
+  lengthThreshold: z.number().optional(),
   segmentLength: z.number().min(0).optional().default(4),
+  maxIterations: z.number().optional(),
   spliceThreshold: z.number().int().min(0).max(180).optional().default(45),
+  pathPrecision: z.number().optional(),
+  turnPolicy: z.enum(["black", "white", "left", "right", "minority", "majority"]).optional(),
+  turdSize: z.number().optional(),
+  alphamax: z.number().optional(),
+  opticurve: z.boolean().optional(),
+  opttolerance: z.number().optional(),
   scale: z.number().positive().optional().default(1)
 });
-export type VectorTraceOptions = z.infer<typeof VectorTraceOptionsSchema>;
+export type VectorTraceOptions = z.input<typeof VectorTraceOptionsSchema>;
 
 export const PerceptualHashAlgorithmSchema = z.enum(["ahash", "dhash"]);
 export type PerceptualHashAlgorithm = z.infer<typeof PerceptualHashAlgorithmSchema>;
 
 export const PerceptualHashOptionsSchema = z.object({
   algorithm: PerceptualHashAlgorithmSchema.optional().default("dhash"),
+  method: PerceptualHashAlgorithmSchema.optional(),
   hashSize: z.number().int().min(8).max(64).optional().default(8)
 });
-export type PerceptualHashOptions = z.infer<typeof PerceptualHashOptionsSchema>;
+export type PerceptualHashOptions = z.input<typeof PerceptualHashOptionsSchema>;
 
 // --- Document Generation ---
 export const DocumentGenerationOptionsSchema = z.object({
@@ -1549,7 +1584,7 @@ export const DocumentGenerationOptionsSchema = z.object({
   enableSyntaxHighlighting: z.boolean().optional().default(true),
   theme: z.enum(["light", "dark", "corporate", "minimal"]).optional().default("light")
 });
-export type DocumentGenerationOptions = z.infer<typeof DocumentGenerationOptionsSchema>;
+export type DocumentGenerationOptions = z.input<typeof DocumentGenerationOptionsSchema>;
 
 // ============================================================================
 // --- Realtime Collaboration & Synchronization Schemas ---
@@ -1708,6 +1743,19 @@ export const FieldPresenceSchema = z.object({
 });
 export type FieldPresence = z.infer<typeof FieldPresenceSchema>;
 
+export interface ViewingChangeEvent {
+  resourceId: string;
+  resourceType: string;
+  viewers: ViewingIndicator[];
+}
+
+export interface TypingChangeEvent {
+  resourceId: string;
+  fieldName?: string;
+  typingUsers: TypingIndicator[];
+}
+
+
 // --- Record Locking & Claiming ---
 export const LockStatusSchema = z.enum(["unlocked", "locked", "expired", "claimed"]);
 export type LockStatus = z.infer<typeof LockStatusSchema>;
@@ -1763,6 +1811,24 @@ export const LockHeartbeatRequestSchema = z.object({
   leaseDurationSeconds: z.number().int().positive().optional().default(60)
 });
 export type LockHeartbeatRequest = z.infer<typeof LockHeartbeatRequestSchema>;
+
+export interface LockAcquisitionResult {
+  success: boolean;
+  acquired?: boolean;
+  lock?: RecordLock;
+  conflict?: RecordLock;
+  existingLock?: RecordLock;
+  reason?: "already_locked" | "unauthorized" | "channel_error" | "network_error";
+  error?: string;
+}
+
+export interface LockChangeEvent {
+  resourceId: string;
+  resourceType: string;
+  status: LockStatus;
+  lock?: RecordLock;
+}
+
 
 // --- Activity Stream ---
 export const ActivityActionTypeSchema = z.enum([
@@ -1883,6 +1949,96 @@ export const CRDTSnapshotSchema = z.object({
   updatedAt: z.number().int().positive().default(() => Date.now())
 });
 export type CRDTSnapshot = z.infer<typeof CRDTSnapshotSchema>;
+
+export interface OTTransformResult {
+  op1Prime: OTTextOp[];
+  op2Prime: OTTextOp[];
+}
+
+export interface VectorClock {
+  [clientOrUserId: string]: number;
+}
+
+// --- Realtime Channels & Subscriptions ---
+export type Topic = string;
+
+export enum REALTIME_SUBSCRIBE_STATES {
+  SUBSCRIBED = "SUBSCRIBED",
+  CLOSED = "CLOSED",
+  TIMED_OUT = "TIMED_OUT",
+  CHANNEL_ERROR = "CHANNEL_ERROR"
+}
+
+export type ChannelCallback = (status: REALTIME_SUBSCRIBE_STATES, error?: Error) => void;
+
+export interface RealtimeMessage<T = unknown> {
+  type: string;
+  event: string;
+  payload: T;
+}
+
+export interface IRealtimeChannel {
+  topic: string;
+  state: "joined" | "joining" | "closed";
+  on(type: string, filter: { event: string }, callback: (payload: any) => void): this;
+  subscribe(callback?: ChannelCallback): this;
+  unsubscribe(): Promise<"ok" | "error">;
+  track(presence: any): void;
+  untrack(): void;
+  presenceState(): Record<string, any[]>;
+  send(message: RealtimeMessage): Promise<void>;
+}
+
+export interface RealtimeHandlerConfig {
+  inactiveTabTimeoutSeconds?: number;
+  autoReconnect?: boolean;
+  heartbeatIntervalMs?: number;
+}
+
+// --- Collaborative Grid / Canvas Events ---
+export interface RemoteCellPresence {
+  rowId: string;
+  colId: string;
+  user: PresenceUser;
+  isEditing?: boolean;
+  draftValue?: string;
+  focusedAt: number;
+}
+
+export interface GridCellSelectEvent {
+  rowId: string;
+  colId: string;
+  user: PresenceUser;
+}
+
+export interface GridCellEditStartEvent {
+  rowId: string;
+  colId: string;
+  user: PresenceUser;
+  initialValue?: string;
+}
+
+export interface GridCellDraftEvent {
+  rowId: string;
+  colId: string;
+  userId: string;
+  draftValue: string;
+}
+
+export interface GridCellBlurEvent {
+  rowId: string;
+  colId: string;
+  userId: string;
+}
+
+export type GridOTOp =
+  | { type: "set_cell"; rowId: string; colId: string; raw: string; prevRaw?: string }
+  | { type: "batch_cells"; cells: Array<{ rowId: string; colId: string; raw: string }> }
+  | { type: "insert_col"; index: number; column: any }
+  | { type: "delete_col"; colId: string }
+  | { type: "insert_row"; index: number; row: any }
+  | { type: "delete_row"; rowId: string };
+
 
 // --- Auth & Identity ---
 export const AuthUserSchema = z.object({
@@ -2213,5 +2369,373 @@ export const TaskUnreadSummarySchema = z.object({
   total: z.number().nonnegative().default(0)
 });
 export type TaskUnreadSummary = z.infer<typeof TaskUnreadSummarySchema>;
+
+// ============================================================================
+// --- Ephemeral Interactive UI Blocks ---
+// ============================================================================
+
+export const StatItemSchema = z.object({
+  icon: z.string().optional(),
+  label: z.string().min(1),
+  value: z.string().min(1),
+  delta: z.string().optional(),
+  tone: z.enum(["up", "down", "neutral"]).optional()
+});
+export type StatItem = z.infer<typeof StatItemSchema>;
+
+export const StatsBlockSchema = z.object({
+  kind: z.literal("stats"),
+  items: z.array(StatItemSchema).min(1)
+});
+export type StatsBlockData = z.infer<typeof StatsBlockSchema>;
+
+export const CalloutBlockSchema = z.object({
+  kind: z.literal("callout"),
+  severity: z.enum(["risk", "opportunity", "info", "success"]),
+  title: z.string().min(1),
+  body: z.string().optional()
+});
+export type CalloutBlockData = z.infer<typeof CalloutBlockSchema>;
+
+export const ActionItemSchema = z.object({
+  icon: z.string().optional(),
+  text: z.string().min(1),
+  owner: z.string().optional(),
+  due: z.string().optional()
+});
+export type ActionItem = z.infer<typeof ActionItemSchema>;
+
+export const ActionsBlockSchema = z.object({
+  kind: z.literal("actions"),
+  title: z.string().optional(),
+  items: z.array(ActionItemSchema).min(1)
+});
+export type ActionsBlockData = z.infer<typeof ActionsBlockSchema>;
+
+export const ChartSeriesSchema = z.object({
+  name: z.string(),
+  data: z.array(z.number()),
+  color: z.string().optional()
+});
+export type ChartSeries = z.infer<typeof ChartSeriesSchema>;
+
+export const ChartDrilldownSchema = z.object({
+  title: z.string().optional(),
+  details: z.record(z.unknown()).optional(),
+  followUps: z.array(z.string()).optional()
+});
+export type ChartDrilldown = z.infer<typeof ChartDrilldownSchema>;
+
+export const ChartBlockSchema = z.object({
+  kind: z.literal("chart"),
+  chartType: z.enum(["bar", "line", "pie", "radar", "area"]),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  categories: z.array(z.string()).optional(),
+  series: z.array(ChartSeriesSchema),
+  drilldown: ChartDrilldownSchema.optional(),
+  followUps: z.array(z.string()).optional()
+});
+export type ChartBlockData = z.infer<typeof ChartBlockSchema>;
+
+export interface TreeNode {
+  id: string;
+  label?: string;
+  name?: string;
+  type?: string;
+  subtitle?: string;
+  role?: string;
+  icon?: string;
+  badge?: string;
+  badgeTone?: "success" | "warning" | "error" | "info" | "gray";
+  status?: string;
+  data?: Record<string, unknown>;
+  children?: TreeNode[];
+}
+
+export const TreeNodeSchema: z.ZodType<TreeNode> = z.lazy(() =>
+  z.object({
+    id: z.string().min(1),
+    label: z.string().optional(),
+    name: z.string().optional(),
+    type: z.string().optional(),
+    subtitle: z.string().optional(),
+    role: z.string().optional(),
+    icon: z.string().optional(),
+    badge: z.string().optional(),
+    badgeTone: z.enum(["success", "warning", "error", "info", "gray"]).optional(),
+    status: z.string().optional(),
+    data: z.record(z.unknown()).optional(),
+    children: z.array(z.lazy(() => TreeNodeSchema)).optional()
+  })
+);
+
+export const TreeEdgeSchema = z.object({
+  from: z.string().optional(),
+  source: z.string().optional(),
+  to: z.string().optional(),
+  target: z.string().optional(),
+  label: z.string().optional(),
+  style: z.enum(["solid", "dashed", "dotted"]).optional()
+});
+export type TreeEdge = z.infer<typeof TreeEdgeSchema>;
+
+export const TreeBlockSchema = z.object({
+  kind: z.enum(["tree", "node-diagram", "node_diagram", "orgchart"]).default("tree"),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  layout: z.enum(["hierarchical", "radial", "flow", "horizontal", "vertical"]).optional(),
+  root: TreeNodeSchema.optional(),
+  nodes: z.array(TreeNodeSchema).optional(),
+  edges: z.array(TreeEdgeSchema).default([]),
+  company: z.string().optional(),
+  people: z.array(TreeNodeSchema).optional(),
+  reports: z.array(TreeEdgeSchema).optional()
+});
+export type TreeBlockData = z.infer<typeof TreeBlockSchema>;
+
+export const NodeDiagramBlockSchema = TreeBlockSchema;
+export type NodeDiagramBlockData = TreeBlockData;
+
+export const OrgChartBlockSchema = TreeBlockSchema;
+export type OrgChartBlockData = TreeBlockData;
+export const OrgChartPersonSchema = TreeNodeSchema;
+export type OrgChartPerson = TreeNode;
+export const OrgChartReportSchema = TreeEdgeSchema;
+export type OrgChartReport = TreeEdge;
+
+export const BUILT_IN_EPHEMERAL_LANGS = [
+  "stats",
+  "callout",
+  "actions",
+  "chart",
+  "tree",
+  "node-diagram"
+] as const;
+export type BuiltInEphemeralLang = (typeof BUILT_IN_EPHEMERAL_LANGS)[number];
+
+export type BuiltInEphemeralBlockData =
+  | StatsBlockData
+  | CalloutBlockData
+  | ActionsBlockData
+  | ChartBlockData
+  | TreeBlockData;
+
+// ============================================================================
+// --- Audio Diarization ---
+// ============================================================================
+
+export const AudioDiarizationWordSchema = z.object({
+  word: z.string(),
+  startOffset: z.union([z.string(), z.number()]).optional(),
+  endOffset: z.union([z.string(), z.number()]).optional()
+});
+export type AudioDiarizationWord = z.infer<typeof AudioDiarizationWordSchema>;
+
+export const AudioDiarizationSegmentSchema = z.object({
+  speaker: z.string().describe("Speaker identifier (e.g. Speaker 1, Speaker 2)"),
+  text: z.string().describe("Spoken segment text"),
+  startOffset: z.union([z.string(), z.number()]).optional().describe("Start timestamp of the segment"),
+  endOffset: z.union([z.string(), z.number()]).optional().describe("End timestamp of the segment"),
+  words: z.array(AudioDiarizationWordSchema).optional().describe("Word-level timestamps for words in this segment")
+});
+export type AudioDiarizationSegment = z.infer<typeof AudioDiarizationSegmentSchema>;
+
+export const AudioDiarizationSchema = z.object({
+  transcript: z.string().describe("Full combined transcript text"),
+  speakers: z.array(z.string()).describe("List of unique speaker names or identifiers"),
+  segments: z.array(AudioDiarizationSegmentSchema).describe("Ordered chronological segments of speech by speaker with timestamps")
+});
+export type AudioDiarization = z.infer<typeof AudioDiarizationSchema>;
+
+// ============================================================================
+// --- Website Crawling & Caching ---
+// ============================================================================
+
+export const WebsiteCrawlScopeSchema = z.object({
+  url: z.string(),
+  maxDepth: z.number().int().min(0).max(10).optional().default(1),
+  maxPages: z.number().int().min(1).max(500).optional().default(25),
+  sameDomainOnly: z.boolean().optional().default(true),
+  allowSubdomains: z.boolean().optional().default(false),
+  pathPrefix: z.string().optional(),
+  includeImages: z.boolean().optional().default(true),
+  maxImagesPerPage: z.number().int().optional().default(15),
+  maxImageBytes: z.number().int().optional().default(5 * 1024 * 1024),
+  allowedImageTypes: z.array(z.string()).optional(),
+  cacheId: z.string().optional(),
+  ttlMs: z.number().optional(),
+  forceRefresh: z.boolean().optional().default(false),
+  requestTimeoutMs: z.number().optional().default(15000),
+  userAgent: z.string().optional()
+});
+export type WebsiteCrawlScope = z.infer<typeof WebsiteCrawlScopeSchema>;
+
+export const CachedPageSchema = z.object({
+  url: z.string(),
+  path: z.string(),
+  title: z.string(),
+  markdown: z.string(),
+  textLength: z.number().nonnegative(),
+  links: z.array(z.string()),
+  imageAssetIds: z.array(z.string()),
+  fetchedAt: z.union([z.string(), z.date()]),
+  expiresAt: z.union([z.string(), z.date()]).optional(),
+  hasInjectionWarning: z.boolean().optional(),
+  metadata: z.record(z.unknown()).optional()
+});
+export type CachedPage = z.infer<typeof CachedPageSchema>;
+
+export const CachedPageSummarySchema = z.object({
+  url: z.string(),
+  path: z.string(),
+  title: z.string(),
+  textLength: z.number().nonnegative(),
+  imageCount: z.number().nonnegative(),
+  fetchedAt: z.union([z.string(), z.date()])
+});
+export type CachedPageSummary = z.infer<typeof CachedPageSummarySchema>;
+
+export const WebsiteCacheSummarySchema = z.object({
+  cacheId: z.string(),
+  seedUrl: z.string(),
+  pagesCount: z.number().nonnegative(),
+  imagesCount: z.number().nonnegative(),
+  pages: z.array(CachedPageSummarySchema),
+  isFromCache: z.boolean(),
+  cachedAt: z.union([z.string(), z.date()])
+});
+export type WebsiteCacheSummary = z.infer<typeof WebsiteCacheSummarySchema>;
+
+export const CachedPageSearchResultSchema = z.object({
+  url: z.string(),
+  path: z.string(),
+  title: z.string(),
+  snippet: z.string(),
+  matchScore: z.number()
+});
+export type CachedPageSearchResult = z.infer<typeof CachedPageSearchResultSchema>;
+
+// ============================================================================
+// --- Social Media Publishing (Circus) ---
+// ============================================================================
+
+export const SocialPlatformSchema = z.enum(["bluesky", "twitter", "linkedin", "tiktok", "instagram"]);
+export type SocialPlatform = z.infer<typeof SocialPlatformSchema>;
+
+export const SocialMediaTypeSchema = z.enum(["image", "video"]);
+export type SocialMediaType = z.infer<typeof SocialMediaTypeSchema>;
+
+export const SocialPostPayloadSchema = z.object({
+  text: z.string(),
+  mediaPath: z.string().optional(),
+  mediaType: SocialMediaTypeSchema.optional(),
+  tags: z.array(z.string()).optional(),
+  metadata: z.record(z.unknown()).optional()
+});
+export type SocialPostPayload = z.infer<typeof SocialPostPayloadSchema>;
+
+export const SocialPublishResultSchema = z.object({
+  success: z.boolean(),
+  platform: z.string(),
+  id: z.string().optional(),
+  url: z.string().optional(),
+  timestamp: z.string(),
+  rawResponse: z.unknown().optional()
+});
+export type SocialPublishResult = z.infer<typeof SocialPublishResultSchema>;
+export const PublishResultSchema = SocialPublishResultSchema;
+export type PublishResult = SocialPublishResult;
+
+export const SocialSessionStatusSchema = z.object({
+  authenticated: z.boolean(),
+  platform: z.string(),
+  username: z.string().optional(),
+  expiresAt: z.string().optional(),
+  requiresInteraction: z.boolean().optional()
+});
+export type SocialSessionStatus = z.infer<typeof SocialSessionStatusSchema>;
+export const SessionStatusSchema = SocialSessionStatusSchema;
+export type SessionStatus = SocialSessionStatus;
+
+
+// ============================================================================
+// --- Marketing, SEO & Attribution ---
+// ============================================================================
+
+export const UtmParamsSchema = z.object({
+  source: z.string().optional(),
+  medium: z.string().optional(),
+  campaign: z.string().optional(),
+  term: z.string().optional(),
+  content: z.string().optional(),
+  ref: z.string().optional()
+}).catchall(z.string().optional());
+export type UtmParams = z.infer<typeof UtmParamsSchema>;
+
+export const MetaConfigSchema = z.object({
+  title: z.string().optional(),
+  titleTemplate: z.string().optional(),
+  description: z.string().optional(),
+  excerpt: z.string().optional(),
+  siteName: z.string().optional(),
+  site: z.string().optional(),
+  siteUrl: z.string().optional(),
+  url: z.string().optional(),
+  canonicalUrl: z.string().optional(),
+  mainImage: z.string().optional(),
+  mainImageAlt: z.string().optional(),
+  squareImage: z.string().optional(),
+  squareImageAlt: z.string().optional(),
+  ogType: z.enum(["website", "article", "profile", "product"]).optional(),
+  ogLanguage: z.string().optional(),
+  twitterCard: z.enum(["summary", "summary_large_image", "app", "player"]).optional(),
+  twitterHandle: z.string().optional(),
+  article: z.boolean().optional(),
+  datePublished: z.string().optional(),
+  lastUpdated: z.string().optional(),
+  authors: z.array(z.string()).optional(),
+  tags: z.array(z.string()).optional(),
+  noindex: z.boolean().optional(),
+  nofollow: z.boolean().optional()
+});
+export type MetaConfig = z.infer<typeof MetaConfigSchema>;
+
+export const LlmsLinkSchema = z.object({
+  title: z.string(),
+  url: z.string(),
+  description: z.string().optional()
+});
+export type LlmsLink = z.infer<typeof LlmsLinkSchema>;
+
+export const LlmsSectionSchema = z.object({
+  title: z.string(),
+  links: z.array(LlmsLinkSchema)
+});
+export type LlmsSection = z.infer<typeof LlmsSectionSchema>;
+
+export const LlmsTxtConfigSchema = z.object({
+  title: z.string(),
+  summary: z.string(),
+  notes: z.array(z.string()).optional(),
+  sections: z.array(LlmsSectionSchema).optional(),
+  optionalSections: z.array(LlmsSectionSchema).optional()
+});
+export type LlmsTxtConfig = z.infer<typeof LlmsTxtConfigSchema>;
+
+export const LlmsDocumentContentSchema = z.object({
+  title: z.string(),
+  url: z.string().optional(),
+  markdown: z.string()
+});
+export type LlmsDocumentContent = z.infer<typeof LlmsDocumentContentSchema>;
+
+export const LlmsFullTxtConfigSchema = z.object({
+  title: z.string(),
+  summary: z.string(),
+  documents: z.array(LlmsDocumentContentSchema)
+});
+export type LlmsFullTxtConfig = z.infer<typeof LlmsFullTxtConfigSchema>;
+
 
 
