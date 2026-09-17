@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.20.0
+
+### Minor Changes
+
+- 49938d1: Add Stripe subscription and billing lifecycle fields to TeamSchema and OrganizationSchema
+
 ## 1.19.0
 
 ### Minor Changes
