@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.21.0
+
+### Minor Changes
+
+- 5145c9b: Add ProposalsBlockSchema and ProposalItemSchema for ephemeral UI task proposals
+
 ## 1.20.0
 
 ### Minor Changes
