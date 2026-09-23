@@ -2511,13 +2511,34 @@ export type OrgChartPerson = TreeNode;
 export const OrgChartReportSchema = TreeEdgeSchema;
 export type OrgChartReport = TreeEdge;
 
+export const ProposalItemSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(1),
+  description: z.string().min(1),
+  rationale: z.string().optional(),
+  status: z.string().optional(),
+  priority: z.enum(["low", "medium", "high", "urgent"]).optional(),
+  estimatedHours: z.number().optional()
+});
+export type ProposalItem = z.infer<typeof ProposalItemSchema>;
+
+export const ProposalsBlockSchema = z.object({
+  kind: z.enum(["proposals", "followup", "follow-up"]).default("proposals"),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  items: z.array(ProposalItemSchema).min(1)
+});
+export type ProposalsBlockData = z.infer<typeof ProposalsBlockSchema>;
+
 export const BUILT_IN_EPHEMERAL_LANGS = [
   "stats",
   "callout",
   "actions",
   "chart",
   "tree",
-  "node-diagram"
+  "node-diagram",
+  "proposals",
+  "followup"
 ] as const;
 export type BuiltInEphemeralLang = (typeof BUILT_IN_EPHEMERAL_LANGS)[number];
 
@@ -2526,7 +2547,8 @@ export type BuiltInEphemeralBlockData =
   | CalloutBlockData
   | ActionsBlockData
   | ChartBlockData
-  | TreeBlockData;
+  | TreeBlockData
+  | ProposalsBlockData;
 
 // ============================================================================
 // --- Audio Diarization ---
