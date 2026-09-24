@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.22.0
+
+### Minor Changes
+
+- 4a4fa51: Add FormBlockSchema, FormQuestionSchema, and built-in ephemeral languages for interactive form and clarification blocks
+
 ## 1.21.0
 
 ### Minor Changes
