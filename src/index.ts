@@ -2530,6 +2530,28 @@ export const ProposalsBlockSchema = z.object({
 });
 export type ProposalsBlockData = z.infer<typeof ProposalsBlockSchema>;
 
+export const FormQuestionSchema = z.object({
+  id: z.string().optional(),
+  label: z.string().optional(),
+  question: z.string().optional(),
+  type: z.enum(["text", "textarea", "radio", "select", "checkbox"]).optional(),
+  options: z.array(z.string()).optional(),
+  placeholder: z.string().optional(),
+  required: z.boolean().optional(),
+  defaultValue: z.any().optional()
+});
+export type FormQuestion = z.infer<typeof FormQuestionSchema>;
+
+export const FormBlockSchema = z.object({
+  kind: z.enum(["form", "clarification", "question"]).default("form"),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  questions: z.array(FormQuestionSchema).optional(),
+  fields: z.array(FormQuestionSchema).optional(),
+  submitLabel: z.string().optional()
+});
+export type FormBlockData = z.infer<typeof FormBlockSchema>;
+
 export const BUILT_IN_EPHEMERAL_LANGS = [
   "stats",
   "callout",
@@ -2538,7 +2560,10 @@ export const BUILT_IN_EPHEMERAL_LANGS = [
   "tree",
   "node-diagram",
   "proposals",
-  "followup"
+  "followup",
+  "form",
+  "clarification",
+  "question"
 ] as const;
 export type BuiltInEphemeralLang = (typeof BUILT_IN_EPHEMERAL_LANGS)[number];
 
@@ -2548,7 +2573,8 @@ export type BuiltInEphemeralBlockData =
   | ActionsBlockData
   | ChartBlockData
   | TreeBlockData
-  | ProposalsBlockData;
+  | ProposalsBlockData
+  | FormBlockData;
 
 // ============================================================================
 // --- Audio Diarization ---
