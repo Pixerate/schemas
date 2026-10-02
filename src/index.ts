@@ -234,6 +234,7 @@ export const VideoScaleAndPadSchema = z.object({
 });
 export type VideoScaleAndPad = z.infer<typeof VideoScaleAndPadSchema>;
 
+// --- Audio Mixing & Processing ---
 export const AudioMixTrackSchema = z.object({
   path: z.string(),
   volume: z.number().min(0).max(1).optional(),
@@ -251,6 +252,55 @@ export const AudioMixOptionsSchema = z.object({
 });
 export type AudioMixOptions = z.infer<typeof AudioMixOptionsSchema>;
 
+export const AudioMixSchema = z.object({
+  inputPath: z.string(),
+  tracks: z.array(AudioMixTrackSchema),
+  videoVolume: z.number().optional(),
+  outputPath: z.string().optional(),
+  crf: z.number().optional(),
+  preset: z.string().optional(),
+  videoCodec: z.string().optional(),
+  audioCodec: z.string().optional()
+});
+export type AudioMixPayload = z.infer<typeof AudioMixSchema>;
+
+export const VideoImageOverlaySchema = z.object({
+  imagePath: z.string().optional(),
+  allowRuntimeAttachments: z.boolean().optional(),
+  position: TextOverlayPositionSchema.optional(),
+  x: z.union([z.number(), z.string()]).optional(),
+  y: z.union([z.number(), z.string()]).optional(),
+  width: z.number().optional(),
+  height: z.number().optional(),
+  opacity: z.number().min(0).max(1).optional(),
+  options: VideoOverlayOptionsSchema.optional()
+});
+export type VideoImageOverlay = z.infer<typeof VideoImageOverlaySchema>;
+export const VideoGraphicOverlaySchema = VideoImageOverlaySchema;
+export type VideoGraphicOverlay = VideoImageOverlay;
+
+export const VideoTextCompositeSchema = z.object({
+  inputVideoPath: z.string(),
+  outputPath: z.string().optional(),
+  textOverlay: TextOverlaySchema,
+  crf: z.number().optional(),
+  preset: z.string().optional(),
+  videoCodec: z.string().optional(),
+  audioCodec: z.string().optional()
+});
+export type VideoTextCompositePayload = z.infer<typeof VideoTextCompositeSchema>;
+
+export const VideoImageCompositeSchema = z.object({
+  inputVideoPath: z.string(),
+  overlayImagePath: z.string(),
+  outputPath: z.string().optional(),
+  options: VideoOverlayOptionsSchema.optional()
+});
+export type VideoImageCompositePayload = z.infer<typeof VideoImageCompositeSchema>;
+
+export const VideoCompositingLayerTypeSchema = z.enum(["text", "graphic"]);
+export type VideoCompositingLayerType = z.infer<typeof VideoCompositingLayerTypeSchema>;
+
 export const VideoPipelineSchema = z.object({
   scaleAndPad: VideoScaleAndPadSchema.optional(),
   textOverlay: TextOverlaySchema.optional(),
@@ -259,11 +309,8 @@ export const VideoPipelineSchema = z.object({
     imagePath: z.string(),
     options: VideoOverlayOptionsSchema.optional()
   })).optional(),
-  audioMix: AudioMixOptionsSchema.optional(),
   subtitles: z.lazy(() => SubtitleBurnOptionsSchema).optional(),
-  visualizer: z.lazy(() => AudioVisualizerOptionsSchema).optional(),
   kenBurns: z.lazy(() => KenBurnsOptionsSchema).optional(),
-  ducking: z.lazy(() => AudioDuckingOptionsSchema).optional(),
   compress: VideoTranscodeSchema.optional()
 });
 export type VideoPipeline = z.infer<typeof VideoPipelineSchema>;
@@ -1468,6 +1515,13 @@ export const AudioVisualizerOptionsSchema = z.object({
 export type AudioVisualizerOptions = z.input<typeof AudioVisualizerOptionsSchema>;
 
 
+export const AudioVisualizerSchema = z.object({
+  audioPath: z.string(),
+  outputPath: z.string().optional(),
+  options: AudioVisualizerOptionsSchema.optional()
+});
+export type AudioVisualizerPayload = z.infer<typeof AudioVisualizerSchema>;
+
 // --- Ken Burns Motion ---
 export const KenBurnsOptionsSchema = z.object({
   durationSeconds: z.number().positive().optional().default(5),
@@ -1496,6 +1550,14 @@ export const AudioDuckingOptionsSchema = z.object({
 });
 export type AudioDuckingOptions = z.input<typeof AudioDuckingOptionsSchema>;
 
+export const AudioDuckingSchema = z.object({
+  voicePath: z.string(),
+  musicPath: z.string(),
+  outputPath: z.string().optional(),
+  options: AudioDuckingOptionsSchema.optional()
+});
+export type AudioDuckingPayload = z.infer<typeof AudioDuckingSchema>;
+
 export const AudioNormalizationOptionsSchema = z.object({
   targetLufs: z.number().optional().default(-14),
   truePeak: z.number().optional().default(-1.5),
@@ -1504,6 +1566,13 @@ export const AudioNormalizationOptionsSchema = z.object({
   bitrate: z.string().optional()
 });
 export type AudioNormalizationOptions = z.input<typeof AudioNormalizationOptionsSchema>;
+
+export const AudioNormalizationSchema = z.object({
+  inputPath: z.string(),
+  outputPath: z.string().optional(),
+  options: AudioNormalizationOptionsSchema.optional()
+});
+export type AudioNormalizationPayload = z.infer<typeof AudioNormalizationSchema>;
 
 export const AudioSilenceTrimOptionsSchema = z.object({
   silenceThresholdDb: z.number().optional().default(-50),
