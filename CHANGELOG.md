@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.23.0
+
+### Minor Changes
+
+- 42ee270: Recategorize audio mixing, ducking, and visualizer schemas under dedicated audio schemas, separate video compositing into distinct text and graphic/image composite schemas, and clean up VideoPipelineSchema.
+
 ## 1.22.0
 
 ### Minor Changes
