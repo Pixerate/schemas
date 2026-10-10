@@ -2849,8 +2849,16 @@ export const MetaConfigSchema = z.object({
   canonicalUrl: z.string().optional(),
   mainImage: z.string().optional(),
   mainImageAlt: z.string().optional(),
+  /** Pixel width of `mainImage` (emitted as og:image:width). */
+  mainImageWidth: z.number().int().positive().optional(),
+  /** Pixel height of `mainImage` (emitted as og:image:height). */
+  mainImageHeight: z.number().int().positive().optional(),
   squareImage: z.string().optional(),
   squareImageAlt: z.string().optional(),
+  /** Pixel width of `squareImage`. */
+  squareImageWidth: z.number().int().positive().optional(),
+  /** Pixel height of `squareImage`. */
+  squareImageHeight: z.number().int().positive().optional(),
   ogType: z.enum(["website", "article", "profile", "product"]).optional(),
   ogLanguage: z.string().optional(),
   twitterCard: z.enum(["summary", "summary_large_image", "app", "player"]).optional(),
