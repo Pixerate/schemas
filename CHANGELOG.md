@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.25.0
+
+### Minor Changes
+
+- 501f207: Add optional `mainImageWidth`, `mainImageHeight`, `squareImageWidth` and `squareImageHeight` (positive integers) to `MetaConfigSchema` so metadata builders can emit accurate `og:image:width` / `og:image:height` instead of assuming 1200×630 / 400×400.
+
 ## 1.24.0
 
 ### Minor Changes
