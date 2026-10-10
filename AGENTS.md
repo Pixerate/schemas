@@ -6,14 +6,14 @@ Guidelines and instructions for AI agents working in `@pixerate/schemas`.
 
 ## ⚠️ GOTCHAS.md: Check & Maintain
 
-All agents working on this codebase must adhere to the following workflow regarding [GOTCHAS.md](file:///Users/jack/Development/pixerate-schemas/GOTCHAS.md):
+All agents working on this codebase must adhere to the following workflow regarding [GOTCHAS.md](./GOTCHAS.md):
 
 ### 1. Check Before Starting
-- **Always consult [GOTCHAS.md](file:///Users/jack/Development/pixerate-schemas/GOTCHAS.md)** at the start of any task or investigation.
+- **Always consult [GOTCHAS.md](./GOTCHAS.md)** at the start of any task or investigation.
 - Check for known issues, historical pitfalls, non-obvious quirks, and existing workarounds before implementing changes or debugging issues.
 
 ### 2. Maintain When You Encounter Issues
-- **Keep [GOTCHAS.md](file:///Users/jack/Development/pixerate-schemas/GOTCHAS.md) up to date**: Whenever you run into an unexpected error, a subtle pitfall, a build/type issue, or a tooling quirk, document it immediately once solved.
+- **Keep [GOTCHAS.md](./GOTCHAS.md) up to date**: Whenever you run into an unexpected error, a subtle pitfall, a build/type issue, or a tooling quirk, document it immediately once solved.
 - **Entry Structure**: Each entry in `GOTCHAS.md` should clearly state:
   - **Issue / Pitfall**: What happened, error message, or failure mode.
   - **Context / Cause**: Why it occurred and under what conditions.
