@@ -2755,9 +2755,49 @@ export const SocialPostPayloadSchema = z.object({
   mediaPath: z.string().optional(),
   mediaType: SocialMediaTypeSchema.optional(),
   tags: z.array(z.string()).optional(),
+  /** Accessibility description for the attached media, where the platform supports it. */
+  altText: z.string().optional(),
   metadata: z.record(z.unknown()).optional()
 });
 export type SocialPostPayload = z.infer<typeof SocialPostPayloadSchema>;
+
+/**
+ * How a platform measures post length: JS-style characters, user-perceived graphemes
+ * (Bluesky), or weighted counting where URLs and some scripts cost more (X/Twitter).
+ */
+export const SocialTextLengthUnitSchema = z.enum(["characters", "graphemes", "weighted"]);
+export type SocialTextLengthUnit = z.infer<typeof SocialTextLengthUnitSchema>;
+
+/**
+ * Describes which parts of `SocialPostPayload` a provider honours and the limits it enforces,
+ * so orchestrators can adapt content per platform instead of discovering limits by failure.
+ */
+export const SocialProviderCapabilitiesSchema = z.object({
+  platform: SocialPlatformSchema,
+  text: z.object({
+    maxLength: z.number().int().positive(),
+    unit: SocialTextLengthUnitSchema
+  }),
+  media: z.object({
+    /** Media types this provider can publish. Empty when the provider is text-only. */
+    types: z.array(SocialMediaTypeSchema),
+    /** Whether a post must include media (e.g. TikTok, Instagram). */
+    required: z.boolean(),
+    maxItems: z.number().int().nonnegative(),
+    maxImageBytes: z.number().int().positive().optional(),
+    maxVideoBytes: z.number().int().positive().optional(),
+    altText: z.boolean()
+  }),
+  tags: z.object({
+    supported: z.boolean(),
+    maxCount: z.number().int().nonnegative().optional()
+  }),
+  /** Whether the provider exposes replying to an existing post. */
+  replies: z.boolean(),
+  /** Whether `PublishResult.url` is populated on success. */
+  returnsUrl: z.boolean()
+});
+export type SocialProviderCapabilities = z.infer<typeof SocialProviderCapabilitiesSchema>;
 
 export const SocialPublishResultSchema = z.object({
   success: z.boolean(),
