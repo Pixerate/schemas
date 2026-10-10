@@ -2384,6 +2384,10 @@ export const NotificationSchema = z.object({
 });
 export type Notification = z.infer<typeof NotificationSchema>;
 
+/** Why a `pending` delivery is waiting: a scheduled retry, the recipient's quiet hours, or an email digest. */
+export const NotificationDeferredReasonSchema = z.enum(["retry", "quiet_hours", "digest"]);
+export type NotificationDeferredReason = z.infer<typeof NotificationDeferredReasonSchema>;
+
 export const NotificationDeliveryRecordSchema = z.object({
   id: z.string(),
   notificationId: z.string(),
@@ -2391,7 +2395,15 @@ export const NotificationDeliveryRecordSchema = z.object({
   state: NotificationDeliveryStateSchema,
   error: z.string().optional(),
   sentAt: z.union([z.string(), z.number(), z.date()]).optional(),
-  deliveredAt: z.union([z.string(), z.number(), z.date()]).optional()
+  deliveredAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  /** Recipient of the notification, so pending deliveries can be grouped (digests) and queried per user. */
+  recipientId: z.string().optional(),
+  /** Delivery attempts made so far, including the first. */
+  attempts: z.number().int().nonnegative().optional(),
+  lastAttemptAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  /** When a `pending` delivery becomes due (next retry, end of quiet hours, or digest send time). */
+  nextAttemptAt: z.union([z.string(), z.number(), z.date()]).optional(),
+  deferredReason: NotificationDeferredReasonSchema.optional()
 });
 export type NotificationDeliveryRecord = z.infer<typeof NotificationDeliveryRecordSchema>;
 
