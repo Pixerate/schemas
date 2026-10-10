@@ -54,15 +54,22 @@ jobs:
         if: steps.changeset_check.outputs.count > 0 || github.event_name == 'workflow_dispatch'
         run: npm run build
 
+      # Commit the version bump BEFORE publishing: `changeset publish` creates the git tag on HEAD,
+      # so publishing first tagged the commit before the release (e.g. v1.23.0's package.json said 1.22.0).
+      - name: Commit version bumps & changelogs
+        if: steps.changeset_check.outputs.count > 0 || github.event_name == 'workflow_dispatch'
+        run: |
+          git add .
+          git commit -m "chore(release): version packages and update changelogs [skip ci]" || echo "No changes to commit"
+
       - name: Publish package to NPM using Trusted Publishing (OIDC Provenance)
         if: steps.changeset_check.outputs.count > 0 || github.event_name == 'workflow_dispatch'
         run: npx changeset publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Commit version bumps & changelogs, push git tags
+      # Fail loudly: a swallowed push failure would leave npm released but git without the
+      # version bump or tag.
+      - name: Push release commit & tags
         if: steps.changeset_check.outputs.count > 0 || github.event_name == 'workflow_dispatch'
-        run: |
-          git add .
-          git commit -m "chore(release): version packages and update changelogs [skip ci]" || echo "No changes to commit"
-          git push origin HEAD --tags || echo "Failed to push tags"
+        run: git push origin HEAD --follow-tags
