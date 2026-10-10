@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.26.0
+
+### Minor Changes
+
+- 37d3504: Add optional scheduling fields to `NotificationDeliveryRecordSchema` (`recipientId`, `attempts`, `lastAttemptAt`, `nextAttemptAt`, `deferredReason`) and a new `NotificationDeferredReasonSchema` (`retry` | `quiet_hours` | `digest`). These let `@pixerate/notifications` queue retries, hold emails during quiet hours, and batch email digests. All fields are optional, so existing records stay valid.
+
 ## 1.25.0
 
 ### Minor Changes
