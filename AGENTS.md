@@ -24,7 +24,7 @@ All agents working on this codebase must adhere to the following workflow regard
 ## Repository Overview & Conventions
 
 - **Purpose**: `@pixerate/schemas` provides unified TypeScript and Zod validation models for Pixerate and downstream services.
-- **Source**: All schemas and types are exported from `src/index.ts`.
+- **Source**: All schemas and types are exported from `src/index.ts`. Related groups that client bundles use live in their own module with their own entry point (`src/realtime.ts` → `./realtime`, `src/genui.ts` → `./genui`) and are re-exported from `src/index.ts`.
 - **Build**: Run `npm run build` (`tsup` bundles ESM, CJS, and declaration files into `dist/`). Always verify the build passes cleanly after modifying schemas.
 - **Changesets**: This repository enforces changesets in CI (`.github/workflows/ci.yml`).
   - Run `npm run changeset` for changes requiring a version bump.
