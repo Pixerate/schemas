@@ -2329,6 +2329,19 @@ export type SocialPostPayload = z.infer<typeof SocialPostPayloadSchema>;
 export const SocialTextLengthUnitSchema = z.enum(["characters", "graphemes", "weighted"]);
 export type SocialTextLengthUnit = z.infer<typeof SocialTextLengthUnitSchema>;
 
+/** Engagement counters a provider can read back for a published post. */
+export const SocialMetricFieldSchema = z.enum([
+  "views",
+  "impressions",
+  "likes",
+  "comments",
+  "shares",
+  "quotes",
+  "saves",
+  "clicks"
+]);
+export type SocialMetricField = z.infer<typeof SocialMetricFieldSchema>;
+
 /**
  * Describes which parts of `SocialPostPayload` a provider honours and the limits it enforces,
  * so orchestrators can adapt content per platform instead of discovering limits by failure.
@@ -2356,7 +2369,12 @@ export const SocialProviderCapabilitiesSchema = z.object({
   /** Whether the provider exposes replying to an existing post. */
   replies: z.boolean(),
   /** Whether `PublishResult.url` is populated on success. */
-  returnsUrl: z.boolean()
+  returnsUrl: z.boolean(),
+  /**
+   * Metric fields the provider can read back for published posts. Omitted or empty when the
+   * provider cannot read metrics. Only these fields are comparable across posts.
+   */
+  metrics: z.array(SocialMetricFieldSchema).optional()
 });
 export type SocialProviderCapabilities = z.infer<typeof SocialProviderCapabilitiesSchema>;
 
@@ -2371,6 +2389,52 @@ export const SocialPublishResultSchema = z.object({
 export type SocialPublishResult = z.infer<typeof SocialPublishResultSchema>;
 export const PublishResultSchema = SocialPublishResultSchema;
 export type PublishResult = SocialPublishResult;
+
+/**
+ * Who can see a published post and whether the platform is distributing it. `under_review` and
+ * `restricted` (e.g. TikTok "not eligible for For You") mean the post is live but its reach is held back.
+ */
+export const SocialPostVisibilitySchema = z.enum([
+  "public",
+  "friends",
+  "private",
+  "under_review",
+  "restricted",
+  "removed",
+  "unknown"
+]);
+export type SocialPostVisibility = z.infer<typeof SocialPostVisibilitySchema>;
+
+/**
+ * Engagement metrics for one published post, as read back from the platform. A counter is
+ * omitted when the platform does not report it, so a missing value is never the same as 0.
+ */
+export const SocialPostMetricsSchema = z.object({
+  platform: SocialPlatformSchema,
+  /** The platform's post id, in the same form as `PublishResult.id` where the provider returns one. */
+  id: z.string(),
+  url: z.string().optional(),
+  /** Post text or caption as the platform shows it, for matching posts published without an id. */
+  text: z.string().optional(),
+  publishedAt: z.string().optional(),
+  visibility: SocialPostVisibilitySchema.optional(),
+  /** The platform's own status wording (e.g. "Under review"), kept when it explains `visibility`. */
+  statusLabel: z.string().optional(),
+  views: z.number().int().nonnegative().optional(),
+  impressions: z.number().int().nonnegative().optional(),
+  likes: z.number().int().nonnegative().optional(),
+  comments: z.number().int().nonnegative().optional(),
+  /** Reposts, reshares or shares. */
+  shares: z.number().int().nonnegative().optional(),
+  quotes: z.number().int().nonnegative().optional(),
+  /** Saves, bookmarks or favourites. */
+  saves: z.number().int().nonnegative().optional(),
+  clicks: z.number().int().nonnegative().optional(),
+  /** When these metrics were read (ISO 8601). */
+  fetchedAt: z.string(),
+  rawResponse: z.unknown().optional()
+});
+export type SocialPostMetrics = z.infer<typeof SocialPostMetricsSchema>;
 
 export const SocialSessionStatusSchema = z.object({
   authenticated: z.boolean(),
