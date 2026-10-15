@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.28.0
+
+### Minor Changes
+
+- a9cf71a: Add `SocialPostMetricsSchema`, `SocialPostVisibilitySchema` and `SocialMetricFieldSchema` for reading engagement back from published social posts, and an optional `metrics` field on `SocialProviderCapabilitiesSchema` listing which counters a provider can read.
+
 ## 1.27.0
 
 ### Minor Changes
