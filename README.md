@@ -13,11 +13,13 @@ A public, open-source TypeScript and Zod validation schemas package associated w
 ```
 src/
 ├── index.ts     # Unified exports for all Zod schemas & TypeScript types
+├── common.ts    # Shared basics (aspect ratios, resolutions, frame/attachment inputs); internal, re-exported by the root
 ├── realtime.ts  # Realtime collaboration contracts (also `@pixerate/schemas/realtime`)
-└── genui.ts     # Generative UI contracts (also `@pixerate/schemas/genui`)
+├── genui.ts     # Generative UI contracts (also `@pixerate/schemas/genui`)
+└── media.ts     # Media processing contracts (also `@pixerate/schemas/media`)
 ```
 
-The root entry re-exports every grouped module, so `import { FormBlockSchema } from "@pixerate/schemas"` keeps working. Client bundles should import from the narrower entry point (`@pixerate/schemas/genui`, `@pixerate/schemas/realtime`) so they don't pull in every schema.
+The root entry re-exports every grouped module, so `import { FormBlockSchema } from "@pixerate/schemas"` keeps working. Client bundles should import from the narrower entry point (`@pixerate/schemas/genui`, `@pixerate/schemas/media`, `@pixerate/schemas/realtime`) so they don't pull in every schema.
 
 ## Exported Types & Schemas
 
