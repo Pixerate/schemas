@@ -92,25 +92,47 @@ export type AgentInteractionResult = z.infer<typeof AgentInteractionResultSchema
 // ============================================================================
 
 export const WebsiteCrawlScopeSchema = z.object({
+  /** Seed URL to begin crawling from */
   url: z.string(),
+  /**
+   * Maximum link depth from the seed URL.
+   * - 0: Crawls only the seed page.
+   * - 1: Crawls the seed page plus direct internal links.
+   * - 2+: Recursively crawls up to the specified link depth.
+   * @default 1
+   */
   maxDepth: z.number().int().min(0).max(10).optional().default(1),
+  /** Maximum total pages to crawl and cache (default 25) */
   maxPages: z.number().int().min(1).max(500).optional().default(25),
+  /** If true, only follows links within the same origin/host (default true) */
   sameDomainOnly: z.boolean().optional().default(true),
+  /** If true, allows following links across subdomains of the seed domain (default false) */
   allowSubdomains: z.boolean().optional().default(false),
+  /** Restricts crawling to URLs starting with this path prefix (e.g. "/docs") */
   pathPrefix: z.string().optional(),
   /** Only crawl URLs matching this regular expression (source string). */
   urlMatchPattern: z.string().optional(),
   /** Skip URLs matching this regular expression (source string). */
   urlExcludePattern: z.string().optional(),
+  /** Whether to download and cache images (default true) */
   includeImages: z.boolean().optional().default(true),
+  /** Maximum number of images to download per page (default 15) */
   maxImagesPerPage: z.number().int().optional().default(15),
+  /** Maximum allowed size in bytes per image (default 5MB) */
   maxImageBytes: z.number().int().optional().default(5 * 1024 * 1024),
+  /** Maximum allowed size in bytes per HTML page (default 5MB) */
   maxPageBytes: z.number().int().optional().default(5 * 1024 * 1024),
+  /** Allowed MIME types for images to download */
   allowedImageTypes: z.array(z.string()).optional(),
+  /** Identifier or namespace for the cache. Defaults to sanitized hostname and path. */
   cacheId: z.string().optional(),
+  /** Cache time-to-live in milliseconds (default 24 hours) */
   ttlMs: z.number().optional(),
+  /** If true, bypasses existing cache and forces a fresh crawl */
   forceRefresh: z.boolean().optional().default(false),
+  /** HTTP request timeout in milliseconds (default 15000ms) */
   requestTimeoutMs: z.number().optional().default(15000),
+  /** Custom User-Agent header */
   userAgent: z.string().optional()
 });
 export type WebsiteCrawlScope = z.infer<typeof WebsiteCrawlScopeSchema>;
