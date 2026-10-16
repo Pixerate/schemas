@@ -234,6 +234,9 @@ export type QueueJob = z.infer<typeof QueueJobSchema>;
 // --- Realtime Collaboration & Synchronization Schemas (see ./realtime.ts) ---
 export * from "./realtime.js";
 
+// --- Queue Job Schemas (see ./jobs.ts) ---
+export * from "./jobs.js";
+
 // --- Auth & Identity ---
 export const AuthUserSchema = z.object({
   id: z.string(),
