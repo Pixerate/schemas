@@ -1034,12 +1034,30 @@ export const ProposalsBlockSchema = z.object({
 });
 export type ProposalsBlockData = z.infer<typeof ProposalsBlockSchema>;
 
+/**
+ * A selectable choice with a stable id. Used by form questions (`FormQuestion.choices`) and,
+ * as the same contract, by structured elicitation (`ElicitationOption`).
+ */
+export const FormChoiceSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  description: z.string().optional(),
+  isRecommended: z.boolean().optional()
+});
+export type FormChoice = z.infer<typeof FormChoiceSchema>;
+
 export const FormQuestionSchema = z.object({
   id: z.string().optional(),
   label: z.string().optional(),
   question: z.string().optional(),
-  type: z.enum(["text", "textarea", "radio", "select", "checkbox"]).optional(),
+  /** `rank`: order every choice; the submitted value is the list of choice ids in rank order. */
+  type: z.enum(["text", "textarea", "radio", "select", "checkbox", "rank"]).optional(),
+  /** Plain string choices. Prefer `choices` when the answer needs stable ids or descriptions. */
   options: z.array(z.string()).optional(),
+  /** Choices with stable ids. When present, hosts submit choice ids instead of labels. */
+  choices: z.array(FormChoiceSchema).optional(),
+  /** Allow a free-text answer alongside (or instead of) the listed choices. */
+  allowCustom: z.boolean().optional(),
   placeholder: z.string().optional(),
   required: z.boolean().optional(),
   defaultValue: z.any().optional()
@@ -1055,6 +1073,35 @@ export const FormBlockSchema = z.object({
   submitLabel: z.string().optional()
 });
 export type FormBlockData = z.infer<typeof FormBlockSchema>;
+
+// --- Structured Elicitation ---
+// A structured clarification question an agent asks instead of an open-ended one. It's a
+// one-question form: hosts can render it as a `clarification` form block (see
+// `elicitationToFormBlock` in @pixerate/genui-core), and its options are `FormChoice`s.
+
+export const ElicitationQuestionTypeSchema = z.enum(["single_select", "multi_select", "free_form", "rank_priorities"]);
+export type ElicitationQuestionType = z.infer<typeof ElicitationQuestionTypeSchema>;
+
+export const ElicitationOptionSchema = FormChoiceSchema;
+export type ElicitationOption = FormChoice;
+
+export const ElicitationRequestSchema = z.object({
+  id: z.string(),
+  question: z.string(),
+  type: ElicitationQuestionTypeSchema,
+  options: z.array(ElicitationOptionSchema),
+  contextRationale: z.string().optional(),
+  allowCustomResponse: z.boolean().optional()
+});
+export type ElicitationRequest = z.infer<typeof ElicitationRequestSchema>;
+
+export const ElicitationResponseSchema = z.object({
+  requestId: z.string(),
+  selectedOptionIds: z.array(z.string()).optional(),
+  customText: z.string().optional(),
+  rankings: z.array(z.string()).optional()
+});
+export type ElicitationResponse = z.infer<typeof ElicitationResponseSchema>;
 
 export const BUILT_IN_EPHEMERAL_LANGS = [
   "stats",

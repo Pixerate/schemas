@@ -98,9 +98,14 @@ export const WebsiteCrawlScopeSchema = z.object({
   sameDomainOnly: z.boolean().optional().default(true),
   allowSubdomains: z.boolean().optional().default(false),
   pathPrefix: z.string().optional(),
+  /** Only crawl URLs matching this regular expression (source string). */
+  urlMatchPattern: z.string().optional(),
+  /** Skip URLs matching this regular expression (source string). */
+  urlExcludePattern: z.string().optional(),
   includeImages: z.boolean().optional().default(true),
   maxImagesPerPage: z.number().int().optional().default(15),
   maxImageBytes: z.number().int().optional().default(5 * 1024 * 1024),
+  maxPageBytes: z.number().int().optional().default(5 * 1024 * 1024),
   allowedImageTypes: z.array(z.string()).optional(),
   cacheId: z.string().optional(),
   ttlMs: z.number().optional(),
