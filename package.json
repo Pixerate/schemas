@@ -21,10 +21,15 @@
       "types": "./dist/genui.d.ts",
       "import": "./dist/genui.js",
       "require": "./dist/genui.cjs"
+    },
+    "./media": {
+      "types": "./dist/media.d.ts",
+      "import": "./dist/media.js",
+      "require": "./dist/media.cjs"
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts src/realtime.ts src/genui.ts --format esm,cjs --dts --clean",
+    "build": "tsup src/index.ts src/realtime.ts src/genui.ts src/media.ts --format esm,cjs --dts --clean",
     "prepare": "npm run build",
     "changeset": "changeset",
     "version-packages": "changeset version",
