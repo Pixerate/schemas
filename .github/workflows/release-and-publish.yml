@@ -5,10 +5,15 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   publish:
     name: Build & Publish Package to NPM
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.repository_owner == 'Pixerate' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: write

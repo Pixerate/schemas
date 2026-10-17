@@ -8,10 +8,15 @@ on:
         required: true
         default: 'patch'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   version-bump:
     name: Bump Version & Tag
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code

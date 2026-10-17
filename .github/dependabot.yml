@@ -4,8 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
-    open-pull-requests-limit: 10
+      day: "friday"
+    open-pull-requests-limit: 3
     groups:
       minor-and-patch:
         patterns:
@@ -18,7 +18,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
+      day: "friday"
     open-pull-requests-limit: 5
     groups:
       actions:
