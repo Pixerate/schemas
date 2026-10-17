@@ -182,4 +182,80 @@ export const CachedPageSearchResultSchema = z.object({
 });
 export type CachedPageSearchResult = z.infer<typeof CachedPageSearchResultSchema>;
 
+// --- Service Accounts & Agent Directory ---
+// ============================================================================
+
+export const ServiceAccountSchema = z.object({
+  id: z.string(),
+  orgId: z.string(),
+  name: z.string(),
+  handle: z.string(),
+  description: z.string().optional(),
+  role: z.string(),
+  type: z.literal("virtual_user"),
+  avatarUrl: z.string().optional(),
+  colorName: z.string().optional(),
+  hexColor: z.string().optional(),
+  keyPrefix: z.string(),
+  hashedSecret: z.string(),
+  projectIds: z.array(z.string()).optional(),
+  createdBy: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  lastUsedAt: z.string().nullable().optional(),
+  status: z.enum(["active", "revoked"]),
+  revokedAt: z.string().nullable().optional()
+});
+export type ServiceAccount = z.infer<typeof ServiceAccountSchema>;
+
+export const CreateServiceAccountInputSchema = z.object({
+  name: z.string(),
+  handle: z.string().optional(),
+  description: z.string().optional(),
+  role: z.string().optional(),
+  projectIds: z.array(z.string()).optional(),
+  createdBy: z.string().optional(),
+  colorName: z.string().optional(),
+  hexColor: z.string().optional(),
+  avatarUrl: z.string().optional()
+});
+export type CreateServiceAccountInput = z.infer<typeof CreateServiceAccountInputSchema>;
+
+export const ApiKeyLookupSchema = z.object({
+  serviceAccountId: z.string(),
+  orgId: z.string(),
+  status: z.enum(["active", "revoked"]),
+  createdAt: z.string()
+});
+export type ApiKeyLookup = z.infer<typeof ApiKeyLookupSchema>;
+
+export const ActiveAgentTaskSchema = z.object({
+  taskId: z.string(),
+  taskTitle: z.string(),
+  statusText: z.string().optional(),
+  startedAt: z.string()
+});
+export type ActiveAgentTask = z.infer<typeof ActiveAgentTaskSchema>;
+
+export const AgentDirectoryEntrySchema = z.object({
+  id: z.string(),
+  orgId: z.string(),
+  name: z.string(),
+  handle: z.string().optional(),
+  colorName: z.string(),
+  hexColor: z.string(),
+  avatarUrl: z.string().optional(),
+  role: z.string().optional(),
+  description: z.string().optional(),
+  currentStatus: z.string().optional(),
+  currentTaskId: z.string().nullable().optional(),
+  currentTaskTitle: z.string().nullable().optional(),
+  isEngaged: z.boolean().optional(),
+  activeTasks: z.array(ActiveAgentTaskSchema).optional(),
+  lastSeen: z.number().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string()
+});
+export type AgentDirectoryEntry = z.infer<typeof AgentDirectoryEntrySchema>;
+
 // ============================================================================
