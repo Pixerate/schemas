@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.34.0
+
+### Minor Changes
+
+- d9ed800: Add `ServiceAccountSchema`, `CreateServiceAccountInputSchema`, `ApiKeyLookupSchema`, `ActiveAgentTaskSchema`, and `AgentDirectoryEntrySchema` to `@pixerate/schemas/agent` and root exports.
+
 ## 1.33.0
 
 ### Minor Changes
