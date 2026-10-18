@@ -1126,3 +1126,90 @@ export type BuiltInEphemeralBlockData =
   | TreeBlockData
   | ProposalsBlockData
   | FormBlockData;
+
+// --- SVG and Animated SVG Generation ---
+export const SvgStyleArchetypeSchema = z.enum([
+  "minimalist",
+  "neubrutalist",
+  "skeuomorphic",
+  "flat",
+  "custom"
+]);
+export type SvgStyleArchetype = z.infer<typeof SvgStyleArchetypeSchema>;
+
+export const SvgReferenceArtifactSchema = z.object({
+  type: z.enum(["image", "video", "document"]).describe("Reference artifact type"),
+  url: z.string().describe("Asset URL or data URL"),
+  mimeType: z.string().optional().describe("MIME type if known"),
+  description: z.string().optional().describe("Contextual description or role of this reference")
+});
+export type SvgReferenceArtifact = z.infer<typeof SvgReferenceArtifactSchema>;
+
+export const SvgPaletteTokensSchema = z.object({
+  canvasBg: z.string().optional().describe("Canvas background color (default transparent)"),
+  chassis: z.string().optional().describe("Main body / subject color"),
+  stroke: z.string().optional().describe("Primary stroke color"),
+  accent1: z.string().optional().describe("Primary accent color"),
+  accent2: z.string().optional().describe("Secondary accent color"),
+  shadow: z.string().optional().describe("Shadow color with opacity"),
+  custom: z.record(z.string()).optional().describe("Additional custom CSS color variables")
+});
+export type SvgPaletteTokens = z.infer<typeof SvgPaletteTokensSchema>;
+
+export const KineticBlueprintSchema = z.object({
+  title: z.string().optional().describe("Title of the kinetic illustration"),
+  loopDurationMs: z.number().positive().describe("Harmonic time base loop duration in milliseconds (e.g. 2400, 3600, 4800)"),
+  motionPersonality: z.string().describe("Motion personality (e.g. bouncy, snappy, smooth, mechanical, organic)"),
+  styleArchetype: SvgStyleArchetypeSchema.optional().describe("Visual style archetype derived from references or prompt"),
+  palette: SvgPaletteTokensSchema.describe("Palette color tokens for adaptive theming"),
+  primaryAnchor: z.string().describe("Primary anchor animation cycle (e.g. idle breathing, floating, or rotating cycle)"),
+  secondaryMechanics: z.array(z.string()).optional().describe("Secondary mechanics (e.g. conveyors, gears, fluid flow)"),
+  eventActions: z.array(z.string()).optional().describe("Event actions (e.g. droplets, sparks, pulses with delays)"),
+  ambientParticles: z.array(z.string()).optional().describe("Ambient particles drifting with staggered offsets")
+});
+export type KineticBlueprint = z.infer<typeof KineticBlueprintSchema>;
+
+export const SvgValidationCheckSchema = z.object({
+  selfContained: z.boolean().describe("Whether the SVG contains no external url() or scripts"),
+  responsive: z.boolean().describe("Whether viewBox is defined with width/height 100%"),
+  stackingOrderValid: z.boolean().describe("Whether foreground and labels sit at the end of the DOM"),
+  transformIsolated: z.boolean().describe("Whether animated elements separate coordinate translate from keyframe motion"),
+  boundaryClamped: z.boolean().describe("Whether moving elements stay within canvas bounds"),
+  dualThemeVerified: z.boolean().describe("Whether dark mode media query and CSS custom properties are properly defined")
+});
+export type SvgValidationCheck = z.infer<typeof SvgValidationCheckSchema>;
+
+export const VisualQAAuditSchema = z.object({
+  passed: z.boolean().describe("Whether visual QA passed all criteria"),
+  checks: SvgValidationCheckSchema.optional(),
+  frameSlicesCount: z.number().int().nonnegative().optional().describe("Number of frame slices captured and audited"),
+  issues: z.array(z.string()).default([]).describe("Issues detected during static or multimodal visual audit"),
+  recommendations: z.array(z.string()).default([]).describe("Refinement suggestions applied or needed")
+});
+export type VisualQAAudit = z.infer<typeof VisualQAAuditSchema>;
+
+export const SvgGenerationOptionsSchema = z.object({
+  prompt: z.string().describe("User prompt describing the SVG subject, style, and motion"),
+  animated: z.boolean().optional().default(true).describe("Whether to generate an animated SVG or static SVG"),
+  currentSvg: z.string().optional().describe("Existing SVG for iterative modification"),
+  archetype: SvgStyleArchetypeSchema.optional().describe("Preferred stylistic archetype"),
+  viewBox: z.string().optional().default("0 0 512 512").describe("SVG viewBox dimensions"),
+  loopDurationMs: z.number().optional().describe("Target loop duration in ms (default 3600ms)"),
+  references: z.array(SvgReferenceArtifactSchema).optional().describe("Reference artifacts (video/image/document)"),
+  visualQA: z.boolean().optional().default(true).describe("Whether to run the visual QA audit loop"),
+  maxRetries: z.number().int().nonnegative().optional().default(2).describe("Maximum retries for visual/code refinement"),
+  systemPrompt: z.string().optional().describe("Custom system prompt override"),
+  temperature: z.number().optional().describe("Model temperature")
+});
+export type SvgGenerationOptionsPayload = z.input<typeof SvgGenerationOptionsSchema>;
+
+export const SvgGenerationResultSchema = z.object({
+  svg: z.string().describe("Clean, self-contained SVG markup"),
+  animated: z.boolean().describe("Whether the SVG is animated"),
+  viewBox: z.string().describe("ViewBox of the generated SVG"),
+  blueprint: KineticBlueprintSchema.optional().describe("Kinetic blueprint generated for animated SVG"),
+  qaAudit: VisualQAAuditSchema.optional().describe("Visual QA audit results"),
+  rawOutput: z.string().optional().describe("Raw LLM output")
+});
+export type SvgGenerationResult = z.infer<typeof SvgGenerationResultSchema>;
+
