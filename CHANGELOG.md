@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.35.0
+
+### Minor Changes
+
+- 394f599: Add schemas and contracts for SVG and animated SVG generation, kinetic blueprints, and visual QA audits
+
 ## 1.34.0
 
 ### Minor Changes
