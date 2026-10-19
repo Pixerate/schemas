@@ -1133,7 +1133,8 @@ export const SvgStyleArchetypeSchema = z.enum([
   "neubrutalist",
   "skeuomorphic",
   "flat",
-  "custom"
+  "custom",
+  "prompt-driven"
 ]);
 export type SvgStyleArchetype = z.infer<typeof SvgStyleArchetypeSchema>;
 
