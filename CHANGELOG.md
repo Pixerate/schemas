@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.36.0
+
+### Minor Changes
+
+- eb417ac: Add "prompt-driven" to SvgStyleArchetypeSchema to allow unconstrained visual styling in SVG generation
+
 ## 1.35.0
 
 ### Minor Changes
