@@ -258,4 +258,59 @@ export const AgentDirectoryEntrySchema = z.object({
 });
 export type AgentDirectoryEntry = z.infer<typeof AgentDirectoryEntrySchema>;
 
+// --- Agent Workspace & Change Tracking ---
+// ============================================================================
+
+export const AgentDiffStatsSchema = z.object({
+  added: z.number().int().nonnegative(),
+  removed: z.number().int().nonnegative()
+});
+export type AgentDiffStats = z.infer<typeof AgentDiffStatsSchema>;
+
+export const AgentFileChangeKindSchema = z.enum(["created", "modified", "deleted"]);
+export type AgentFileChangeKind = z.infer<typeof AgentFileChangeKindSchema>;
+
+export const AgentFileChangeSchema = z.object({
+  path: z.string(),
+  kind: AgentFileChangeKindSchema,
+  before: z.string().optional(),
+  after: z.string().optional(),
+  diff: z.string(),
+  stats: AgentDiffStatsSchema
+});
+export type AgentFileChange = z.infer<typeof AgentFileChangeSchema>;
+
+export const AgentWorkspaceEntryTypeSchema = z.enum(["file", "directory"]);
+export type AgentWorkspaceEntryType = z.infer<typeof AgentWorkspaceEntryTypeSchema>;
+
+export const AgentWorkspaceEntrySchema = z.object({
+  path: z.string(),
+  type: AgentWorkspaceEntryTypeSchema,
+  size: z.number().int().nonnegative().optional()
+});
+export type AgentWorkspaceEntry = z.infer<typeof AgentWorkspaceEntrySchema>;
+
+// --- Agent Approvals & Human-in-the-Loop ---
+// ============================================================================
+
+export const AgentRiskLevelSchema = z.enum(["low", "medium", "high", "critical"]);
+export type AgentRiskLevel = z.infer<typeof AgentRiskLevelSchema>;
+
+export const AgentApprovalRequestSchema = z.object({
+  toolCallId: z.string(),
+  toolName: z.string(),
+  parameters: z.record(z.unknown()),
+  riskLevel: AgentRiskLevelSchema,
+  riskReason: z.string().optional()
+});
+export type AgentApprovalRequest = z.infer<typeof AgentApprovalRequestSchema>;
+
+export const AgentApprovalResponseSchema = z.object({
+  toolCallId: z.string(),
+  status: z.enum(["approved", "denied", "modified"]),
+  modifiedParameters: z.record(z.unknown()).optional(),
+  feedback: z.string().optional()
+});
+export type AgentApprovalResponse = z.infer<typeof AgentApprovalResponseSchema>;
+
 // ============================================================================
