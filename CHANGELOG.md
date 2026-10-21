@@ -1,5 +1,12 @@
 # @pixerate/schemas
 
+## 1.37.0
+
+### Minor Changes
+
+- eb417ac: Add "prompt-driven" to SvgStyleArchetypeSchema to allow unconstrained visual styling in SVG generation
+- 7267e90: Add agent workspace entry, change tracking diff, and human-in-the-loop approval contracts.
+
 ## 1.36.0
 
 ### Minor Changes
