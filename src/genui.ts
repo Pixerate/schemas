@@ -544,13 +544,49 @@ export const SubmissionScoreSchema = z.object({
 });
 export type SubmissionScore = z.infer<typeof SubmissionScoreSchema>;
 
+// Flat map of scalar settings. A concrete type keeps the JSON Schema bounded:
+// `z.any()` becomes `{}`, which leaves Gemini's constrained decoding unbounded
+// and stalls generation when the schema is sent as `responseJsonSchema`.
+export const FormConfigValueSchema = z.union([z.string(), z.number(), z.boolean()]);
+export type FormConfigValue = z.infer<typeof FormConfigValueSchema>;
+
+export const FormConfigSchema = z.record(FormConfigValueSchema);
+export type FormConfig = z.infer<typeof FormConfigSchema>;
+
+/**
+ * Coerces a stored `config` of any older shape into a `FormConfig`.
+ * Scalars are kept, nulls are dropped, nested values are JSON-encoded, and a
+ * non-object config is wrapped as `{ value }`.
+ */
+export function normalizeFormConfig(value: unknown): FormConfig | undefined {
+  if (value === undefined || value === null) return undefined;
+  const toScalar = (entry: unknown): FormConfigValue | undefined => {
+    if (entry === undefined || entry === null) return undefined;
+    if (typeof entry === "string" || typeof entry === "boolean") return entry;
+    if (typeof entry === "number") return Number.isFinite(entry) ? entry : String(entry);
+    return JSON.stringify(entry);
+  };
+  if (typeof value !== "object" || Array.isArray(value)) {
+    const scalar = toScalar(value);
+    return scalar === undefined ? undefined : { value: scalar };
+  }
+  const config: FormConfig = {};
+  for (const [key, entry] of Object.entries(value)) {
+    const scalar = toScalar(entry);
+    if (scalar !== undefined) config[key] = scalar;
+  }
+  return config;
+}
+
+const OptionalFormConfigSchema = z.preprocess(normalizeFormConfig, FormConfigSchema.optional());
+
 export const FormValidatorSchema = z.object({
   id: z.string(),
   description: z.string().optional(),
   fields: z.array(z.string()).optional(),
   severity: z.union([z.enum(["error", "warning"]), z.string()]).optional(),
   type: z.string().optional(),
-  config: z.any().optional()
+  config: OptionalFormConfigSchema
 });
 export type FormValidator = z.infer<typeof FormValidatorSchema>;
 
@@ -561,7 +597,7 @@ export const FormHandoffActionSchema = z.object({
   condition: z.union([ConditionSchema, z.string()]).optional(),
   payloadFields: z.array(z.string()).optional(),
   type: z.string().optional(),
-  config: z.any().optional()
+  config: OptionalFormConfigSchema
 });
 export type FormHandoffAction = z.infer<typeof FormHandoffActionSchema>;
 
