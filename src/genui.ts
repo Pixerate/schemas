@@ -390,6 +390,34 @@ export const FormControlTypeSchema = z.enum([
 ]);
 export type FormControlType = z.infer<typeof FormControlTypeSchema>;
 
+// The answer shapes a control's default can take: text, number, checkbox, or
+// multiselect. `z.any()` here became `{}` in the JSON Schema, and Vertex rejects
+// TechnicalFormSchema with HTTP 400 when it is sent as `responseJsonSchema`.
+export const FormDefaultValueSchema = z.union([
+  z.string(),
+  z.number(),
+  z.boolean(),
+  z.array(z.string())
+]);
+export type FormDefaultValue = z.infer<typeof FormDefaultValueSchema>;
+
+/**
+ * Coerces a stored `defaultValue` of any older shape into a `FormDefaultValue`.
+ * Scalars are kept, nulls are dropped, array items become strings (objects
+ * JSON-encoded), and any other value is JSON-encoded.
+ */
+export function normalizeFormDefaultValue(value: unknown): FormDefaultValue | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value === "string" || typeof value === "boolean") return value;
+  if (typeof value === "number") return Number.isFinite(value) ? value : String(value);
+  if (Array.isArray(value)) {
+    return value
+      .filter((item) => item !== undefined && item !== null)
+      .map((item) => (typeof item === "object" ? JSON.stringify(item) : String(item)));
+  }
+  return JSON.stringify(value);
+}
+
 export type FormControl = {
   id: string;
   type: FormControlType;
@@ -400,7 +428,7 @@ export type FormControl = {
   examples?: string[];
   suggestions?: string[];
   required?: boolean;
-  defaultValue?: any;
+  defaultValue?: FormDefaultValue;
   options?: FormOption[];
   dataSource?: ReferenceDataSource;
   validation?: ControlValidation;
@@ -428,7 +456,7 @@ export const BaseFormControlSchema = z.object({
   examples: z.array(z.string()).optional(),
   suggestions: z.array(z.string()).optional(),
   required: z.boolean().optional(),
-  defaultValue: z.any().optional(),
+  defaultValue: z.preprocess(normalizeFormDefaultValue, FormDefaultValueSchema.optional()),
   options: z.array(FormOptionSchema).optional(),
   dataSource: ReferenceDataSourceSchema.optional(),
   validation: ControlValidationSchema.optional(),
