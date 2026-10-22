@@ -1036,7 +1036,7 @@ export type ProposalsBlockData = z.infer<typeof ProposalsBlockSchema>;
 
 /**
  * A selectable choice with a stable id. Used by form questions (`FormQuestion.choices`) and,
- * as the same contract, by structured elicitation (`ElicitationOption`).
+ * as the same contract, by structured elicitation (`ElicitationOption`, which adds `preview`).
  */
 export const FormChoiceSchema = z.object({
   id: z.string(),
@@ -1078,21 +1078,64 @@ export type FormBlockData = z.infer<typeof FormBlockSchema>;
 // A structured clarification question an agent asks instead of an open-ended one. It's a
 // one-question form: hosts can render it as a `clarification` form block (see
 // `elicitationToFormBlock` in @pixerate/genui-core), and its options are `FormChoice`s.
+// Mark the recommended option with `isRecommended` and list it first. Hosts supply their own
+// "Other" entry when `allowCustomResponse` is set, so don't add one to `options`.
 
 export const ElicitationQuestionTypeSchema = z.enum(["single_select", "multi_select", "free_form", "rank_priorities"]);
 export type ElicitationQuestionType = z.infer<typeof ElicitationQuestionTypeSchema>;
 
-export const ElicitationOptionSchema = FormChoiceSchema;
-export type ElicitationOption = FormChoice;
+/** Fewest and most options a choice question (anything but `free_form`) may offer. */
+export const ELICITATION_MIN_OPTIONS = 2;
+export const ELICITATION_MAX_OPTIONS = 4;
+/** Most questions in one `ElicitationBatch`. */
+export const ELICITATION_MAX_BATCH_QUESTIONS = 4;
+/** Longest `header` chip label. */
+export const ELICITATION_HEADER_MAX_LENGTH = 12;
 
-export const ElicitationRequestSchema = z.object({
-  id: z.string(),
-  question: z.string(),
-  type: ElicitationQuestionTypeSchema,
-  options: z.array(ElicitationOptionSchema),
-  contextRationale: z.string().optional(),
-  allowCustomResponse: z.boolean().optional()
+export const ElicitationOptionSchema = FormChoiceSchema.extend({
+  /**
+   * Content shown while the option is focused, such as a code snippet or a mockup.
+   * Only valid on `single_select` questions.
+   */
+  preview: z.string().optional()
 });
+export type ElicitationOption = z.infer<typeof ElicitationOptionSchema>;
+
+export const ElicitationRequestSchema = z
+  .object({
+    id: z.string(),
+    question: z.string(),
+    /** Short chip label for the question, e.g. "Auth method". */
+    header: z.string().max(ELICITATION_HEADER_MAX_LENGTH).optional(),
+    type: ElicitationQuestionTypeSchema,
+    /** `ELICITATION_MIN_OPTIONS`–`ELICITATION_MAX_OPTIONS` options; `free_form` may have none. */
+    options: z.array(ElicitationOptionSchema),
+    contextRationale: z.string().optional(),
+    allowCustomResponse: z.boolean().optional()
+  })
+  .superRefine((request, ctx) => {
+    if (request.type !== "free_form") {
+      const count = request.options.length;
+      if (count < ELICITATION_MIN_OPTIONS || count > ELICITATION_MAX_OPTIONS) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["options"],
+          message: `A ${request.type} question must offer ${ELICITATION_MIN_OPTIONS} to ${ELICITATION_MAX_OPTIONS} options (got ${count}).`
+        });
+      }
+    }
+    if (request.type !== "single_select") {
+      request.options.forEach((option, index) => {
+        if (option.preview !== undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["options", index, "preview"],
+            message: "Option previews are only valid on single_select questions."
+          });
+        }
+      });
+    }
+  });
 export type ElicitationRequest = z.infer<typeof ElicitationRequestSchema>;
 
 export const ElicitationResponseSchema = z.object({
@@ -1102,6 +1145,38 @@ export const ElicitationResponseSchema = z.object({
   rankings: z.array(z.string()).optional()
 });
 export type ElicitationResponse = z.infer<typeof ElicitationResponseSchema>;
+
+function addDuplicateIssues(ids: string[], path: string, label: string, ctx: z.RefinementCtx) {
+  const seen = new Set<string>();
+  ids.forEach((id, index) => {
+    if (seen.has(id)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: [path, index], message: `Duplicate ${label} "${id}".` });
+    }
+    seen.add(id);
+  });
+}
+
+/** Several related questions asked together, answered with one `ElicitationBatchResponse`. */
+export const ElicitationBatchSchema = z
+  .object({
+    id: z.string(),
+    questions: z.array(ElicitationRequestSchema).min(1).max(ELICITATION_MAX_BATCH_QUESTIONS)
+  })
+  .superRefine((batch, ctx) => {
+    addDuplicateIssues(batch.questions.map((q) => q.id), "questions", "question id", ctx);
+  });
+export type ElicitationBatch = z.infer<typeof ElicitationBatchSchema>;
+
+/** One `ElicitationResponse` per answered question, keyed by `requestId`. */
+export const ElicitationBatchResponseSchema = z
+  .object({
+    batchId: z.string(),
+    responses: z.array(ElicitationResponseSchema).min(1).max(ELICITATION_MAX_BATCH_QUESTIONS)
+  })
+  .superRefine((response, ctx) => {
+    addDuplicateIssues(response.responses.map((r) => r.requestId), "responses", "requestId", ctx);
+  });
+export type ElicitationBatchResponse = z.infer<typeof ElicitationBatchResponseSchema>;
 
 export const BUILT_IN_EPHEMERAL_LANGS = [
   "stats",
