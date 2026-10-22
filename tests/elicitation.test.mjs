@@ -46,6 +46,13 @@ describe("Structured Elicitation Schemas", () => {
     }
   });
 
+  it("rejects duplicate option ids", () => {
+    const result = ElicitationRequestSchema.safeParse(request({ options: [option("a"), option("b"), option("a")] }));
+    assert.equal(result.success, false);
+    assert.deepEqual(result.error.issues[0].path, ["options", 2]);
+    assert.match(result.error.issues[0].message, /Duplicate option id "a"/);
+  });
+
   it("allows free_form questions without options", () => {
     assert.ok(ElicitationRequestSchema.safeParse(request({ type: "free_form", options: [] })).success);
   });

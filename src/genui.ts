@@ -1101,6 +1101,16 @@ export const ElicitationOptionSchema = FormChoiceSchema.extend({
 });
 export type ElicitationOption = z.infer<typeof ElicitationOptionSchema>;
 
+function addDuplicateIssues(ids: string[], path: string, label: string, ctx: z.RefinementCtx) {
+  const seen = new Set<string>();
+  ids.forEach((id, index) => {
+    if (seen.has(id)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: [path, index], message: `Duplicate ${label} "${id}".` });
+    }
+    seen.add(id);
+  });
+}
+
 export const ElicitationRequestSchema = z
   .object({
     id: z.string(),
@@ -1108,7 +1118,10 @@ export const ElicitationRequestSchema = z
     /** Short chip label for the question, e.g. "Auth method". */
     header: z.string().max(ELICITATION_HEADER_MAX_LENGTH).optional(),
     type: ElicitationQuestionTypeSchema,
-    /** `ELICITATION_MIN_OPTIONS`–`ELICITATION_MAX_OPTIONS` options; `free_form` may have none. */
+    /**
+     * `ELICITATION_MIN_OPTIONS`–`ELICITATION_MAX_OPTIONS` options with unique ids; `free_form`
+     * may have none.
+     */
     options: z.array(ElicitationOptionSchema),
     contextRationale: z.string().optional(),
     allowCustomResponse: z.boolean().optional()
@@ -1124,6 +1137,7 @@ export const ElicitationRequestSchema = z
         });
       }
     }
+    addDuplicateIssues(request.options.map((o) => o.id), "options", "option id", ctx);
     if (request.type !== "single_select") {
       request.options.forEach((option, index) => {
         if (option.preview !== undefined) {
@@ -1145,16 +1159,6 @@ export const ElicitationResponseSchema = z.object({
   rankings: z.array(z.string()).optional()
 });
 export type ElicitationResponse = z.infer<typeof ElicitationResponseSchema>;
-
-function addDuplicateIssues(ids: string[], path: string, label: string, ctx: z.RefinementCtx) {
-  const seen = new Set<string>();
-  ids.forEach((id, index) => {
-    if (seen.has(id)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: [path, index], message: `Duplicate ${label} "${id}".` });
-    }
-    seen.add(id);
-  });
-}
 
 /** Several related questions asked together, answered with one `ElicitationBatchResponse`. */
 export const ElicitationBatchSchema = z
