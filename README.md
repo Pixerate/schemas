@@ -47,6 +47,14 @@ The root entry re-exports every grouped module, so `import { FormBlockSchema } f
 - **Video Analysis**: `VideoAnalysisPayload` (`VideoAnalysisSchema`)
 - **Queue / Media Jobs**: `QueueJob` (`QueueJobSchema`, includes optional `client: ServiceClient`)
 
+### 6. Structured Elicitation (`@pixerate/schemas/genui`)
+- **Single question**: `ElicitationRequest` (`ElicitationRequestSchema`) answered by `ElicitationResponse` (`ElicitationResponseSchema`).
+  - `single_select`, `multi_select` and `rank_priorities` questions offer 2–4 options with unique ids; `free_form` questions may have none.
+  - Optional `header`: a short chip label, at most 12 characters.
+  - Options (`ElicitationOption`) are `FormChoice`s. Mark the recommended one with `isRecommended` and list it first. Hosts add their own "Other" entry when `allowCustomResponse` is set.
+  - Optional option `preview` (a code snippet or mockup shown while the option is focused), only on `single_select` questions.
+- **Batch**: `ElicitationBatch` (`ElicitationBatchSchema`, 1–4 questions with unique ids) answered by `ElicitationBatchResponse` (`ElicitationBatchResponseSchema`, one response per question, unique `requestId`s).
+
 ---
 
 ## Getting Started
