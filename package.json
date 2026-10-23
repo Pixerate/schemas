@@ -70,6 +70,6 @@
     "@changesets/cli": "^3.0.3",
     "tsup": "^9.0.0",
     "typescript": "^5.4.5",
-    "zod-to-json-schema": "^3.24.6"
+    "zod-to-json-schema": "^3.25.2"
   }
 }
