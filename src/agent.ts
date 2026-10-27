@@ -229,6 +229,50 @@ export const ApiKeyLookupSchema = z.object({
 });
 export type ApiKeyLookup = z.infer<typeof ApiKeyLookupSchema>;
 
+export const ApiKeyOwnerTypeSchema = z.enum(["user", "service_account", "team", "organization"]);
+export type ApiKeyOwnerType = z.infer<typeof ApiKeyOwnerTypeSchema>;
+
+export const ApiKeyStatusSchema = z.enum(["active", "revoked"]);
+export type ApiKeyStatus = z.infer<typeof ApiKeyStatusSchema>;
+
+export const ApiKeySchema = z.object({
+  id: z.string(), // "ak_<base62>"
+  name: z.string(),
+  keyPrefix: z.string(), // display hint, e.g. "pix_live_Ab12...x9Zq"
+  hashedSecret: z.string(), // sha256 hex; server-only
+  ownerType: ApiKeyOwnerTypeSchema,
+  ownerId: z.string(),
+  orgId: z.string().optional(),
+  teamId: z.string().optional(),
+  serviceAccountId: z.string().optional(), // set when ownerType === "service_account" (legacy compat)
+  createdBy: z.string(),
+  scopes: z.array(z.string()),
+  resourceIds: z.array(z.string()).optional(), // ["*"] or absent = unrestricted
+  status: ApiKeyStatusSchema,
+  metadata: z.record(z.string(), z.unknown()).optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  expiresAt: z.string().nullable().optional(),
+  lastUsedAt: z.string().nullable().optional(),
+  revokedAt: z.string().nullable().optional()
+});
+export type ApiKey = z.infer<typeof ApiKeySchema>;
+
+export const PublicApiKeySchema = ApiKeySchema.omit({ hashedSecret: true });
+export type PublicApiKey = z.infer<typeof PublicApiKeySchema>;
+
+export const CreateApiKeyInputSchema = z.object({
+  name: z.string(),
+  createdBy: z.string(),
+  orgId: z.string().optional(),
+  teamId: z.string().optional(),
+  scopes: z.array(z.string()).optional(),
+  resourceIds: z.array(z.string()).optional(),
+  expiresAt: z.string().nullable().optional(),
+  metadata: z.record(z.string(), z.unknown()).optional()
+});
+export type CreateApiKeyInput = z.infer<typeof CreateApiKeyInputSchema>;
+
 export const ActiveAgentTaskSchema = z.object({
   taskId: z.string(),
   taskTitle: z.string(),
