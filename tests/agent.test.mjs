@@ -4,6 +4,11 @@ import {
   ServiceAccountSchema,
   CreateServiceAccountInputSchema,
   ApiKeyLookupSchema,
+  ApiKeyOwnerTypeSchema,
+  ApiKeyStatusSchema,
+  ApiKeySchema,
+  PublicApiKeySchema,
+  CreateApiKeyInputSchema,
   ActiveAgentTaskSchema,
   AgentDirectoryEntrySchema
 } from "../dist/agent.js";
@@ -14,6 +19,11 @@ describe("Service Account & Agent Directory Schemas", () => {
     assert.equal(rootExports.ServiceAccountSchema, ServiceAccountSchema);
     assert.equal(rootExports.CreateServiceAccountInputSchema, CreateServiceAccountInputSchema);
     assert.equal(rootExports.ApiKeyLookupSchema, ApiKeyLookupSchema);
+    assert.equal(rootExports.ApiKeyOwnerTypeSchema, ApiKeyOwnerTypeSchema);
+    assert.equal(rootExports.ApiKeyStatusSchema, ApiKeyStatusSchema);
+    assert.equal(rootExports.ApiKeySchema, ApiKeySchema);
+    assert.equal(rootExports.PublicApiKeySchema, PublicApiKeySchema);
+    assert.equal(rootExports.CreateApiKeyInputSchema, CreateApiKeyInputSchema);
     assert.equal(rootExports.ActiveAgentTaskSchema, ActiveAgentTaskSchema);
     assert.equal(rootExports.AgentDirectoryEntrySchema, AgentDirectoryEntrySchema);
   });
@@ -111,5 +121,46 @@ describe("Service Account & Agent Directory Schemas", () => {
     });
     assert.equal(agent.name, "Agent Violet");
     assert.equal(agent.activeTasks?.length, 1);
+  });
+
+  it("validates ApiKeySchema, PublicApiKeySchema, and CreateApiKeyInputSchema", () => {
+    const input = CreateApiKeyInputSchema.parse({
+      name: "Agent Access Token",
+      createdBy: "usr_admin",
+      orgId: "org_1",
+      teamId: "team_1",
+      scopes: ["read", "write"],
+      resourceIds: ["*"],
+      expiresAt: "2027-01-01T00:00:00.000Z",
+      metadata: { role: "agent" }
+    });
+    assert.equal(input.name, "Agent Access Token");
+
+    const fullKey = ApiKeySchema.parse({
+      id: "ak_1234567890",
+      name: input.name,
+      keyPrefix: "pix_live_Ab12...x9Zq",
+      hashedSecret: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      ownerType: "user",
+      ownerId: "usr_admin",
+      orgId: input.orgId,
+      teamId: input.teamId,
+      createdBy: input.createdBy,
+      scopes: input.scopes ?? [],
+      resourceIds: input.resourceIds,
+      status: "active",
+      metadata: input.metadata,
+      createdAt: "2026-10-27T00:00:00.000Z",
+      updatedAt: "2026-10-27T00:00:00.000Z",
+      expiresAt: input.expiresAt,
+      lastUsedAt: null,
+      revokedAt: null
+    });
+    assert.equal(fullKey.id, "ak_1234567890");
+    assert.equal(fullKey.status, "active");
+
+    const publicKey = PublicApiKeySchema.parse(fullKey);
+    assert.equal(publicKey.id, fullKey.id);
+    assert.equal("hashedSecret" in publicKey, false);
   });
 });
