@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.40.0
+
+### Minor Changes
+
+- c33d637: Add `ApiKeyOwnerTypeSchema`, `ApiKeyStatusSchema`, `ApiKeySchema`, `PublicApiKeySchema`, and `CreateApiKeyInputSchema` to `@pixerate/schemas/agent` and root exports.
+
 ## 1.39.0
 
 ### Minor Changes
