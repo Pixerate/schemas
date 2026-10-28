@@ -519,7 +519,7 @@ export type DecisionGate = z.infer<typeof DecisionGateSchema>;
 
 export const ScoringRuleSchema = z.object({
   field: z.string(),
-  optionPoints: z.record(z.number()).optional(),
+  optionPoints: z.record(z.string(), z.number()).optional(),
   ranges: z.array(
     z.object({
       min: z.number().optional(),
