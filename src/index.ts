@@ -5,6 +5,8 @@ import {
   VideoResolutionSchema,
   VideoFrameImageSchema,
   VideoAttachmentSchema,
+  ServiceClientSchema,
+  type ServiceClient
 } from "./common.js";
 import { TextOverlaySchema, WatermarkSchema } from "./media.js";
 
@@ -128,10 +130,6 @@ export const JsonGenerationSchema = z.object({
   schema: z.record(z.any()).optional()
 });
 export type JsonGenerationPayload = z.infer<typeof JsonGenerationSchema>;
-
-// --- Service Client ---
-export const ServiceClientSchema = z.enum(["pixerate", "slopmachine", "social", "surrealui", "surreal-ui", "symphonia", "flair", "operative", "uchiage", "unknown"]);
-export type ServiceClient = z.infer<typeof ServiceClientSchema>;
 
 // --- Agent runtime: agentic interactions and website crawling & caching (see ./agent.ts) ---
 export * from "./agent.js";
@@ -767,4 +765,8 @@ export const LlmsFullTxtConfigSchema = z.object({
   documents: z.array(LlmsDocumentContentSchema)
 });
 export type LlmsFullTxtConfig = z.infer<typeof LlmsFullTxtConfigSchema>;
+
+// --- Product Analytics Schemas (see ./analytics.ts) ---
+export * from "./analytics.js";
+
 

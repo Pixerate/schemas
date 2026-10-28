@@ -18,10 +18,11 @@ src/
 ├── genui.ts     # Generative UI contracts (also `@pixerate/schemas/genui`)
 ├── media.ts     # Media processing contracts (also `@pixerate/schemas/media`)
 ├── agent.ts     # Agent runtime contracts: interactions, website crawling & caching (also `@pixerate/schemas/agent`)
-└── jobs.ts      # Queue job contracts (also `@pixerate/schemas/jobs`)
+├── jobs.ts      # Queue job contracts (also `@pixerate/schemas/jobs`)
+└── analytics.ts # Canonical product analytics schemas & PII guards (also `@pixerate/schemas/analytics`)
 ```
 
-The root entry re-exports every grouped module, so `import { FormBlockSchema } from "@pixerate/schemas"` keeps working. Client bundles should import from the narrower entry point (`@pixerate/schemas/agent`, `@pixerate/schemas/genui`, `@pixerate/schemas/jobs`, `@pixerate/schemas/media`, `@pixerate/schemas/realtime`) so they don't pull in every schema.
+The root entry re-exports every grouped module, so `import { FormBlockSchema } from "@pixerate/schemas"` keeps working. Client bundles should import from the narrower entry point (`@pixerate/schemas/agent`, `@pixerate/schemas/analytics`, `@pixerate/schemas/genui`, `@pixerate/schemas/jobs`, `@pixerate/schemas/media`, `@pixerate/schemas/realtime`) so they don't pull in every schema.
 
 ## Exported Types & Schemas
 
@@ -54,6 +55,26 @@ The root entry re-exports every grouped module, so `import { FormBlockSchema } f
   - Options (`ElicitationOption`) are `FormChoice`s. Mark the recommended one with `isRecommended` and list it first. Hosts add their own "Other" entry when `allowCustomResponse` is set.
   - Optional option `preview` (a code snippet or mockup shown while the option is focused), only on `single_select` questions.
 - **Batch**: `ElicitationBatch` (`ElicitationBatchSchema`, 1–4 questions with unique ids) answered by `ElicitationBatchResponse` (`ElicitationBatchResponseSchema`, one response per question, unique `requestId`s).
+
+### 7. Product Analytics (`@pixerate/schemas/analytics`)
+- **Canonical Event Schema**: `AnalyticsEvent` (`AnalyticsEventSchema`), a discriminated union on `name` with typed `params` per event.
+- **Event Names**: `AnalyticsEventName` (`AnalyticsEventNameSchema`):
+  - **Acquire**: `sign_up`, `login`, `join_waitlist`, `waitlist_approved`, `onboarded`
+  - **Onboard**: `tutorial_begin`, `onboarding_step`, `onboarding_milestone`, `tutorial_complete`
+  - **Activate**: `create_item`, `generate`, `run_agent`, `save_version`
+  - **Engage**: `publish`, `share`, `submit_feedback`, `page_view`
+  - **Expand**: `invite_member`, `join_team`
+  - **Monetise**: `begin_checkout`, `purchase`
+- **Core Item Types**: `AnalyticsItemType` (`AnalyticsItemTypeSchema`):
+  - **Slop Machine**: `silo`, `bucket`, `pipeline`, `template`
+  - **Pixerate**: `exploration`, `composition`, `fusion`, `edit`, `board`, `pitch`, `deliverable`
+  - **Uchiage**: `organization`, `project`, `task`, `agent`, `workflow`
+- **User Properties**: `AnalyticsUserProperties` (`AnalyticsUserPropertiesSchema`):
+  - Shape: `{ app: ServiceClient, plan?, role_preference?, waitlist_status?, team_id_hash?, org_id_hash? }`
+- **Strict Constraints & PII Guard**:
+  - **GA4 Limits**: Event names and param names $\le 40$ chars; param string values $\le 100$ chars; at most 25 params per event; user property names $\le 24$ chars, values $\le 36$ chars.
+  - **No PII**: Rejects keys such as `email`, `name`, `phone`, and string values looking like email addresses.
+  - **Hashed IDs**: Rejects unhashed `team_id` or `org_id` keys in favor of `team_id_hash` and `org_id_hash`.
 
 ---
 

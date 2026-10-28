@@ -21,6 +21,21 @@ export const AspectRatioSchema = z.enum([
 ]);
 export type AspectRatio = z.infer<typeof AspectRatioSchema>;
 
+// --- Service Client ---
+export const ServiceClientSchema = z.enum([
+  "pixerate",
+  "slopmachine",
+  "social",
+  "surrealui",
+  "surreal-ui",
+  "symphonia",
+  "flair",
+  "operative",
+  "uchiage",
+  "unknown"
+]);
+export type ServiceClient = z.infer<typeof ServiceClientSchema>;
+
 export const VideoAspectRatioSchema = z.enum(["9:16", "16:9"]);
 export type VideoAspectRatio = z.infer<typeof VideoAspectRatioSchema>;
 
