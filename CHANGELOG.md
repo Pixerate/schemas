@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.42.0
+
+### Minor Changes
+
+- 0f7178e: Add canonical `AnalyticsEventSchema`, `AnalyticsEventNameSchema`, `AnalyticsItemTypeSchema`, and `AnalyticsUserPropertiesSchema` to `@pixerate/schemas/analytics` and root exports for cross-app product analytics with GA4 limits and PII guards.
+
 ## 1.41.0
 
 ### Minor Changes
