@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.43.0
+
+### Minor Changes
+
+- 9acfc88: feat(genui): add ChartBlock fields (unit, valueFormat, yLabel, stacked, theme color tokens), SVG validation checks (accessible, reducedMotion), and ComponentSynthesis validation result fields
+
 ## 1.42.0
 
 ### Minor Changes
