@@ -105,7 +105,10 @@ export const ComponentSynthesisSchema = z.object({
       webcomponent: z.array(ComponentDependencySchema).default([])
     })
     .optional(),
-  docs: ComponentDocsSchema
+  docs: ComponentDocsSchema,
+  isValid: z.boolean().optional().describe("Whether synthesized code passed validation"),
+  validationAttempts: z.number().int().optional().describe("Total number of validation/repair attempts"),
+  validationError: z.string().optional().describe("Validation error if still failing after max retries")
 });
 export type ComponentSynthesisPayload = z.infer<typeof ComponentSynthesisSchema>;
 
@@ -987,10 +990,22 @@ export const ActionsBlockSchema = z.object({
 });
 export type ActionsBlockData = z.infer<typeof ActionsBlockSchema>;
 
+export const ChartThemeTokenSchema = z.enum([
+  "chart-1",
+  "chart-2",
+  "chart-3",
+  "chart-4",
+  "chart-5"
+]);
+export type ChartThemeToken = z.infer<typeof ChartThemeTokenSchema>;
+
+export const ChartValueFormatSchema = z.enum(["number", "percent", "currency"]);
+export type ChartValueFormat = z.infer<typeof ChartValueFormatSchema>;
+
 export const ChartSeriesSchema = z.object({
   name: z.string(),
   data: z.array(z.number()),
-  color: z.string().optional()
+  color: ChartThemeTokenSchema.optional()
 });
 export type ChartSeries = z.infer<typeof ChartSeriesSchema>;
 
@@ -1006,6 +1021,10 @@ export const ChartBlockSchema = z.object({
   chartType: z.enum(["bar", "line", "pie", "radar", "area"]),
   title: z.string().optional(),
   description: z.string().optional(),
+  unit: z.string().optional(),
+  valueFormat: ChartValueFormatSchema.optional(),
+  yLabel: z.string().optional(),
+  stacked: z.boolean().optional(),
   categories: z.array(z.string()).optional(),
   series: z.array(ChartSeriesSchema),
   drilldown: ChartDrilldownSchema.optional(),
@@ -1319,7 +1338,9 @@ export const SvgValidationCheckSchema = z.object({
   stackingOrderValid: z.boolean().describe("Whether foreground and labels sit at the end of the DOM"),
   transformIsolated: z.boolean().describe("Whether animated elements separate coordinate translate from keyframe motion"),
   boundaryClamped: z.boolean().describe("Whether moving elements stay within canvas bounds"),
-  dualThemeVerified: z.boolean().describe("Whether dark mode media query and CSS custom properties are properly defined")
+  dualThemeVerified: z.boolean().describe("Whether dark mode media query and CSS custom properties are properly defined"),
+  accessible: z.boolean().default(true).describe("Whether the SVG includes role=\"img\" and title/aria-labelledby accessibility attributes"),
+  reducedMotion: z.boolean().default(true).describe("Whether animated SVG provides @media (prefers-reduced-motion: reduce) rules")
 });
 export type SvgValidationCheck = z.infer<typeof SvgValidationCheckSchema>;
 
