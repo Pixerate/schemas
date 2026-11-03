@@ -1,0 +1,86 @@
+{
+  "$ref": "#/definitions/VideoWatermark",
+  "definitions": {
+    "VideoWatermark": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "imagePath": {
+          "type": "string"
+        },
+        "font": {
+          "type": "string"
+        },
+        "fontPath": {
+          "type": "string"
+        },
+        "position": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "bottom-right",
+                "bottom-left",
+                "top-right",
+                "top-left",
+                "center"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": [
+                    "number",
+                    "string"
+                  ]
+                },
+                "y": {
+                  "type": [
+                    "number",
+                    "string"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "color": {
+          "type": "string"
+        },
+        "strokeColor": {
+          "type": "string"
+        },
+        "strokeWidth": {
+          "type": "number"
+        },
+        "fontSize": {
+          "type": "number"
+        },
+        "transparentBg": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "marginRight": {
+          "type": "number"
+        },
+        "marginBottom": {
+          "type": "number"
+        },
+        "marginLeft": {
+          "type": "number"
+        },
+        "marginTop": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

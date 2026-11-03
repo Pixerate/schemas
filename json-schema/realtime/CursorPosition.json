@@ -1,0 +1,82 @@
+{
+  "$ref": "#/definitions/CursorPosition",
+  "definitions": {
+    "CursorPosition": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "lastUpdate": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 0
+        },
+        "username": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string",
+          "enum": [
+            "slate",
+            "gray",
+            "zinc",
+            "neutral",
+            "stone",
+            "red",
+            "orange",
+            "amber",
+            "yellow",
+            "lime",
+            "green",
+            "emerald",
+            "teal",
+            "cyan",
+            "sky",
+            "blue",
+            "indigo",
+            "violet",
+            "purple",
+            "fuchsia",
+            "pink",
+            "rose"
+          ]
+        },
+        "viewport": {
+          "type": "object",
+          "properties": {
+            "zoom": {
+              "type": "number",
+              "default": 1
+            },
+            "panX": {
+              "type": "number",
+              "default": 0
+            },
+            "panY": {
+              "type": "number",
+              "default": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "userId",
+        "x",
+        "y"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

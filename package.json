@@ -46,10 +46,18 @@
       "types": "./dist/jazz.d.ts",
       "import": "./dist/jazz.js",
       "require": "./dist/jazz.cjs"
-    }
+    },
+    "./common": {
+      "types": "./dist/common.d.ts",
+      "import": "./dist/common.js",
+      "require": "./dist/common.cjs"
+    },
+    "./json-schema/*": "./json-schema/*"
   },
   "scripts": {
-    "build": "tsup src/index.ts src/realtime.ts src/genui.ts src/media.ts src/agent.ts src/jobs.ts src/analytics.ts src/jazz.ts --format esm,cjs --dts --clean",
+    "build": "tsup src/index.ts src/realtime.ts src/genui.ts src/media.ts src/agent.ts src/jobs.ts src/analytics.ts src/jazz.ts src/common.ts --format esm,cjs --dts --clean && npm run export:json-schema",
+    "export:json-schema": "node scripts/export-json-schema.mjs",
+    "gen:swift": "node scripts/gen-swift.mjs",
     "test": "npm run build && node --test tests/*.test.mjs",
     "prepare": "npm run build",
     "changeset": "changeset",
@@ -71,13 +79,16 @@
     "provenance": true
   },
   "files": [
-    "dist"
+    "dist",
+    "json-schema"
   ],
   "dependencies": {
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "tsup": "^9.0.0",
     "typescript": "^5.4.5",
     "zod-to-json-schema": "^3.25.2"

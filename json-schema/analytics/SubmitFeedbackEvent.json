@@ -1,0 +1,32 @@
+{
+  "$ref": "#/definitions/SubmitFeedbackEvent",
+  "definitions": {
+    "SubmitFeedbackEvent": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "submit_feedback"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "rating": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

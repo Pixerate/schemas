@@ -1,0 +1,26 @@
+{
+  "$ref": "#/definitions/AudioMixTrack",
+  "definitions": {
+    "AudioMixTrack": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "volume": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "delayMs": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

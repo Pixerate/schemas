@@ -1,0 +1,51 @@
+{
+  "$ref": "#/definitions/JazzFeedback",
+  "definitions": {
+    "JazzFeedback": {
+      "type": "object",
+      "properties": {
+        "riffId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verdict": {
+          "type": "string",
+          "enum": [
+            "accepted",
+            "rejected",
+            "edited",
+            "ignored",
+            "withdrawn"
+          ]
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "by": {
+          "type": "string",
+          "pattern": "^(user|agent:.+)$"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 280
+        },
+        "editedFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "riffId",
+        "verdict",
+        "at",
+        "by"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

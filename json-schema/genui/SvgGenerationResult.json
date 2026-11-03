@@ -1,0 +1,217 @@
+{
+  "$ref": "#/definitions/SvgGenerationResult",
+  "definitions": {
+    "SvgGenerationResult": {
+      "type": "object",
+      "properties": {
+        "svg": {
+          "type": "string",
+          "description": "Clean, self-contained SVG markup"
+        },
+        "animated": {
+          "type": "boolean",
+          "description": "Whether the SVG is animated"
+        },
+        "viewBox": {
+          "type": "string",
+          "description": "ViewBox of the generated SVG"
+        },
+        "blueprint": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Title of the kinetic illustration"
+            },
+            "loopDurationMs": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Harmonic time base loop duration in milliseconds (e.g. 2400, 3600, 4800)"
+            },
+            "motionPersonality": {
+              "type": "string",
+              "description": "Motion personality (e.g. bouncy, snappy, smooth, mechanical, organic)"
+            },
+            "styleArchetype": {
+              "type": "string",
+              "enum": [
+                "minimalist",
+                "neubrutalist",
+                "skeuomorphic",
+                "flat",
+                "custom",
+                "prompt-driven"
+              ],
+              "description": "Visual style archetype derived from references or prompt"
+            },
+            "palette": {
+              "type": "object",
+              "properties": {
+                "canvasBg": {
+                  "type": "string",
+                  "description": "Canvas background color (default transparent)"
+                },
+                "chassis": {
+                  "type": "string",
+                  "description": "Main body / subject color"
+                },
+                "stroke": {
+                  "type": "string",
+                  "description": "Primary stroke color"
+                },
+                "accent1": {
+                  "type": "string",
+                  "description": "Primary accent color"
+                },
+                "accent2": {
+                  "type": "string",
+                  "description": "Secondary accent color"
+                },
+                "shadow": {
+                  "type": "string",
+                  "description": "Shadow color with opacity"
+                },
+                "custom": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Additional custom CSS color variables"
+                }
+              },
+              "additionalProperties": false,
+              "description": "Palette color tokens for adaptive theming"
+            },
+            "primaryAnchor": {
+              "type": "string",
+              "description": "Primary anchor animation cycle (e.g. idle breathing, floating, or rotating cycle)"
+            },
+            "secondaryMechanics": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Secondary mechanics (e.g. conveyors, gears, fluid flow)"
+            },
+            "eventActions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Event actions (e.g. droplets, sparks, pulses with delays)"
+            },
+            "ambientParticles": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Ambient particles drifting with staggered offsets"
+            }
+          },
+          "required": [
+            "loopDurationMs",
+            "motionPersonality",
+            "palette",
+            "primaryAnchor"
+          ],
+          "additionalProperties": false,
+          "description": "Kinetic blueprint generated for animated SVG"
+        },
+        "qaAudit": {
+          "type": "object",
+          "properties": {
+            "passed": {
+              "type": "boolean",
+              "description": "Whether visual QA passed all criteria"
+            },
+            "checks": {
+              "type": "object",
+              "properties": {
+                "selfContained": {
+                  "type": "boolean",
+                  "description": "Whether the SVG contains no external url() or scripts"
+                },
+                "responsive": {
+                  "type": "boolean",
+                  "description": "Whether viewBox is defined with width/height 100%"
+                },
+                "stackingOrderValid": {
+                  "type": "boolean",
+                  "description": "Whether foreground and labels sit at the end of the DOM"
+                },
+                "transformIsolated": {
+                  "type": "boolean",
+                  "description": "Whether animated elements separate coordinate translate from keyframe motion"
+                },
+                "boundaryClamped": {
+                  "type": "boolean",
+                  "description": "Whether moving elements stay within canvas bounds"
+                },
+                "dualThemeVerified": {
+                  "type": "boolean",
+                  "description": "Whether dark mode media query and CSS custom properties are properly defined"
+                },
+                "accessible": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Whether the SVG includes role=\"img\" and title/aria-labelledby accessibility attributes"
+                },
+                "reducedMotion": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Whether animated SVG provides @media (prefers-reduced-motion: reduce) rules"
+                }
+              },
+              "required": [
+                "selfContained",
+                "responsive",
+                "stackingOrderValid",
+                "transformIsolated",
+                "boundaryClamped",
+                "dualThemeVerified"
+              ],
+              "additionalProperties": false
+            },
+            "frameSlicesCount": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of frame slices captured and audited"
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Issues detected during static or multimodal visual audit"
+            },
+            "recommendations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "Refinement suggestions applied or needed"
+            }
+          },
+          "required": [
+            "passed"
+          ],
+          "additionalProperties": false,
+          "description": "Visual QA audit results"
+        },
+        "rawOutput": {
+          "type": "string",
+          "description": "Raw LLM output"
+        }
+      },
+      "required": [
+        "svg",
+        "animated",
+        "viewBox"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

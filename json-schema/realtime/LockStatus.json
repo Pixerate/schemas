@@ -1,0 +1,15 @@
+{
+  "$ref": "#/definitions/LockStatus",
+  "definitions": {
+    "LockStatus": {
+      "type": "string",
+      "enum": [
+        "unlocked",
+        "locked",
+        "expired",
+        "claimed"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/OTTextOpType",
+  "definitions": {
+    "OTTextOpType": {
+      "type": "string",
+      "enum": [
+        "retain",
+        "insert",
+        "delete"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

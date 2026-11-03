@@ -1,0 +1,15 @@
+{
+  "$ref": "#/definitions/ElicitationQuestionType",
+  "definitions": {
+    "ElicitationQuestionType": {
+      "type": "string",
+      "enum": [
+        "single_select",
+        "multi_select",
+        "free_form",
+        "rank_priorities"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

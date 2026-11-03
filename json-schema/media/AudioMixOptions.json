@@ -1,0 +1,53 @@
+{
+  "$ref": "#/definitions/AudioMixOptions",
+  "definitions": {
+    "AudioMixOptions": {
+      "type": "object",
+      "properties": {
+        "tracks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "volume": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "delayMs": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "videoVolume": {
+          "type": "number"
+        },
+        "crf": {
+          "type": "number"
+        },
+        "preset": {
+          "type": "string"
+        },
+        "videoCodec": {
+          "type": "string"
+        },
+        "audioCodec": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tracks"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

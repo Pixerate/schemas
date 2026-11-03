@@ -1,0 +1,33 @@
+{
+  "$ref": "#/definitions/OnboardingMilestoneEvent",
+  "definitions": {
+    "OnboardingMilestoneEvent": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "onboarding_milestone"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "milestone": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "milestone"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "name",
+        "params"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

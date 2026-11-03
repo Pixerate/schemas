@@ -1,0 +1,73 @@
+{
+  "$ref": "#/definitions/ViewingIndicator",
+  "definitions": {
+    "ViewingIndicator": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "resourceId": {
+          "type": "string"
+        },
+        "resourceType": {
+          "type": "string",
+          "enum": [
+            "board",
+            "document",
+            "item",
+            "node",
+            "canvas",
+            "page",
+            "field"
+          ],
+          "default": "board"
+        },
+        "username": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string",
+          "enum": [
+            "slate",
+            "gray",
+            "zinc",
+            "neutral",
+            "stone",
+            "red",
+            "orange",
+            "amber",
+            "yellow",
+            "lime",
+            "green",
+            "emerald",
+            "teal",
+            "cyan",
+            "sky",
+            "blue",
+            "indigo",
+            "violet",
+            "purple",
+            "fuchsia",
+            "pink",
+            "rose"
+          ]
+        },
+        "lastSeen": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 0
+        }
+      },
+      "required": [
+        "userId",
+        "resourceId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

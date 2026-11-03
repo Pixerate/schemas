@@ -1,0 +1,17 @@
+{
+  "$ref": "#/definitions/SvgStyleArchetype",
+  "definitions": {
+    "SvgStyleArchetype": {
+      "type": "string",
+      "enum": [
+        "minimalist",
+        "neubrutalist",
+        "skeuomorphic",
+        "flat",
+        "custom",
+        "prompt-driven"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

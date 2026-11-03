@@ -1,0 +1,78 @@
+{
+  "$ref": "#/definitions/RecordLock",
+  "definitions": {
+    "RecordLock": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "resourceId": {
+          "type": "string"
+        },
+        "resourceType": {
+          "type": "string",
+          "default": "record"
+        },
+        "lockedBy": {
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            },
+            "clientId": {
+              "type": "string"
+            },
+            "avatarUrl": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "userId"
+          ],
+          "additionalProperties": false
+        },
+        "lockedAt": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "expiresAt": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "leaseDurationSeconds": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 60
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "unlocked",
+            "locked",
+            "expired",
+            "claimed"
+          ],
+          "default": "locked"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {},
+          "default": {}
+        }
+      },
+      "required": [
+        "id",
+        "resourceId",
+        "lockedBy",
+        "lockedAt",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

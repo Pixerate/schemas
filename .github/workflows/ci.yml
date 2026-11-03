@@ -42,3 +42,39 @@ jobs:
 
       - name: Build package
         run: npm run build
+
+      - name: Verify JSON Schema is up to date
+        run: npm run export:json-schema -- --check
+
+      - name: Run test suite
+        run: npm test
+
+  swift:
+    name: Swift Package (Build & Test)
+    runs-on: macos-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package & export JSON Schema
+        run: npm run build
+
+      - name: Verify generated Swift is up to date
+        run: npm run gen:swift -- --check
+
+      - name: Build Swift package
+        run: swift build
+
+      - name: Test Swift package
+        run: swift test

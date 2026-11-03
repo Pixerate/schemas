@@ -1,0 +1,643 @@
+{
+  "$ref": "#/definitions/BaseAnalyticsEvent",
+  "definitions": {
+    "BaseAnalyticsEvent": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "sign_up"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "login"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "join_waitlist"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "role_preference": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "waitlist_approved"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "role_preference": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "onboarded"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "role_preference": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "tutorial_begin"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "tutorial_id": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "onboarding_step"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "step": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "skipped": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "step"
+              ],
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name",
+            "params"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "onboarding_milestone"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "milestone": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "required": [
+                "milestone"
+              ],
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name",
+            "params"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "tutorial_complete"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "tutorial_id": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "create_item"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "item_type": {
+                  "type": "string",
+                  "enum": [
+                    "silo",
+                    "bucket",
+                    "pipeline",
+                    "template",
+                    "exploration",
+                    "composition",
+                    "fusion",
+                    "edit",
+                    "board",
+                    "pitch",
+                    "deliverable",
+                    "organization",
+                    "project",
+                    "task",
+                    "agent",
+                    "workflow"
+                  ]
+                }
+              },
+              "required": [
+                "item_type"
+              ],
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name",
+            "params"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "generate"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "model": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "media_type": {
+                  "type": "string",
+                  "enum": [
+                    "image",
+                    "video",
+                    "text"
+                  ]
+                },
+                "success": {
+                  "type": "boolean"
+                },
+                "is_first": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "model",
+                "media_type",
+                "success"
+              ],
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name",
+            "params"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "run_agent"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "agent": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "workflow": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "success": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "save_version"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "item_type": {
+                  "$ref": "#/definitions/BaseAnalyticsEvent/anyOf/9/properties/params/properties/item_type"
+                },
+                "version_number": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "publish"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "item_type": {
+                  "$ref": "#/definitions/BaseAnalyticsEvent/anyOf/9/properties/params/properties/item_type"
+                },
+                "method": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "share"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "item_type": {
+                  "$ref": "#/definitions/BaseAnalyticsEvent/anyOf/9/properties/params/properties/item_type"
+                },
+                "method": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "invite_member"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "team_id_hash": {
+                  "type": "string",
+                  "maxLength": 36
+                },
+                "org_id_hash": {
+                  "type": "string",
+                  "maxLength": 36
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "join_team"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "team_id_hash": {
+                  "type": "string",
+                  "maxLength": 36
+                },
+                "org_id_hash": {
+                  "type": "string",
+                  "maxLength": 36
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "submit_feedback"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "rating": {
+                  "type": "number"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "begin_checkout"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "currency": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "item_id": {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "item_name": {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "item_category": {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "price": {
+                        "type": "number"
+                      },
+                      "quantity": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "item_id"
+                    ],
+                    "additionalProperties": true
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "purchase"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "currency": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "transaction_id": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/BaseAnalyticsEvent/anyOf/18/properties/params/properties/items/items"
+                  }
+                }
+              },
+              "required": [
+                "value",
+                "currency",
+                "transaction_id"
+              ],
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name",
+            "params"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "const": "page_view"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "page_location": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "page_title": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "page_path": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

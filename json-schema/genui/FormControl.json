@@ -1,0 +1,297 @@
+{
+  "$ref": "#/definitions/FormControl",
+  "definitions": {
+    "FormControl": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "text",
+            "textarea",
+            "number",
+            "select",
+            "multiselect",
+            "radio",
+            "checkbox",
+            "date",
+            "file",
+            "company",
+            "user",
+            "slider",
+            "computed",
+            "repeater"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "helperText": {
+          "type": "string"
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "suggestions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "defaultValue": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "dataSource": {
+          "type": "string",
+          "enum": [
+            "companies",
+            "users"
+          ]
+        },
+        "validation": {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "minLength": {
+              "type": "number"
+            },
+            "maxLength": {
+              "type": "number"
+            },
+            "pattern": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            },
+            "unit": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "step": {
+          "type": "number"
+        },
+        "minItems": {
+          "type": "number"
+        },
+        "maxItems": {
+          "type": "number"
+        },
+        "formula": {
+          "type": "string"
+        },
+        "computed": {
+          "type": "object",
+          "properties": {
+            "formula": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "visibleWhen": {
+          "type": "object",
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "fieldId": {
+              "type": "string"
+            },
+            "operator": {
+              "type": "string",
+              "enum": [
+                "equals",
+                "notEquals",
+                "not_equals",
+                "includes",
+                "contains",
+                "greaterThan",
+                "greater_than",
+                "lessThan",
+                "less_than",
+                "exists"
+              ]
+            },
+            "value": {
+              "type": [
+                "string",
+                "number",
+                "boolean"
+              ]
+            }
+          },
+          "required": [
+            "operator"
+          ],
+          "additionalProperties": false
+        },
+        "condition": {
+          "$ref": "#/definitions/FormControl/properties/visibleWhen"
+        },
+        "itemControls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/definitions/FormControl/properties/id"
+              },
+              "type": {
+                "$ref": "#/definitions/FormControl/properties/type"
+              },
+              "label": {
+                "$ref": "#/definitions/FormControl/properties/label"
+              },
+              "description": {
+                "$ref": "#/definitions/FormControl/properties/description"
+              },
+              "helperText": {
+                "$ref": "#/definitions/FormControl/properties/helperText"
+              },
+              "placeholder": {
+                "$ref": "#/definitions/FormControl/properties/placeholder"
+              },
+              "examples": {
+                "$ref": "#/definitions/FormControl/properties/examples"
+              },
+              "suggestions": {
+                "$ref": "#/definitions/FormControl/properties/suggestions"
+              },
+              "required": {
+                "$ref": "#/definitions/FormControl/properties/required"
+              },
+              "defaultValue": {
+                "$ref": "#/definitions/FormControl/properties/defaultValue"
+              },
+              "options": {
+                "$ref": "#/definitions/FormControl/properties/options"
+              },
+              "dataSource": {
+                "$ref": "#/definitions/FormControl/properties/dataSource"
+              },
+              "validation": {
+                "$ref": "#/definitions/FormControl/properties/validation"
+              },
+              "pattern": {
+                "$ref": "#/definitions/FormControl/properties/pattern"
+              },
+              "min": {
+                "$ref": "#/definitions/FormControl/properties/min"
+              },
+              "max": {
+                "$ref": "#/definitions/FormControl/properties/max"
+              },
+              "step": {
+                "$ref": "#/definitions/FormControl/properties/step"
+              },
+              "minItems": {
+                "$ref": "#/definitions/FormControl/properties/minItems"
+              },
+              "maxItems": {
+                "$ref": "#/definitions/FormControl/properties/maxItems"
+              },
+              "formula": {
+                "$ref": "#/definitions/FormControl/properties/formula"
+              },
+              "computed": {
+                "$ref": "#/definitions/FormControl/properties/computed"
+              },
+              "visibleWhen": {
+                "$ref": "#/definitions/FormControl/properties/visibleWhen"
+              },
+              "condition": {
+                "$ref": "#/definitions/FormControl/properties/condition"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "label"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "controls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FormControl/properties/itemControls/items"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "label"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

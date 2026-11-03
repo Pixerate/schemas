@@ -1,0 +1,110 @@
+{
+  "$ref": "#/definitions/FuelTransaction",
+  "definitions": {
+    "FuelTransaction": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "orgId": {
+          "type": "string"
+        },
+        "teamId": {
+          "type": "string"
+        },
+        "targetType": {
+          "type": "string",
+          "enum": [
+            "organization",
+            "team",
+            "user"
+          ]
+        },
+        "targetId": {
+          "type": "string"
+        },
+        "userId": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "not": {}
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "amount": {
+          "type": "number"
+        },
+        "balanceAfter": {
+          "type": "number"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "usage",
+            "consumption",
+            "top_up",
+            "topup",
+            "proration",
+            "adjustment",
+            "allocation",
+            "bonus",
+            "refund"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "resultType": {
+          "type": "string"
+        },
+        "resultId": {
+          "type": "string"
+        },
+        "client": {
+          "type": "string",
+          "default": "unknown"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {},
+          "default": {}
+        },
+        "createdAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ],
+          "default": "1970-01-01T00:00:00.000Z"
+        }
+      },
+      "required": [
+        "id",
+        "amount",
+        "type"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

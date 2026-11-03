@@ -1,0 +1,104 @@
+{
+  "$ref": "#/definitions/NotificationPreferences",
+  "definitions": {
+    "NotificationPreferences": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "channels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "in_app": {
+                "type": "boolean",
+                "default": true
+              },
+              "email": {
+                "type": "boolean",
+                "default": true
+              },
+              "web_push": {
+                "type": "boolean",
+                "default": false
+              },
+              "webhook": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "additionalProperties": false
+          },
+          "propertyNames": {
+            "enum": [
+              "mention",
+              "reply",
+              "team_invite",
+              "fuel_alert",
+              "system",
+              "job_completed",
+              "job_failed",
+              "custom"
+            ]
+          },
+          "default": {}
+        },
+        "emailDigest": {
+          "type": "string",
+          "enum": [
+            "instant",
+            "hourly",
+            "daily",
+            "weekly",
+            "never"
+          ],
+          "default": "instant"
+        },
+        "quietHours": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "startHourUtc": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 23,
+              "default": 22
+            },
+            "endHourUtc": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 23,
+              "default": 8
+            }
+          },
+          "additionalProperties": false
+        },
+        "updatedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ],
+          "default": "1970-01-01T00:00:00.000Z"
+        }
+      },
+      "required": [
+        "userId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

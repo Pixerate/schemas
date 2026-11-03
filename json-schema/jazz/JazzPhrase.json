@@ -1,0 +1,135 @@
+{
+  "$ref": "#/definitions/JazzPhrase",
+  "definitions": {
+    "JazzPhrase": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "surface": {
+          "type": "string",
+          "minLength": 1
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endedAt": {
+          "$ref": "#/definitions/JazzPhrase/properties/startedAt"
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "at": {
+                "$ref": "#/definitions/JazzPhrase/properties/startedAt"
+              },
+              "surface": {
+                "type": "string",
+                "minLength": 1
+              },
+              "origin": {
+                "type": "string",
+                "pattern": "^(user|agent:.+)$"
+              },
+              "action": {
+                "type": "string",
+                "enum": [
+                  "add",
+                  "remove",
+                  "edit",
+                  "select",
+                  "undo",
+                  "redo",
+                  "revert"
+                ]
+              },
+              "targets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "node",
+                        "edge",
+                        "layer",
+                        "text",
+                        "cell",
+                        "other"
+                      ],
+                      "default": "node"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string",
+                      "maxLength": 200
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "additionalProperties": false
+                },
+                "maxItems": 200
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 50
+              },
+              "inGesture": {
+                "type": "boolean",
+                "default": false
+              },
+              "summary": {
+                "type": "string",
+                "maxLength": 280
+              }
+            },
+            "required": [
+              "id",
+              "at",
+              "surface",
+              "origin",
+              "action",
+              "targets"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 200
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "id",
+        "surface",
+        "startedAt",
+        "endedAt",
+        "observations"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

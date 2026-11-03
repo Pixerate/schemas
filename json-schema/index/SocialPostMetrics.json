@@ -1,0 +1,90 @@
+{
+  "$ref": "#/definitions/SocialPostMetrics",
+  "definitions": {
+    "SocialPostMetrics": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "type": "string",
+          "enum": [
+            "bluesky",
+            "twitter",
+            "linkedin",
+            "tiktok",
+            "instagram"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "publishedAt": {
+          "type": "string"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "friends",
+            "private",
+            "under_review",
+            "restricted",
+            "removed",
+            "unknown"
+          ]
+        },
+        "statusLabel": {
+          "type": "string"
+        },
+        "views": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "impressions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "likes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "comments": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "shares": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quotes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "saves": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "clicks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fetchedAt": {
+          "type": "string"
+        },
+        "rawResponse": {}
+      },
+      "required": [
+        "platform",
+        "id",
+        "fetchedAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

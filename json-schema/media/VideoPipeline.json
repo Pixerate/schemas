@@ -1,0 +1,544 @@
+{
+  "$ref": "#/definitions/VideoPipeline",
+  "definitions": {
+    "SubtitleBurnOptions": {
+      "type": "object",
+      "properties": {
+        "subtitlePath": {
+          "type": "string"
+        },
+        "subtitleContent": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "srt",
+            "vtt",
+            "ass"
+          ]
+        },
+        "fontSize": {
+          "type": "number"
+        },
+        "fontName": {
+          "type": "string"
+        },
+        "fontColor": {
+          "type": "string"
+        },
+        "primaryColor": {
+          "type": "string"
+        },
+        "outlineColor": {
+          "type": "string"
+        },
+        "outlineWidth": {
+          "type": "number"
+        },
+        "alignment": {
+          "type": "integer"
+        },
+        "marginV": {
+          "type": "integer"
+        },
+        "karaoke": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "KenBurnsOptions": {
+      "type": "object",
+      "properties": {
+        "durationSeconds": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 5
+        },
+        "fps": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 30
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 1920
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 1080
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "in",
+            "out"
+          ]
+        },
+        "zoomDirection": {
+          "type": "string",
+          "enum": [
+            "in",
+            "out",
+            "none"
+          ],
+          "default": "in"
+        },
+        "zoomSpeed": {
+          "type": "number"
+        },
+        "pan": {
+          "type": "string",
+          "enum": [
+            "center",
+            "left-to-right",
+            "right-to-left",
+            "top-to-bottom",
+            "bottom-to-top"
+          ]
+        },
+        "panDirection": {
+          "type": "string",
+          "enum": [
+            "top-to-bottom",
+            "bottom-to-top",
+            "left-to-right",
+            "right-to-left",
+            "center",
+            "none"
+          ],
+          "default": "center"
+        },
+        "maxZoom": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 3,
+          "default": 1.2
+        }
+      },
+      "additionalProperties": false
+    },
+    "VideoPipeline": {
+      "type": "object",
+      "properties": {
+        "scaleAndPad": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "integer",
+              "exclusiveMinimum": 0
+            },
+            "height": {
+              "type": "integer",
+              "exclusiveMinimum": 0
+            },
+            "fit": {
+              "type": "string",
+              "enum": [
+                "contain",
+                "cover",
+                "fill"
+              ]
+            },
+            "background": {
+              "type": "string"
+            },
+            "crf": {
+              "type": "number"
+            },
+            "preset": {
+              "type": "string"
+            },
+            "videoCodec": {
+              "type": "string"
+            },
+            "audioCodec": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "width",
+            "height"
+          ],
+          "additionalProperties": false
+        },
+        "textOverlay": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "style": {
+              "type": "string",
+              "enum": [
+                "neubrutalist",
+                "neubrutalist-dark",
+                "badge",
+                "meme",
+                "custom",
+                "none"
+              ]
+            },
+            "font": {
+              "type": "string"
+            },
+            "fontPath": {
+              "type": "string"
+            },
+            "position": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "top",
+                    "center",
+                    "bottom"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": [
+                        "number",
+                        "string"
+                      ]
+                    },
+                    "y": {
+                      "type": [
+                        "number",
+                        "string"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "alignment": {
+              "type": "string",
+              "enum": [
+                "left",
+                "center",
+                "right"
+              ]
+            },
+            "fontSize": {
+              "type": "number"
+            },
+            "lineHeight": {
+              "type": "number"
+            },
+            "letterSpacing": {
+              "type": "number"
+            },
+            "textColor": {
+              "type": "string"
+            },
+            "textTransform": {
+              "type": "string",
+              "enum": [
+                "uppercase",
+                "lowercase",
+                "capitalize",
+                "none"
+              ]
+            },
+            "strokeColor": {
+              "type": "string"
+            },
+            "strokeWidth": {
+              "type": "number"
+            },
+            "shadow": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "dx": {
+                      "type": "number"
+                    },
+                    "dy": {
+                      "type": "number"
+                    },
+                    "blur": {
+                      "type": "number"
+                    },
+                    "color": {
+                      "type": "string"
+                    },
+                    "opacity": {
+                      "type": "number"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "containerBgColor": {
+              "type": "string"
+            },
+            "containerBorderColor": {
+              "type": "string"
+            },
+            "containerBorderWidth": {
+              "type": "number"
+            },
+            "containerBorderRadius": {
+              "type": "number"
+            },
+            "paddingX": {
+              "type": "number"
+            },
+            "paddingY": {
+              "type": "number"
+            },
+            "maxCharsPerLine": {
+              "type": "number"
+            },
+            "badgeTag": {
+              "type": "string"
+            },
+            "badgeBgColor": {
+              "type": "string"
+            },
+            "badgeTextColor": {
+              "type": "string"
+            },
+            "badgeFont": {
+              "type": "string"
+            },
+            "badgeFontSize": {
+              "type": "number"
+            },
+            "badgePosition": {
+              "type": "string",
+              "enum": [
+                "top-left",
+                "top-right",
+                "top-center",
+                "bottom-left",
+                "bottom-right",
+                "bottom-center"
+              ]
+            },
+            "watermark": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    },
+                    "imagePath": {
+                      "type": "string"
+                    },
+                    "font": {
+                      "type": "string"
+                    },
+                    "fontPath": {
+                      "type": "string"
+                    },
+                    "position": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "bottom-right",
+                            "bottom-left",
+                            "top-right",
+                            "top-left",
+                            "center"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "type": [
+                                "number",
+                                "string"
+                              ]
+                            },
+                            "y": {
+                              "type": [
+                                "number",
+                                "string"
+                              ]
+                            }
+                          },
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "color": {
+                      "type": "string"
+                    },
+                    "strokeColor": {
+                      "type": "string"
+                    },
+                    "strokeWidth": {
+                      "type": "number"
+                    },
+                    "fontSize": {
+                      "type": "number"
+                    },
+                    "transparentBg": {
+                      "type": "boolean"
+                    },
+                    "opacity": {
+                      "type": "number"
+                    },
+                    "marginRight": {
+                      "type": "number"
+                    },
+                    "marginBottom": {
+                      "type": "number"
+                    },
+                    "marginLeft": {
+                      "type": "number"
+                    },
+                    "marginTop": {
+                      "type": "number"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        "watermark": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/VideoPipeline/properties/textOverlay/properties/watermark/anyOf/1"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "imageOverlays": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "imagePath": {
+                "type": "string"
+              },
+              "options": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": [
+                      "number",
+                      "string"
+                    ]
+                  },
+                  "y": {
+                    "type": [
+                      "number",
+                      "string"
+                    ]
+                  },
+                  "position": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "padding": {
+                    "type": "number"
+                  },
+                  "scale": {
+                    "type": "number"
+                  },
+                  "opacity": {
+                    "type": "number"
+                  },
+                  "width": {
+                    "type": "number"
+                  },
+                  "height": {
+                    "type": "number"
+                  },
+                  "crf": {
+                    "type": "number"
+                  },
+                  "preset": {
+                    "type": "string"
+                  },
+                  "videoCodec": {
+                    "type": "string"
+                  },
+                  "audioCodec": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "imagePath"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "subtitles": {
+          "$ref": "#/definitions/SubtitleBurnOptions"
+        },
+        "kenBurns": {
+          "$ref": "#/definitions/KenBurnsOptions"
+        },
+        "compress": {
+          "type": "object",
+          "properties": {
+            "crf": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 51
+            },
+            "preset": {
+              "type": "string"
+            },
+            "videoCodec": {
+              "type": "string"
+            },
+            "audioCodec": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

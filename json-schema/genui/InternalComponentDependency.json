@@ -1,0 +1,42 @@
+{
+  "$ref": "#/definitions/InternalComponentDependency",
+  "definitions": {
+    "InternalComponentDependency": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "surreal"
+        },
+        "componentTypeId": {
+          "type": "string",
+          "description": "Slug of target component type (e.g. 'button')"
+        },
+        "aestheticId": {
+          "type": "string",
+          "description": "Aesthetic style ID (e.g. 'glassmorphism')"
+        },
+        "variantId": {
+          "type": "string",
+          "description": "Variant ID (e.g. 'glass-action-button')"
+        },
+        "versionRange": {
+          "type": "string",
+          "default": "^1.0.0",
+          "description": "Semver range required"
+        },
+        "importedAs": {
+          "type": "string",
+          "description": "Local identifier name (e.g. 'Button')"
+        }
+      },
+      "required": [
+        "type",
+        "componentTypeId",
+        "importedAs"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

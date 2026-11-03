@@ -1,0 +1,33 @@
+{
+  "$ref": "#/definitions/PublishResult",
+  "definitions": {
+    "PublishResult": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "rawResponse": {}
+      },
+      "required": [
+        "success",
+        "platform",
+        "timestamp"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,16 @@
+{
+  "$ref": "#/definitions/SocialPlatform",
+  "definitions": {
+    "SocialPlatform": {
+      "type": "string",
+      "enum": [
+        "bluesky",
+        "twitter",
+        "linkedin",
+        "tiktok",
+        "instagram"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

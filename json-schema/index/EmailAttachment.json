@@ -1,0 +1,30 @@
+{
+  "$ref": "#/definitions/EmailAttachment",
+  "definitions": {
+    "EmailAttachment": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "type": "string"
+        },
+        "content": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {}
+          ]
+        },
+        "contentType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "filename",
+        "content"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

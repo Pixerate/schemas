@@ -1,0 +1,25 @@
+{
+  "$ref": "#/definitions/LlmsDocumentContent",
+  "definitions": {
+    "LlmsDocumentContent": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "markdown": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "markdown"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

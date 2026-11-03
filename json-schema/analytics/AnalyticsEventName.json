@@ -1,0 +1,32 @@
+{
+  "$ref": "#/definitions/AnalyticsEventName",
+  "definitions": {
+    "AnalyticsEventName": {
+      "type": "string",
+      "enum": [
+        "sign_up",
+        "login",
+        "join_waitlist",
+        "waitlist_approved",
+        "onboarded",
+        "tutorial_begin",
+        "onboarding_step",
+        "onboarding_milestone",
+        "tutorial_complete",
+        "create_item",
+        "generate",
+        "run_agent",
+        "save_version",
+        "publish",
+        "share",
+        "invite_member",
+        "join_team",
+        "submit_feedback",
+        "begin_checkout",
+        "purchase",
+        "page_view"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

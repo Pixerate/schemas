@@ -1,0 +1,13 @@
+{
+  "$ref": "#/definitions/PerceptualHashAlgorithm",
+  "definitions": {
+    "PerceptualHashAlgorithm": {
+      "type": "string",
+      "enum": [
+        "ahash",
+        "dhash"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

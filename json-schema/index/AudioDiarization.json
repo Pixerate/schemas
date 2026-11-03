@@ -1,0 +1,92 @@
+{
+  "$ref": "#/definitions/AudioDiarization",
+  "definitions": {
+    "AudioDiarization": {
+      "type": "object",
+      "properties": {
+        "transcript": {
+          "type": "string",
+          "description": "Full combined transcript text"
+        },
+        "speakers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of unique speaker names or identifiers"
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "speaker": {
+                "type": "string",
+                "description": "Speaker identifier (e.g. Speaker 1, Speaker 2)"
+              },
+              "text": {
+                "type": "string",
+                "description": "Spoken segment text"
+              },
+              "startOffset": {
+                "type": [
+                  "string",
+                  "number"
+                ],
+                "description": "Start timestamp of the segment"
+              },
+              "endOffset": {
+                "type": [
+                  "string",
+                  "number"
+                ],
+                "description": "End timestamp of the segment"
+              },
+              "words": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "word": {
+                      "type": "string"
+                    },
+                    "startOffset": {
+                      "type": [
+                        "string",
+                        "number"
+                      ]
+                    },
+                    "endOffset": {
+                      "type": [
+                        "string",
+                        "number"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "word"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Word-level timestamps for words in this segment"
+              }
+            },
+            "required": [
+              "speaker",
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Ordered chronological segments of speech by speaker with timestamps"
+        }
+      },
+      "required": [
+        "transcript",
+        "speakers",
+        "segments"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

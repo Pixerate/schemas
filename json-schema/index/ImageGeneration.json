@@ -1,0 +1,45 @@
+{
+  "$ref": "#/definitions/ImageGeneration",
+  "definitions": {
+    "ImageGeneration": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string"
+        },
+        "aspectRatio": {
+          "type": "string",
+          "enum": [
+            "1:1",
+            "2:3",
+            "3:2",
+            "3:4",
+            "4:3",
+            "4:5",
+            "5:4",
+            "9:16",
+            "16:9",
+            "21:9"
+          ]
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "fidelity": {
+          "type": "string",
+          "enum": [
+            "outline",
+            "blocked",
+            "shaded",
+            "polished"
+          ]
+        }
+      },
+      "required": [
+        "prompt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

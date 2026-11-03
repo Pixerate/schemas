@@ -1,0 +1,40 @@
+{
+  "$ref": "#/definitions/AudioDuckingOptions",
+  "definitions": {
+    "AudioDuckingOptions": {
+      "type": "object",
+      "properties": {
+        "duckingDb": {
+          "type": "number",
+          "default": 14
+        },
+        "attackMs": {
+          "type": "number",
+          "default": 20
+        },
+        "releaseMs": {
+          "type": "number",
+          "default": 250
+        },
+        "threshold": {
+          "type": "number",
+          "default": 0.125
+        },
+        "crf": {
+          "type": "number"
+        },
+        "preset": {
+          "type": "string"
+        },
+        "videoCodec": {
+          "type": "string"
+        },
+        "audioCodec": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

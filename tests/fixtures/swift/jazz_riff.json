@@ -1,0 +1,36 @@
+{
+  "id": "riff-42",
+  "sessionId": "session-abc",
+  "origin": "agent:pixie",
+  "surface": "canvas",
+  "strategy": "continue-series",
+  "intent": "add",
+  "title": "Add subtitle below Hero",
+  "rationale": "Complement hero image with a subtitle block",
+  "confidence": 0.95,
+  "targets": [
+    "node-1"
+  ],
+  "toolCalls": [
+    {
+      "name": "add_text_node",
+      "arguments": {
+        "text": "Discover Endless Possibilities",
+        "fontSize": 24,
+        "bold": true,
+        "coords": {
+          "x": 100,
+          "y": 350
+        },
+        "tags": [
+          "heading",
+          "hero"
+        ]
+      }
+    }
+  ],
+  "mode": "suggest",
+  "proposalId": "prop-123",
+  "status": "proposed",
+  "createdAt": "2026-11-03T12:30:05.000Z"
+}

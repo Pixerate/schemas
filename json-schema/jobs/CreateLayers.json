@@ -1,0 +1,24 @@
+{
+  "$ref": "#/definitions/CreateLayers",
+  "definitions": {
+    "CreateLayers": {
+      "type": "object",
+      "properties": {
+        "generationId": {
+          "type": "number"
+        },
+        "imagePath": {
+          "type": "string"
+        },
+        "objectCategory": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "generationId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

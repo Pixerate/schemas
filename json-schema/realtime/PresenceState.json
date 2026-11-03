@@ -1,0 +1,182 @@
+{
+  "$ref": "#/definitions/PresenceState",
+  "definitions": {
+    "PresenceState": {
+      "type": "object",
+      "properties": {
+        "roomId": {
+          "type": "string"
+        },
+        "presences": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "avatarUrl": {
+                "type": "string"
+              },
+              "actorType": {
+                "type": "string",
+                "enum": [
+                  "human",
+                  "agent",
+                  "system"
+                ]
+              },
+              "color": {
+                "type": "string",
+                "enum": [
+                  "slate",
+                  "gray",
+                  "zinc",
+                  "neutral",
+                  "stone",
+                  "red",
+                  "orange",
+                  "amber",
+                  "yellow",
+                  "lime",
+                  "green",
+                  "emerald",
+                  "teal",
+                  "cyan",
+                  "sky",
+                  "blue",
+                  "indigo",
+                  "violet",
+                  "purple",
+                  "fuchsia",
+                  "pink",
+                  "rose"
+                ],
+                "default": "blue"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "online",
+                  "idle",
+                  "away",
+                  "busy",
+                  "offline",
+                  "planning",
+                  "thinking",
+                  "executing_tool",
+                  "waiting_for_input",
+                  "waiting_for_agent",
+                  "streaming",
+                  "paused",
+                  "error"
+                ],
+                "default": "online"
+              },
+              "agent": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  },
+                  "parentAgentId": {
+                    "type": "string"
+                  },
+                  "runId": {
+                    "type": "string"
+                  },
+                  "currentTask": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "lastSeen": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "default": 0
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": {},
+                "default": {}
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "default": {}
+        },
+        "cursors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "string"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "lastUpdate": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "default": 0
+              },
+              "username": {
+                "type": "string"
+              },
+              "avatarUrl": {
+                "type": "string"
+              },
+              "color": {
+                "$ref": "#/definitions/PresenceState/properties/presences/additionalProperties/properties/color"
+              },
+              "viewport": {
+                "type": "object",
+                "properties": {
+                  "zoom": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "panX": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "panY": {
+                    "type": "number",
+                    "default": 0
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "userId",
+              "x",
+              "y"
+            ],
+            "additionalProperties": false
+          },
+          "default": {}
+        }
+      },
+      "required": [
+        "roomId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,16 @@
+{
+  "$ref": "#/definitions/OTJsonOpType",
+  "definitions": {
+    "OTJsonOpType": {
+      "type": "string",
+      "enum": [
+        "set",
+        "delete",
+        "insert",
+        "move",
+        "replace"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

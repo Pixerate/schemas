@@ -1,0 +1,49 @@
+{
+  "$ref": "#/definitions/LockClaimRequest",
+  "definitions": {
+    "LockClaimRequest": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string"
+        },
+        "resourceType": {
+          "type": "string",
+          "default": "record"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "leaseDurationSeconds": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 60
+        },
+        "force": {
+          "type": "boolean",
+          "default": false
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {},
+          "default": {}
+        }
+      },
+      "required": [
+        "resourceId",
+        "userId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

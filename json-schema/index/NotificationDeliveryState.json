@@ -1,0 +1,16 @@
+{
+  "$ref": "#/definitions/NotificationDeliveryState",
+  "definitions": {
+    "NotificationDeliveryState": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "sent",
+        "delivered",
+        "failed",
+        "skipped"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

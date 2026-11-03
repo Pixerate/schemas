@@ -1,0 +1,152 @@
+{
+  "$ref": "#/definitions/TreeBlock",
+  "definitions": {
+    "TreeNode": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "badge": {
+          "type": "string"
+        },
+        "badgeTone": {
+          "type": "string",
+          "enum": [
+            "success",
+            "warning",
+            "error",
+            "info",
+            "gray"
+          ]
+        },
+        "status": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TreeNode"
+          }
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "TreeBlock": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "tree",
+            "node-diagram",
+            "node_diagram",
+            "orgchart"
+          ],
+          "default": "tree"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "layout": {
+          "type": "string",
+          "enum": [
+            "hierarchical",
+            "radial",
+            "flow",
+            "horizontal",
+            "vertical"
+          ]
+        },
+        "root": {
+          "$ref": "#/definitions/TreeNode"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TreeNode"
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "style": {
+                "type": "string",
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "default": []
+        },
+        "company": {
+          "type": "string"
+        },
+        "people": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TreeNode"
+          }
+        },
+        "reports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TreeBlock/properties/edges/items"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

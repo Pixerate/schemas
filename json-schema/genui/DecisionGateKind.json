@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/DecisionGateKind",
+  "definitions": {
+    "DecisionGateKind": {
+      "type": "string",
+      "enum": [
+        "approval",
+        "review",
+        "decision"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

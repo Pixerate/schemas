@@ -1,0 +1,83 @@
+{
+  "$ref": "#/definitions/IngestionInput",
+  "definitions": {
+    "IngestionInput": {
+      "type": "object",
+      "properties": {
+        "codeBundle": {
+          "type": "string",
+          "description": "Raw code bundle provided"
+        },
+        "css": {
+          "type": "string",
+          "description": "Optional raw CSS or CSS bundle to extract and inline"
+        },
+        "componentTypeId": {
+          "type": "string",
+          "description": "Slug or Name of UI Component Type (e.g., 'button')"
+        },
+        "variantName": {
+          "type": "string",
+          "description": "Mandatory Variant Name text input (e.g., 'Glass Action Button')"
+        },
+        "variantId": {
+          "type": "string",
+          "description": "Optional custom slug or ID for variant"
+        },
+        "aestheticId": {
+          "type": "string",
+          "description": "Dropdown value for aesthetic style (e.g., 'glassmorphism', 'neubrutalism', 'minimalist', 'modern', 'shadcn')"
+        },
+        "recommendedThemeId": {
+          "type": "string",
+          "description": "Optional recommended theme ID"
+        },
+        "componentTypeName": {
+          "type": "string",
+          "description": "Optional display name if creating new component type"
+        },
+        "componentTypeDescription": {
+          "type": "string",
+          "description": "Optional description if creating new component type"
+        },
+        "variantDescription": {
+          "type": "string",
+          "description": "Optional description if creating new variant"
+        },
+        "aestheticName": {
+          "type": "string",
+          "description": "Optional display name for aesthetic"
+        },
+        "aestheticDescription": {
+          "type": "string",
+          "description": "Optional description if creating new aesthetic"
+        },
+        "sourcePlatform": {
+          "type": "string",
+          "enum": [
+            "svelte",
+            "react",
+            "webcomponent"
+          ],
+          "description": "Optional source platform - detected automatically if omitted"
+        },
+        "changelogNote": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "codeBundle",
+        "componentTypeId",
+        "variantName"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,63 @@
+{
+  "$ref": "#/definitions/JazzRiffSummary",
+  "definitions": {
+    "JazzRiffSummary": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "strategy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "intent": {
+          "type": "string",
+          "enum": [
+            "add",
+            "annotate",
+            "connect",
+            "vary",
+            "suggest"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 50,
+          "default": []
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "proposed",
+            "applied",
+            "accepted",
+            "rejected",
+            "edited",
+            "ignored",
+            "withdrawn"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "strategy",
+        "intent",
+        "title",
+        "status"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

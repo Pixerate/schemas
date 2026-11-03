@@ -1,0 +1,118 @@
+{
+  "$ref": "#/definitions/MetaConfig",
+  "definitions": {
+    "MetaConfig": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "titleTemplate": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "siteName": {
+          "type": "string"
+        },
+        "site": {
+          "type": "string"
+        },
+        "siteUrl": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "canonicalUrl": {
+          "type": "string"
+        },
+        "mainImage": {
+          "type": "string"
+        },
+        "mainImageAlt": {
+          "type": "string"
+        },
+        "mainImageWidth": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "mainImageHeight": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "squareImage": {
+          "type": "string"
+        },
+        "squareImageAlt": {
+          "type": "string"
+        },
+        "squareImageWidth": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "squareImageHeight": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "ogType": {
+          "type": "string",
+          "enum": [
+            "website",
+            "article",
+            "profile",
+            "product"
+          ]
+        },
+        "ogLanguage": {
+          "type": "string"
+        },
+        "twitterCard": {
+          "type": "string",
+          "enum": [
+            "summary",
+            "summary_large_image",
+            "app",
+            "player"
+          ]
+        },
+        "twitterHandle": {
+          "type": "string"
+        },
+        "article": {
+          "type": "boolean"
+        },
+        "datePublished": {
+          "type": "string"
+        },
+        "lastUpdated": {
+          "type": "string"
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "noindex": {
+          "type": "boolean"
+        },
+        "nofollow": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

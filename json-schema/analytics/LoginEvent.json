@@ -1,0 +1,29 @@
+{
+  "$ref": "#/definitions/LoginEvent",
+  "definitions": {
+    "LoginEvent": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "login"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "method": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

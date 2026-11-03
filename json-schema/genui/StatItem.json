@@ -1,0 +1,38 @@
+{
+  "$ref": "#/definitions/StatItem",
+  "definitions": {
+    "StatItem": {
+      "type": "object",
+      "properties": {
+        "icon": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        },
+        "delta": {
+          "type": "string"
+        },
+        "tone": {
+          "type": "string",
+          "enum": [
+            "up",
+            "down",
+            "neutral"
+          ]
+        }
+      },
+      "required": [
+        "label",
+        "value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,33 @@
+{
+  "$ref": "#/definitions/ElicitationResponse",
+  "definitions": {
+    "ElicitationResponse": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string"
+        },
+        "selectedOptionIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "customText": {
+          "type": "string"
+        },
+        "rankings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "requestId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

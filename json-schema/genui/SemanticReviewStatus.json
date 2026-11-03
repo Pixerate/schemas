@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/SemanticReviewStatus",
+  "definitions": {
+    "SemanticReviewStatus": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "flagged",
+        "unavailable"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

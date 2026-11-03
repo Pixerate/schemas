@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/NotificationStatus",
+  "definitions": {
+    "NotificationStatus": {
+      "type": "string",
+      "enum": [
+        "unread",
+        "read",
+        "archived"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

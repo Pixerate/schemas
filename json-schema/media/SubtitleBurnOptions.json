@@ -1,0 +1,53 @@
+{
+  "$ref": "#/definitions/SubtitleBurnOptions",
+  "definitions": {
+    "SubtitleBurnOptions": {
+      "type": "object",
+      "properties": {
+        "subtitlePath": {
+          "type": "string"
+        },
+        "subtitleContent": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "srt",
+            "vtt",
+            "ass"
+          ]
+        },
+        "fontSize": {
+          "type": "number"
+        },
+        "fontName": {
+          "type": "string"
+        },
+        "fontColor": {
+          "type": "string"
+        },
+        "primaryColor": {
+          "type": "string"
+        },
+        "outlineColor": {
+          "type": "string"
+        },
+        "outlineWidth": {
+          "type": "number"
+        },
+        "alignment": {
+          "type": "integer"
+        },
+        "marginV": {
+          "type": "integer"
+        },
+        "karaoke": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

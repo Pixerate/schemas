@@ -1,0 +1,28 @@
+{
+  "$ref": "#/definitions/VideoFrameImage",
+  "definitions": {
+    "VideoFrameImage": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "bytesBase64Encoded": {
+              "type": "string"
+            },
+            "data": {
+              "type": "string"
+            },
+            "mimeType": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

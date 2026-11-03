@@ -1,0 +1,15 @@
+{
+  "$ref": "#/definitions/Fidelity",
+  "definitions": {
+    "Fidelity": {
+      "type": "string",
+      "enum": [
+        "outline",
+        "blocked",
+        "shaded",
+        "polished"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

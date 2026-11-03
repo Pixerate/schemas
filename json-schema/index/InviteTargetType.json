@@ -1,0 +1,13 @@
+{
+  "$ref": "#/definitions/InviteTargetType",
+  "definitions": {
+    "InviteTargetType": {
+      "type": "string",
+      "enum": [
+        "organization",
+        "team"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

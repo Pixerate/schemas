@@ -1,0 +1,57 @@
+{
+  "$ref": "#/definitions/GenerateHarnessOptions",
+  "definitions": {
+    "GenerateHarnessOptions": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+            "svelte",
+            "react",
+            "webcomponent"
+          ]
+        },
+        "componentName": {
+          "type": "string"
+        },
+        "docsProps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "default": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "description"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "code",
+        "language",
+        "componentName"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

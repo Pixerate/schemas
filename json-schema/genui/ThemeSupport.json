@@ -1,0 +1,13 @@
+{
+  "$ref": "#/definitions/ThemeSupport",
+  "definitions": {
+    "ThemeSupport": {
+      "type": "string",
+      "enum": [
+        "default",
+        "light-and-dark"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

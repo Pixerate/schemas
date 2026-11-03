@@ -1,0 +1,100 @@
+{
+  "$ref": "#/definitions/VectorTraceOptions",
+  "definitions": {
+    "VectorTraceOptions": {
+      "type": "object",
+      "properties": {
+        "engine": {
+          "type": "string",
+          "enum": [
+            "vtracer",
+            "potrace"
+          ]
+        },
+        "colorMode": {
+          "type": "string",
+          "enum": [
+            "color",
+            "binary"
+          ],
+          "default": "color"
+        },
+        "hierarchical": {
+          "type": "string",
+          "enum": [
+            "stacked",
+            "cutout"
+          ],
+          "default": "stacked"
+        },
+        "filterSpeckle": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 4
+        },
+        "colorPrecision": {
+          "type": "number"
+        },
+        "layerDifference": {
+          "type": "number"
+        },
+        "cornerThreshold": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 180,
+          "default": 60
+        },
+        "lengthThreshold": {
+          "type": "number"
+        },
+        "segmentLength": {
+          "type": "number",
+          "minimum": 0,
+          "default": 4
+        },
+        "maxIterations": {
+          "type": "number"
+        },
+        "spliceThreshold": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 180,
+          "default": 45
+        },
+        "pathPrecision": {
+          "type": "number"
+        },
+        "turnPolicy": {
+          "type": "string",
+          "enum": [
+            "black",
+            "white",
+            "left",
+            "right",
+            "minority",
+            "majority"
+          ]
+        },
+        "turdSize": {
+          "type": "number"
+        },
+        "alphamax": {
+          "type": "number"
+        },
+        "opticurve": {
+          "type": "boolean"
+        },
+        "opttolerance": {
+          "type": "number"
+        },
+        "scale": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

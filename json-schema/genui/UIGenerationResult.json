@@ -1,0 +1,39 @@
+{
+  "$ref": "#/definitions/UIGenerationResult",
+  "definitions": {
+    "UIGenerationResult": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Final validated component code"
+        },
+        "postamble": {
+          "type": "string",
+          "description": "Conversational explanation or summary"
+        },
+        "rawText": {
+          "type": "string",
+          "description": "Complete raw model output"
+        },
+        "isValid": {
+          "type": "boolean",
+          "description": "Whether the final code passed validation"
+        },
+        "validationAttempts": {
+          "type": "integer",
+          "description": "Total number of generation/repair attempts"
+        },
+        "validationError": {
+          "type": "string",
+          "description": "Validation error if still failing after max retries"
+        }
+      },
+      "required": [
+        "code"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,62 @@
+{
+  "$ref": "#/definitions/BeginCheckoutEvent",
+  "definitions": {
+    "BeginCheckoutEvent": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "begin_checkout"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "currency": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "item_id": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "item_name": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "item_category": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "price": {
+                    "type": "number"
+                  },
+                  "quantity": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "item_id"
+                ],
+                "additionalProperties": true
+              }
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,13 @@
+{
+  "$ref": "#/definitions/SocialMediaType",
+  "definitions": {
+    "SocialMediaType": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

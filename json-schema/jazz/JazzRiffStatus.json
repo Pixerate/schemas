@@ -1,0 +1,18 @@
+{
+  "$ref": "#/definitions/JazzRiffStatus",
+  "definitions": {
+    "JazzRiffStatus": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "applied",
+        "accepted",
+        "rejected",
+        "edited",
+        "ignored",
+        "withdrawn"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

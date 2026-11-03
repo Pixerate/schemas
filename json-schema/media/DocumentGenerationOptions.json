@@ -1,0 +1,67 @@
+{
+  "$ref": "#/definitions/DocumentGenerationOptions",
+  "definitions": {
+    "DocumentGenerationOptions": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "pageSize": {
+          "type": "string",
+          "enum": [
+            "A4",
+            "A3",
+            "A5",
+            "LETTER",
+            "LEGAL"
+          ],
+          "default": "A4"
+        },
+        "margins": {
+          "type": "object",
+          "properties": {
+            "top": {
+              "type": "number"
+            },
+            "bottom": {
+              "type": "number"
+            },
+            "left": {
+              "type": "number"
+            },
+            "right": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "top",
+            "bottom",
+            "left",
+            "right"
+          ],
+          "additionalProperties": false
+        },
+        "enableSyntaxHighlighting": {
+          "type": "boolean",
+          "default": true
+        },
+        "theme": {
+          "type": "string",
+          "enum": [
+            "light",
+            "dark",
+            "corporate",
+            "minimal"
+          ],
+          "default": "light"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

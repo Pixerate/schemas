@@ -1,0 +1,40 @@
+{
+  "$ref": "#/definitions/ImageTransformation",
+  "definitions": {
+    "ImageTransformation": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string"
+        },
+        "changes": {
+          "type": "string"
+        },
+        "aspectRatio": {
+          "type": "string",
+          "enum": [
+            "1:1",
+            "2:3",
+            "3:2",
+            "3:4",
+            "4:3",
+            "4:5",
+            "5:4",
+            "9:16",
+            "16:9",
+            "21:9"
+          ]
+        },
+        "seed": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "prompt",
+        "changes"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

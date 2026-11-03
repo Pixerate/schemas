@@ -1,0 +1,172 @@
+{
+  "$ref": "#/definitions/Notification",
+  "definitions": {
+    "Notification": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "recipientId": {
+          "type": "string"
+        },
+        "recipientEmail": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        },
+        "richContent": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "mention",
+            "reply",
+            "team_invite",
+            "fuel_alert",
+            "system",
+            "job_completed",
+            "job_failed",
+            "custom"
+          ],
+          "default": "system"
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "low",
+            "normal",
+            "high",
+            "urgent"
+          ],
+          "default": "normal"
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "in_app",
+              "email",
+              "web_push",
+              "webhook",
+              "sms"
+            ]
+          },
+          "default": [
+            "in_app"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "unread",
+            "read",
+            "archived"
+          ],
+          "default": "unread"
+        },
+        "actor": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "avatarUrl": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "user",
+                "agent",
+                "system"
+              ],
+              "default": "user"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "targetType": {
+          "type": "string"
+        },
+        "targetId": {
+          "type": "string"
+        },
+        "actionUrl": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {},
+          "default": {}
+        },
+        "createdAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ],
+          "default": "1970-01-01T00:00:00.000Z"
+        },
+        "readAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        },
+        "archivedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "recipientId",
+        "title",
+        "body"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

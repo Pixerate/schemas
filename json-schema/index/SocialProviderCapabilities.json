@@ -1,0 +1,130 @@
+{
+  "$ref": "#/definitions/SocialProviderCapabilities",
+  "definitions": {
+    "SocialProviderCapabilities": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "type": "string",
+          "enum": [
+            "bluesky",
+            "twitter",
+            "linkedin",
+            "tiktok",
+            "instagram"
+          ]
+        },
+        "text": {
+          "type": "object",
+          "properties": {
+            "maxLength": {
+              "type": "integer",
+              "exclusiveMinimum": 0
+            },
+            "unit": {
+              "type": "string",
+              "enum": [
+                "characters",
+                "graphemes",
+                "weighted"
+              ]
+            }
+          },
+          "required": [
+            "maxLength",
+            "unit"
+          ],
+          "additionalProperties": false
+        },
+        "media": {
+          "type": "object",
+          "properties": {
+            "types": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "image",
+                  "video"
+                ]
+              }
+            },
+            "required": {
+              "type": "boolean"
+            },
+            "maxItems": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "maxImageBytes": {
+              "type": "integer",
+              "exclusiveMinimum": 0
+            },
+            "maxVideoBytes": {
+              "type": "integer",
+              "exclusiveMinimum": 0
+            },
+            "altText": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "types",
+            "required",
+            "maxItems",
+            "altText"
+          ],
+          "additionalProperties": false
+        },
+        "tags": {
+          "type": "object",
+          "properties": {
+            "supported": {
+              "type": "boolean"
+            },
+            "maxCount": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "supported"
+          ],
+          "additionalProperties": false
+        },
+        "replies": {
+          "type": "boolean"
+        },
+        "returnsUrl": {
+          "type": "boolean"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "views",
+              "impressions",
+              "likes",
+              "comments",
+              "shares",
+              "quotes",
+              "saves",
+              "clicks"
+            ]
+          }
+        }
+      },
+      "required": [
+        "platform",
+        "text",
+        "media",
+        "tags",
+        "replies",
+        "returnsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

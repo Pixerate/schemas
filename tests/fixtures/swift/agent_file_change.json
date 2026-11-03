@@ -1,0 +1,11 @@
+{
+  "path": "src/main.ts",
+  "kind": "modified",
+  "before": "console.log(\"hello\")",
+  "after": "console.log(\"hello world\")",
+  "diff": "@@ -1,3 +1,3 @@",
+  "stats": {
+    "added": 1,
+    "removed": 0
+  }
+}

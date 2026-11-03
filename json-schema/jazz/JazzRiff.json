@@ -1,0 +1,167 @@
+{
+  "$ref": "#/definitions/JazzRiff",
+  "definitions": {
+    "JazzJsonValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzJsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/JazzJsonValue"
+          }
+        }
+      ]
+    },
+    "JazzRiff": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sessionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "type": "string",
+          "pattern": "^(user|agent:.+)$"
+        },
+        "surface": {
+          "type": "string",
+          "minLength": 1
+        },
+        "strategy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "intent": {
+          "type": "string",
+          "enum": [
+            "add",
+            "annotate",
+            "connect",
+            "vary",
+            "suggest"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "rationale": {
+          "type": "string",
+          "maxLength": 280
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 50,
+          "default": []
+        },
+        "phraseId": {
+          "type": "string"
+        },
+        "toolCalls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "arguments": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/definitions/JazzJsonValue"
+                },
+                "default": {}
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 20,
+          "default": []
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "suggest",
+            "assist"
+          ]
+        },
+        "proposalId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "proposed",
+            "applied",
+            "accepted",
+            "rejected",
+            "edited",
+            "ignored",
+            "withdrawn"
+          ]
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "$ref": "#/definitions/JazzRiff/properties/createdAt"
+        }
+      },
+      "required": [
+        "id",
+        "sessionId",
+        "origin",
+        "surface",
+        "strategy",
+        "intent",
+        "title",
+        "confidence",
+        "mode",
+        "status",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

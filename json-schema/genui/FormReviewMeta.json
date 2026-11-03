@@ -1,0 +1,25 @@
+{
+  "$ref": "#/definitions/FormReviewMeta",
+  "definitions": {
+    "FormReviewMeta": {
+      "type": "object",
+      "properties": {
+        "humanReviewRequired": {
+          "type": "boolean"
+        },
+        "reviewAreas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "humanReviewRequired",
+        "reviewAreas"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

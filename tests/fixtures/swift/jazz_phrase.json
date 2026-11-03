@@ -1,0 +1,24 @@
+{
+  "id": "phrase-1",
+  "surface": "canvas",
+  "startedAt": "2026-11-03T12:00:00.000Z",
+  "endedAt": "2026-11-03T12:01:00.000Z",
+  "observations": [
+    {
+      "id": "obs-1",
+      "at": "2026-11-03T12:00:30.000Z",
+      "surface": "canvas",
+      "origin": "user",
+      "action": "add",
+      "targets": [
+        {
+          "id": "node-1",
+          "kind": "node",
+          "label": "Box"
+        }
+      ],
+      "inGesture": false
+    }
+  ],
+  "summary": "Added box"
+}

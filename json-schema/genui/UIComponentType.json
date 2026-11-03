@@ -1,0 +1,47 @@
+{
+  "$ref": "#/definitions/UIComponentType",
+  "definitions": {
+    "UIComponentType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Slug, e.g., 'button'"
+        },
+        "name": {
+          "type": "string",
+          "description": "e.g. 'Button'"
+        },
+        "description": {
+          "type": "string",
+          "description": "Official description e.g. from Shadcn documentation"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Freeform tags e.g. ['form', 'action']"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "tags",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

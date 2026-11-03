@@ -1,0 +1,28 @@
+{
+  "$ref": "#/definitions/ChannelPreferences",
+  "definitions": {
+    "ChannelPreferences": {
+      "type": "object",
+      "properties": {
+        "in_app": {
+          "type": "boolean",
+          "default": true
+        },
+        "email": {
+          "type": "boolean",
+          "default": true
+        },
+        "web_push": {
+          "type": "boolean",
+          "default": false
+        },
+        "webhook": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

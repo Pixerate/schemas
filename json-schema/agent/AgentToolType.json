@@ -1,0 +1,16 @@
+{
+  "$ref": "#/definitions/AgentToolType",
+  "definitions": {
+    "AgentToolType": {
+      "type": "string",
+      "enum": [
+        "code_execution",
+        "google_search",
+        "url_context",
+        "file_search",
+        "custom"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

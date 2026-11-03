@@ -1,0 +1,21 @@
+{
+  "$ref": "#/definitions/ServiceClient",
+  "definitions": {
+    "ServiceClient": {
+      "type": "string",
+      "enum": [
+        "pixerate",
+        "slopmachine",
+        "social",
+        "surrealui",
+        "surreal-ui",
+        "symphonia",
+        "flair",
+        "operative",
+        "uchiage",
+        "unknown"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

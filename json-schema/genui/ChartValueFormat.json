@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/ChartValueFormat",
+  "definitions": {
+    "ChartValueFormat": {
+      "type": "string",
+      "enum": [
+        "number",
+        "percent",
+        "currency"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

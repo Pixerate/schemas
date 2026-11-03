@@ -1,0 +1,251 @@
+{
+  "$ref": "#/definitions/Theme",
+  "definitions": {
+    "Theme": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "e.g. 'shadcn-zinc', 'tokyo-night', 'glassmorphism-cyber'"
+        },
+        "name": {
+          "type": "string",
+          "description": "e.g. 'Shadcn Zinc Modern'"
+        },
+        "description": {
+          "type": "string"
+        },
+        "tokens": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "object",
+              "properties": {
+                "light": {
+                  "type": "object",
+                  "properties": {
+                    "primary": {
+                      "type": "string"
+                    },
+                    "primaryForeground": {
+                      "type": "string"
+                    },
+                    "secondary": {
+                      "type": "string"
+                    },
+                    "secondaryForeground": {
+                      "type": "string"
+                    },
+                    "accent": {
+                      "type": "string"
+                    },
+                    "accentForeground": {
+                      "type": "string"
+                    },
+                    "background": {
+                      "type": "string"
+                    },
+                    "foreground": {
+                      "type": "string"
+                    },
+                    "surface": {
+                      "type": "string"
+                    },
+                    "surfaceForeground": {
+                      "type": "string"
+                    },
+                    "muted": {
+                      "type": "string"
+                    },
+                    "mutedForeground": {
+                      "type": "string"
+                    },
+                    "destructive": {
+                      "type": "string"
+                    },
+                    "destructiveForeground": {
+                      "type": "string"
+                    },
+                    "border": {
+                      "type": "string"
+                    },
+                    "ring": {
+                      "type": "string"
+                    },
+                    "customProperties": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "primary",
+                    "background",
+                    "foreground"
+                  ],
+                  "additionalProperties": false
+                },
+                "dark": {
+                  "type": "object",
+                  "properties": {
+                    "primary": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/primary"
+                    },
+                    "primaryForeground": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/primaryForeground"
+                    },
+                    "secondary": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/secondary"
+                    },
+                    "secondaryForeground": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/secondaryForeground"
+                    },
+                    "accent": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/accent"
+                    },
+                    "accentForeground": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/accentForeground"
+                    },
+                    "background": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/background"
+                    },
+                    "foreground": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/foreground"
+                    },
+                    "surface": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/surface"
+                    },
+                    "surfaceForeground": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/surfaceForeground"
+                    },
+                    "muted": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/muted"
+                    },
+                    "mutedForeground": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/mutedForeground"
+                    },
+                    "destructive": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/destructive"
+                    },
+                    "destructiveForeground": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/destructiveForeground"
+                    },
+                    "border": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/border"
+                    },
+                    "ring": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/ring"
+                    },
+                    "customProperties": {
+                      "$ref": "#/definitions/Theme/properties/tokens/properties/colors/properties/light/properties/customProperties"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "light"
+              ],
+              "additionalProperties": false
+            },
+            "typography": {
+              "type": "object",
+              "properties": {
+                "fontSans": {
+                  "type": "string"
+                },
+                "fontMono": {
+                  "type": "string"
+                },
+                "fontHeading": {
+                  "type": "string"
+                },
+                "fontImports": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "fontCss": {
+                  "type": "string"
+                },
+                "fontSize": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "fontWeight": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "radii": {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "not": {}
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              }
+            },
+            "spacing": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "paddings": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "shadows": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "colors"
+          ],
+          "additionalProperties": false
+        },
+        "supportsDarkMode": {
+          "type": "boolean"
+        },
+        "isSystem": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "tokens",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

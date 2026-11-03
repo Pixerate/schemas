@@ -1,0 +1,30 @@
+{
+  "$ref": "#/definitions/AudioDiarizationWord",
+  "definitions": {
+    "AudioDiarizationWord": {
+      "type": "object",
+      "properties": {
+        "word": {
+          "type": "string"
+        },
+        "startOffset": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "endOffset": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "word"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

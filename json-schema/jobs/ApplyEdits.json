@@ -1,0 +1,21 @@
+{
+  "$ref": "#/definitions/ApplyEdits",
+  "definitions": {
+    "ApplyEdits": {
+      "type": "object",
+      "properties": {
+        "editId": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "editId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

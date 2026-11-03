@@ -1,0 +1,48 @@
+{
+  "$ref": "#/definitions/CachedPageSummary",
+  "definitions": {
+    "CachedPageSummary": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "textLength": {
+          "type": "number",
+          "minimum": 0
+        },
+        "imageCount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fetchedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        }
+      },
+      "required": [
+        "url",
+        "path",
+        "title",
+        "textLength",
+        "imageCount",
+        "fetchedAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

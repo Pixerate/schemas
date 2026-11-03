@@ -1,0 +1,49 @@
+{
+  "$ref": "#/definitions/SaveVersionEvent",
+  "definitions": {
+    "SaveVersionEvent": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "save_version"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "item_type": {
+              "type": "string",
+              "enum": [
+                "silo",
+                "bucket",
+                "pipeline",
+                "template",
+                "exploration",
+                "composition",
+                "fusion",
+                "edit",
+                "board",
+                "pitch",
+                "deliverable",
+                "organization",
+                "project",
+                "task",
+                "agent",
+                "workflow"
+              ]
+            },
+            "version_number": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

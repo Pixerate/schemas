@@ -1,0 +1,56 @@
+{
+  "$ref": "#/definitions/ActivityLog",
+  "definitions": {
+    "ActivityLog": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "componentTypeId": {
+          "type": "string"
+        },
+        "componentTypeName": {
+          "type": "string"
+        },
+        "variantId": {
+          "type": "string"
+        },
+        "aestheticId": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "CREATED",
+            "UPDATED",
+            "REVERTED",
+            "PACKAGE_GENERATED",
+            "DELETED"
+          ]
+        },
+        "version": {
+          "type": "string"
+        },
+        "details": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "componentTypeId",
+        "componentTypeName",
+        "aestheticId",
+        "action",
+        "version",
+        "details",
+        "timestamp"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

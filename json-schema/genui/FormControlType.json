@@ -1,0 +1,25 @@
+{
+  "$ref": "#/definitions/FormControlType",
+  "definitions": {
+    "FormControlType": {
+      "type": "string",
+      "enum": [
+        "text",
+        "textarea",
+        "number",
+        "select",
+        "multiselect",
+        "radio",
+        "checkbox",
+        "date",
+        "file",
+        "company",
+        "user",
+        "slider",
+        "computed",
+        "repeater"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

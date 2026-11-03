@@ -1,0 +1,129 @@
+{
+  "$ref": "#/definitions/ActivityEvent",
+  "definitions": {
+    "ActivityEvent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "roomId": {
+          "type": "string"
+        },
+        "entityId": {
+          "type": "string"
+        },
+        "entityType": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "join",
+            "leave",
+            "create",
+            "update",
+            "delete",
+            "lock",
+            "unlock",
+            "claim",
+            "comment",
+            "generate",
+            "star",
+            "unstar",
+            "custom",
+            "agent:thought",
+            "agent:plan_updated",
+            "agent:tool_start",
+            "agent:tool_end",
+            "agent:approval_requested",
+            "agent:approval_resolved",
+            "agent:error"
+          ]
+        },
+        "actor": {
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            },
+            "avatarUrl": {
+              "type": "string"
+            },
+            "actorType": {
+              "type": "string",
+              "enum": [
+                "human",
+                "agent",
+                "system"
+              ]
+            },
+            "role": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string",
+              "enum": [
+                "slate",
+                "gray",
+                "zinc",
+                "neutral",
+                "stone",
+                "red",
+                "orange",
+                "amber",
+                "yellow",
+                "lime",
+                "green",
+                "emerald",
+                "teal",
+                "cyan",
+                "sky",
+                "blue",
+                "indigo",
+                "violet",
+                "purple",
+                "fuchsia",
+                "pink",
+                "rose"
+              ]
+            }
+          },
+          "required": [
+            "userId"
+          ],
+          "additionalProperties": false
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "timestamp": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 0
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "required": [
+        "id",
+        "action",
+        "actor"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
