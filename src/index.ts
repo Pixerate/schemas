@@ -769,4 +769,7 @@ export type LlmsFullTxtConfig = z.infer<typeof LlmsFullTxtConfigSchema>;
 // --- Product Analytics Schemas (see ./analytics.ts) ---
 export * from "./analytics.js";
 
+// --- Jazz: an agent working alongside the user (see ./jazz.ts) ---
+export * from "./jazz.js";
+
 

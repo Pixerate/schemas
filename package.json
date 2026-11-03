@@ -41,10 +41,15 @@
       "types": "./dist/analytics.d.ts",
       "import": "./dist/analytics.js",
       "require": "./dist/analytics.cjs"
+    },
+    "./jazz": {
+      "types": "./dist/jazz.d.ts",
+      "import": "./dist/jazz.js",
+      "require": "./dist/jazz.cjs"
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts src/realtime.ts src/genui.ts src/media.ts src/agent.ts src/jobs.ts src/analytics.ts --format esm,cjs --dts --clean",
+    "build": "tsup src/index.ts src/realtime.ts src/genui.ts src/media.ts src/agent.ts src/jobs.ts src/analytics.ts src/jazz.ts --format esm,cjs --dts --clean",
     "test": "npm run build && node --test tests/*.test.mjs",
     "prepare": "npm run build",
     "changeset": "changeset",
