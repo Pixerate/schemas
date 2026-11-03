@@ -20,7 +20,7 @@ src/
 ├── agent.ts     # Agent runtime contracts: interactions, website crawling & caching (also `@pixerate/schemas/agent`)
 ├── jobs.ts      # Queue job contracts (also `@pixerate/schemas/jobs`)
 ├── analytics.ts # Canonical product analytics schemas & PII guards (also `@pixerate/schemas/analytics`)
-└── jazz.ts      # An agent working alongside the user: observations, phrases, riffs, feedback, policy (also `@pixerate/schemas/jazz`)
+└── jazz.ts      # An agent working alongside the user: observations, phrases, riffs, feedback, policy, product proposals (also `@pixerate/schemas/jazz`)
 ```
 
 The root entry re-exports every grouped module, so `import { FormBlockSchema } from "@pixerate/schemas"` keeps working. Client bundles should import from the narrower entry point (`@pixerate/schemas/agent`, `@pixerate/schemas/analytics`, `@pixerate/schemas/genui`, `@pixerate/schemas/jazz`, `@pixerate/schemas/jobs`, `@pixerate/schemas/media`, `@pixerate/schemas/realtime`) so they don't pull in every schema.
@@ -85,6 +85,7 @@ Contracts for `@pixerate/jazz`, which watches what a user does in an editor and 
 - **Riffs**: `JazzRiff`: a contribution with `strategy`, `intent` (`add`, `annotate`, `connect`, `vary`, `suggest`), `title`, `rationale`, `confidence` (0–1), `targets`, `toolCalls` (`JazzToolCall`: an exposed tool name and JSON `arguments`), `mode`, `proposalId`, `status` and an optional `idempotencyKey`. `JazzRiffSummary` is the slice a model sees.
 - **Feedback**: `JazzFeedback`: the `verdict` (`accepted`, `rejected`, `edited`, `ignored`, `withdrawn`), who gave it and an optional reason.
 - **Context**: `JazzContext`: what a model gets to decide on a riff: recent phrases, selection, a document summary, recent riffs, the policy and the skill names that apply.
+- **Product proposals** (jazz on a repository): `JazzDomain` (an area of the product: `paths`, `docs`, `skills`, `labels`), `JazzCapabilityIndex` (what a domain has `built` and `planned`, each a `JazzCapability` with `refs` and optional `agentTools`), `JazzEvidence` (a citation: `repo`, `issue`, `plan`, `web`, `metric`, or `absence` for a search that found nothing) and `JazzProposalDraft` (a written-up proposal: `kind`, `title`, `why`, `today`, `problemSpace`, `proposal`, `effort`, `risk`, `doneWhen`, `evidence`). Targets gain the kinds `domain`, `issue`, `pull-request`, `file` and `capability`.
 - `JazzToolCall.arguments` is a recursive JSON value: these contracts are for storage and transport, not for Gemini structured outputs (see GOTCHAS).
 
 ---

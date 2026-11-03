@@ -25,7 +25,11 @@ const IsoDateTimeSchema = z.string().datetime({ offset: true });
 
 // --- Observing the user ---
 
-export const JazzTargetKindSchema = z.enum(["node", "edge", "layer", "text", "cell", "other"]);
+/**
+ * Editors use `node` to `cell`. Product proposals (jazz on a repository) use `domain` (an area of the
+ * product), `issue`, `pull-request`, `file` and `capability` (an entry in a capability index).
+ */
+export const JazzTargetKindSchema = z.enum(["node", "edge", "layer", "text", "cell", "domain", "issue", "pull-request", "file", "capability", "other"]);
 export type JazzTargetKind = z.infer<typeof JazzTargetKindSchema>;
 
 /** Something an action touched: a node, edge, layer, text range, cell... */
@@ -200,3 +204,106 @@ export const JazzContextSchema = z.object({
   skills: z.array(z.string()).max(20).default([])
 });
 export type JazzContext = z.infer<typeof JazzContextSchema>;
+
+// --- Product proposals ---
+// Jazz on a repository instead of an editor: it indexes what a product does and plans, researches
+// the problem space, and proposes the capabilities that are missing as issues people triage.
+
+/**
+ * - `repo`: a file or line on the default branch (`path` or `path:line`).
+ * - `issue`: an issue or pull request (`issue#123`).
+ * - `plan`: an item in a plan, roadmap or follow-ups doc (`path:line`).
+ * - `web`: a source from problem-space research (`ref` is its title, `url` the page).
+ * - `metric`: a value from a metrics digest (`api.p95`).
+ * - `absence`: a search that found nothing, so a gap claim can be checked again later. `ref` is the
+ *   query and `scope` where it looked.
+ */
+export const JazzEvidenceKindSchema = z.enum(["repo", "issue", "plan", "web", "metric", "absence"]);
+export type JazzEvidenceKind = z.infer<typeof JazzEvidenceKindSchema>;
+
+/** One citation behind a claim. */
+export const JazzEvidenceSchema = z.object({
+  kind: JazzEvidenceKindSchema,
+  ref: z.string().min(1).max(500),
+  url: z.string().url().optional(),
+  /** The words that support the claim, trimmed. */
+  quote: z.string().max(500).optional(),
+  /** For `absence`: where the search looked (paths, `issues`, `plans`). */
+  scope: z.string().max(300).optional()
+});
+export type JazzEvidence = z.infer<typeof JazzEvidenceSchema>;
+
+/** An area of a product (an editor, a service, a feature family), as the host maps its repository. */
+export const JazzDomainSchema = z.object({
+  /** Stable slug, e.g. `image-editor`. Targets refer to it as `domain:<id>`. */
+  id: z.string().regex(/^[a-z0-9][a-z0-9-]*$/, "Domain ids are lowercase slugs").max(64),
+  name: z.string().min(1).max(80),
+  /** Source paths (prefixes) whose changes belong to this domain. */
+  paths: z.array(z.string().min(1)).min(1).max(50),
+  /** Docs that describe it: guides, plans, roadmaps, follow-ups. */
+  docs: z.array(z.string().min(1)).max(50).default([]),
+  /** Agent skill files whose tool tables list what agents can do here. */
+  skills: z.array(z.string().min(1)).max(50).default([]),
+  /** Issue labels that put an issue in this domain. */
+  labels: z.array(z.string().min(1)).max(20).default([])
+});
+export type JazzDomain = z.infer<typeof JazzDomainSchema>;
+export type JazzDomainInput = z.input<typeof JazzDomainSchema>;
+
+/** One thing a domain can do (`built`) or is going to (`planned`). */
+export const JazzCapabilitySchema = z.object({
+  name: z.string().min(1).max(200),
+  summary: z.string().max(500).optional(),
+  /** Where it is built, documented or planned. */
+  refs: z.array(JazzEvidenceSchema).min(1).max(10),
+  /**
+   * Agent tools that reach it. An empty list means the index found none (an agent-path gap);
+   * absent means unknown.
+   */
+  agentTools: z.array(z.string().min(1)).max(50).optional()
+});
+export type JazzCapability = z.infer<typeof JazzCapabilitySchema>;
+
+/** What a domain does and plans, the starting point for proposing what's missing. */
+export const JazzCapabilityIndexSchema = z.object({
+  domain: z.string().min(1).max(64),
+  builtAt: IsoDateTimeSchema,
+  /** The default branch's commit when it was built. */
+  revision: z.string().max(100).optional(),
+  built: z.array(JazzCapabilitySchema).max(500),
+  planned: z.array(JazzCapabilitySchema).max(500)
+});
+export type JazzCapabilityIndex = z.infer<typeof JazzCapabilityIndexSchema>;
+
+/**
+ * - `new-capability`: something practitioners rely on that the domain lacks.
+ * - `follow-up`: the next step after work that just landed.
+ * - `interop`: import, export or round trips with the tools people already use.
+ * - `agent-path`: a capability agents can't reach.
+ */
+export const JazzProposalKindSchema = z.enum(["new-capability", "follow-up", "interop", "agent-path"]);
+export type JazzProposalKind = z.infer<typeof JazzProposalKindSchema>;
+
+/** A written-up proposal, ready to stage as an issue. Sections are Markdown. */
+export const JazzProposalDraftSchema = z.object({
+  domain: z.string().min(1).max(64),
+  kind: JazzProposalKindSchema,
+  /** The issue title, e.g. "Vector: pattern fills and strokes with seamless tiles". */
+  title: z.string().min(1).max(120),
+  /** Who benefits and what they can do with it. */
+  why: z.string().min(1).max(4000),
+  /** What exists today, with file refs and the searches that found nothing. */
+  today: z.string().min(1).max(4000),
+  /** What practitioners do and what the leading tools offer, with sources. */
+  problemSpace: z.string().max(4000).optional(),
+  /** The scope. */
+  proposal: z.string().min(1).max(6000),
+  /** T-shirt size, e.g. `M` or `M–L`. */
+  effort: z.string().min(1).max(20),
+  risk: z.string().max(1000).optional(),
+  /** The repository's own definition of done. */
+  doneWhen: z.string().max(2000).optional(),
+  /** Every claim's citation. At least one `absence` entry backs the gap. */
+  evidence: z.array(JazzEvidenceSchema).min(1).max(50)
+});
+export type JazzProposalDraft = z.infer<typeof JazzProposalDraftSchema>;
