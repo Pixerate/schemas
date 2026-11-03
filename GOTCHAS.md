@@ -20,6 +20,12 @@ A living document of known issues, pitfalls, quirks, and their solutions or work
 
 ## Known Issues & Workarounds
 
+### `npm run build` Fails in `genui.ts` With a Stale `node_modules`
+
+- **Issue / Pitfall**: The d.ts build failed with `src/genui.ts(478,14): error TS2322: Type 'ZodObject<…>' is not assignable to type 'ZodType<FormControl, …>'` although `genui.ts` was unchanged.
+- **Context / Cause**: The checkout had tsup 8.5.1 installed while `package.json` asks for `^9.0.0` (`npm ls` reports it `invalid`). The older tsup's declaration build trips over the recursive `FormControl` type.
+- **Solution / Workaround**: Run `npm ci` after pulling, and check `npm ls tsup typescript zod` for `invalid` before chasing a type error the diff didn't touch.
+
 ### CI Fails on Pull Requests Due to Missing Changeset
 
 - **Issue / Pitfall**: Pull request CI pipeline fails with `Missing Changeset: No changeset found in .changeset/`.

@@ -19,10 +19,11 @@ src/
 ├── media.ts     # Media processing contracts (also `@pixerate/schemas/media`)
 ├── agent.ts     # Agent runtime contracts: interactions, website crawling & caching (also `@pixerate/schemas/agent`)
 ├── jobs.ts      # Queue job contracts (also `@pixerate/schemas/jobs`)
-└── analytics.ts # Canonical product analytics schemas & PII guards (also `@pixerate/schemas/analytics`)
+├── analytics.ts # Canonical product analytics schemas & PII guards (also `@pixerate/schemas/analytics`)
+└── jazz.ts      # An agent working alongside the user: observations, phrases, riffs, feedback, policy (also `@pixerate/schemas/jazz`)
 ```
 
-The root entry re-exports every grouped module, so `import { FormBlockSchema } from "@pixerate/schemas"` keeps working. Client bundles should import from the narrower entry point (`@pixerate/schemas/agent`, `@pixerate/schemas/analytics`, `@pixerate/schemas/genui`, `@pixerate/schemas/jobs`, `@pixerate/schemas/media`, `@pixerate/schemas/realtime`) so they don't pull in every schema.
+The root entry re-exports every grouped module, so `import { FormBlockSchema } from "@pixerate/schemas"` keeps working. Client bundles should import from the narrower entry point (`@pixerate/schemas/agent`, `@pixerate/schemas/analytics`, `@pixerate/schemas/genui`, `@pixerate/schemas/jazz`, `@pixerate/schemas/jobs`, `@pixerate/schemas/media`, `@pixerate/schemas/realtime`) so they don't pull in every schema.
 
 ## Exported Types & Schemas
 
@@ -75,6 +76,16 @@ The root entry re-exports every grouped module, so `import { FormBlockSchema } f
   - **GA4 Limits**: Event names and param names $\le 40$ chars; param string values $\le 100$ chars; at most 25 params per event; user property names $\le 24$ chars, values $\le 36$ chars.
   - **No PII**: Rejects keys such as `email`, `name`, `phone`, and string values looking like email addresses.
   - **Hashed IDs**: Rejects unhashed `team_id` or `org_id` keys in favor of `team_id_hash` and `org_id_hash`.
+
+### 8. Jazz: an agent alongside the user (`@pixerate/schemas/jazz`)
+Contracts for `@pixerate/jazz`, which watches what a user does in an editor and offers small contributions that complement it.
+- **Origin**: `JazzOrigin` (`JazzOriginSchema`): `user` or `agent:<id>`, as `@pixerate/editor` history records who made a change.
+- **Observing**: `JazzObservation` (one action: `add`, `remove`, `edit`, `select`, `undo`, `redo`, `revert`, with its `targets`, `origin` and `inGesture`) grouped into a `JazzPhrase` (a burst of activity that ended in a pause).
+- **Policy**: `JazzPolicy` (`JazzPolicySchema.parse({})` gives every default): `autonomy` (`off`, `suggest` (default), `assist`), `tempo` (`idleMs`, `minGapMs`), `budget` (`maxRiffsPerMinute`, `maxPending`, `cooldownAfterRejectMs`), `allowEditUserContent` (default `false`: riffs only add), `strategies`.
+- **Riffs**: `JazzRiff`: a contribution with `strategy`, `intent` (`add`, `annotate`, `connect`, `vary`, `suggest`), `title`, `rationale`, `confidence` (0–1), `targets`, `toolCalls` (`JazzToolCall`: an exposed tool name and JSON `arguments`), `mode`, `proposalId`, `status` and an optional `idempotencyKey`. `JazzRiffSummary` is the slice a model sees.
+- **Feedback**: `JazzFeedback`: the `verdict` (`accepted`, `rejected`, `edited`, `ignored`, `withdrawn`), who gave it and an optional reason.
+- **Context**: `JazzContext`: what a model gets to decide on a riff: recent phrases, selection, a document summary, recent riffs, the policy and the skill names that apply.
+- `JazzToolCall.arguments` is a recursive JSON value: these contracts are for storage and transport, not for Gemini structured outputs (see GOTCHAS).
 
 ---
 
