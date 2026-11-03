@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.45.0
+
+### Minor Changes
+
+- 905e79b: Jazz product-proposal contracts: `JazzDomain`, `JazzCapability` and `JazzCapabilityIndex`, `JazzEvidence` (including `absence` for a search that found nothing), `JazzProposalKind` and `JazzProposalDraft`. `JazzTargetKind` gains `domain`, `issue`, `pull-request`, `file` and `capability`.
+
 ## 1.44.0
 
 ### Minor Changes
