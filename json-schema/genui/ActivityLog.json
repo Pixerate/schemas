@@ -1,6 +1,16 @@
 {
   "$ref": "#/definitions/ActivityLog",
   "definitions": {
+    "ActivityAction": {
+      "type": "string",
+      "enum": [
+        "CREATED",
+        "UPDATED",
+        "REVERTED",
+        "PACKAGE_GENERATED",
+        "DELETED"
+      ]
+    },
     "ActivityLog": {
       "type": "object",
       "properties": {
@@ -20,14 +30,7 @@
           "type": "string"
         },
         "action": {
-          "type": "string",
-          "enum": [
-            "CREATED",
-            "UPDATED",
-            "REVERTED",
-            "PACKAGE_GENERATED",
-            "DELETED"
-          ]
+          "$ref": "#/definitions/ActivityAction"
         },
         "version": {
           "type": "string"

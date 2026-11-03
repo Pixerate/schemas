@@ -1,6 +1,28 @@
 {
   "$ref": "#/definitions/FormQuestion",
   "definitions": {
+    "FormChoice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "isRecommended": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "additionalProperties": false
+    },
     "FormQuestion": {
       "type": "object",
       "properties": {
@@ -33,26 +55,7 @@
         "choices": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "label": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              },
-              "isRecommended": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "id",
-              "label"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/FormChoice"
           }
         },
         "allowCustom": {

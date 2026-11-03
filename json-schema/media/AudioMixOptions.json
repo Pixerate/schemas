@@ -7,24 +7,7 @@
         "tracks": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "path": {
-                "type": "string"
-              },
-              "volume": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              },
-              "delayMs": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "path"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/AudioMixTrack"
           }
         },
         "videoVolume": {
@@ -45,6 +28,26 @@
       },
       "required": [
         "tracks"
+      ],
+      "additionalProperties": false
+    },
+    "AudioMixTrack": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "volume": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "delayMs": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "path"
       ],
       "additionalProperties": false
     }

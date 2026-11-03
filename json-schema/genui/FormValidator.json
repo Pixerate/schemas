@@ -1,6 +1,19 @@
 {
   "$ref": "#/definitions/FormValidator",
   "definitions": {
+    "FormConfig": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/FormConfigValue"
+      }
+    },
+    "FormConfigValue": {
+      "type": [
+        "string",
+        "number",
+        "boolean"
+      ]
+    },
     "FormValidator": {
       "type": "object",
       "properties": {
@@ -34,14 +47,7 @@
           "type": "string"
         },
         "config": {
-          "type": "object",
-          "additionalProperties": {
-            "type": [
-              "string",
-              "number",
-              "boolean"
-            ]
-          }
+          "$ref": "#/definitions/FormConfig"
         }
       },
       "required": [

@@ -8,11 +8,7 @@
           "type": "string"
         },
         "type": {
-          "type": "string",
-          "enum": [
-            "file",
-            "directory"
-          ]
+          "$ref": "#/definitions/AgentWorkspaceEntryType"
         },
         "size": {
           "type": "integer",
@@ -24,6 +20,13 @@
         "type"
       ],
       "additionalProperties": false
+    },
+    "AgentWorkspaceEntryType": {
+      "type": "string",
+      "enum": [
+        "file",
+        "directory"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

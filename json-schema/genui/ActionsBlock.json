@@ -1,6 +1,28 @@
 {
   "$ref": "#/definitions/ActionsBlock",
   "definitions": {
+    "ActionItem": {
+      "type": "object",
+      "properties": {
+        "icon": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "type": "string"
+        },
+        "due": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
     "ActionsBlock": {
       "type": "object",
       "properties": {
@@ -14,26 +36,7 @@
         "items": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "icon": {
-                "type": "string"
-              },
-              "text": {
-                "type": "string",
-                "minLength": 1
-              },
-              "owner": {
-                "type": "string"
-              },
-              "due": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "text"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/ActionItem"
           },
           "minItems": 1
         }

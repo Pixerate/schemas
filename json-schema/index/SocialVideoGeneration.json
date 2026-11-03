@@ -1,6 +1,13 @@
 {
   "$ref": "#/definitions/SocialVideoGeneration",
   "definitions": {
+    "VideoAspectRatio": {
+      "type": "string",
+      "enum": [
+        "9:16",
+        "16:9"
+      ]
+    },
     "SocialVideoGeneration": {
       "type": "object",
       "properties": {
@@ -11,11 +18,7 @@
           "type": "string"
         },
         "aspectRatio": {
-          "type": "string",
-          "enum": [
-            "9:16",
-            "16:9"
-          ]
+          "$ref": "#/definitions/VideoAspectRatio"
         },
         "durationSeconds": {
           "type": "integer"
@@ -29,260 +32,7 @@
               "type": "string"
             },
             {
-              "type": "object",
-              "properties": {
-                "text": {
-                  "type": "string"
-                },
-                "style": {
-                  "type": "string",
-                  "enum": [
-                    "neubrutalist",
-                    "neubrutalist-dark",
-                    "badge",
-                    "meme",
-                    "custom",
-                    "none"
-                  ]
-                },
-                "font": {
-                  "type": "string"
-                },
-                "fontPath": {
-                  "type": "string"
-                },
-                "position": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "enum": [
-                        "top",
-                        "center",
-                        "bottom"
-                      ]
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "x": {
-                          "type": [
-                            "number",
-                            "string"
-                          ]
-                        },
-                        "y": {
-                          "type": [
-                            "number",
-                            "string"
-                          ]
-                        }
-                      },
-                      "additionalProperties": false
-                    }
-                  ]
-                },
-                "alignment": {
-                  "type": "string",
-                  "enum": [
-                    "left",
-                    "center",
-                    "right"
-                  ]
-                },
-                "fontSize": {
-                  "type": "number"
-                },
-                "lineHeight": {
-                  "type": "number"
-                },
-                "letterSpacing": {
-                  "type": "number"
-                },
-                "textColor": {
-                  "type": "string"
-                },
-                "textTransform": {
-                  "type": "string",
-                  "enum": [
-                    "uppercase",
-                    "lowercase",
-                    "capitalize",
-                    "none"
-                  ]
-                },
-                "strokeColor": {
-                  "type": "string"
-                },
-                "strokeWidth": {
-                  "type": "number"
-                },
-                "shadow": {
-                  "anyOf": [
-                    {
-                      "type": "boolean"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "dx": {
-                          "type": "number"
-                        },
-                        "dy": {
-                          "type": "number"
-                        },
-                        "blur": {
-                          "type": "number"
-                        },
-                        "color": {
-                          "type": "string"
-                        },
-                        "opacity": {
-                          "type": "number"
-                        }
-                      },
-                      "additionalProperties": false
-                    }
-                  ]
-                },
-                "containerBgColor": {
-                  "type": "string"
-                },
-                "containerBorderColor": {
-                  "type": "string"
-                },
-                "containerBorderWidth": {
-                  "type": "number"
-                },
-                "containerBorderRadius": {
-                  "type": "number"
-                },
-                "paddingX": {
-                  "type": "number"
-                },
-                "paddingY": {
-                  "type": "number"
-                },
-                "maxCharsPerLine": {
-                  "type": "number"
-                },
-                "badgeTag": {
-                  "type": "string"
-                },
-                "badgeBgColor": {
-                  "type": "string"
-                },
-                "badgeTextColor": {
-                  "type": "string"
-                },
-                "badgeFont": {
-                  "type": "string"
-                },
-                "badgeFontSize": {
-                  "type": "number"
-                },
-                "badgePosition": {
-                  "type": "string",
-                  "enum": [
-                    "top-left",
-                    "top-right",
-                    "top-center",
-                    "bottom-left",
-                    "bottom-right",
-                    "bottom-center"
-                  ]
-                },
-                "watermark": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "text": {
-                          "type": "string"
-                        },
-                        "imagePath": {
-                          "type": "string"
-                        },
-                        "font": {
-                          "type": "string"
-                        },
-                        "fontPath": {
-                          "type": "string"
-                        },
-                        "position": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "enum": [
-                                "bottom-right",
-                                "bottom-left",
-                                "top-right",
-                                "top-left",
-                                "center"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "x": {
-                                  "type": [
-                                    "number",
-                                    "string"
-                                  ]
-                                },
-                                "y": {
-                                  "type": [
-                                    "number",
-                                    "string"
-                                  ]
-                                }
-                              },
-                              "additionalProperties": false
-                            }
-                          ]
-                        },
-                        "color": {
-                          "type": "string"
-                        },
-                        "strokeColor": {
-                          "type": "string"
-                        },
-                        "strokeWidth": {
-                          "type": "number"
-                        },
-                        "fontSize": {
-                          "type": "number"
-                        },
-                        "transparentBg": {
-                          "type": "boolean"
-                        },
-                        "opacity": {
-                          "type": "number"
-                        },
-                        "marginRight": {
-                          "type": "number"
-                        },
-                        "marginBottom": {
-                          "type": "number"
-                        },
-                        "marginLeft": {
-                          "type": "number"
-                        },
-                        "marginTop": {
-                          "type": "number"
-                        }
-                      },
-                      "additionalProperties": false
-                    }
-                  ]
-                }
-              },
-              "required": [
-                "text"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/VideoTextOverlay"
             }
           ]
         },
@@ -292,7 +42,7 @@
               "type": "string"
             },
             {
-              "$ref": "#/definitions/SocialVideoGeneration/properties/hook/anyOf/1/properties/watermark/anyOf/1"
+              "$ref": "#/definitions/Watermark"
             }
           ]
         }
@@ -301,6 +51,280 @@
         "prompt"
       ],
       "additionalProperties": false
+    },
+    "DropShadow": {
+      "type": "object",
+      "properties": {
+        "dx": {
+          "type": "number"
+        },
+        "dy": {
+          "type": "number"
+        },
+        "blur": {
+          "type": "number"
+        },
+        "color": {
+          "type": "string"
+        },
+        "opacity": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "TextAlignment": {
+      "type": "string",
+      "enum": [
+        "left",
+        "center",
+        "right"
+      ]
+    },
+    "TextOverlayPosition": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "top",
+            "center",
+            "bottom"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "y": {
+              "type": [
+                "number",
+                "string"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "VideoOverlayStyle": {
+      "type": "string",
+      "enum": [
+        "neubrutalist",
+        "neubrutalist-dark",
+        "badge",
+        "meme",
+        "custom",
+        "none"
+      ]
+    },
+    "VideoTextOverlay": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "style": {
+          "$ref": "#/definitions/VideoOverlayStyle"
+        },
+        "font": {
+          "type": "string"
+        },
+        "fontPath": {
+          "type": "string"
+        },
+        "position": {
+          "$ref": "#/definitions/TextOverlayPosition"
+        },
+        "alignment": {
+          "$ref": "#/definitions/TextAlignment"
+        },
+        "fontSize": {
+          "type": "number"
+        },
+        "lineHeight": {
+          "type": "number"
+        },
+        "letterSpacing": {
+          "type": "number"
+        },
+        "textColor": {
+          "type": "string"
+        },
+        "textTransform": {
+          "type": "string",
+          "enum": [
+            "uppercase",
+            "lowercase",
+            "capitalize",
+            "none"
+          ]
+        },
+        "strokeColor": {
+          "type": "string"
+        },
+        "strokeWidth": {
+          "type": "number"
+        },
+        "shadow": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "$ref": "#/definitions/DropShadow"
+            }
+          ]
+        },
+        "containerBgColor": {
+          "type": "string"
+        },
+        "containerBorderColor": {
+          "type": "string"
+        },
+        "containerBorderWidth": {
+          "type": "number"
+        },
+        "containerBorderRadius": {
+          "type": "number"
+        },
+        "paddingX": {
+          "type": "number"
+        },
+        "paddingY": {
+          "type": "number"
+        },
+        "maxCharsPerLine": {
+          "type": "number"
+        },
+        "badgeTag": {
+          "type": "string"
+        },
+        "badgeBgColor": {
+          "type": "string"
+        },
+        "badgeTextColor": {
+          "type": "string"
+        },
+        "badgeFont": {
+          "type": "string"
+        },
+        "badgeFontSize": {
+          "type": "number"
+        },
+        "badgePosition": {
+          "type": "string",
+          "enum": [
+            "top-left",
+            "top-right",
+            "top-center",
+            "bottom-left",
+            "bottom-right",
+            "bottom-center"
+          ]
+        },
+        "watermark": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/Watermark"
+            }
+          ]
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "Watermark": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "imagePath": {
+          "type": "string"
+        },
+        "font": {
+          "type": "string"
+        },
+        "fontPath": {
+          "type": "string"
+        },
+        "position": {
+          "$ref": "#/definitions/WatermarkPosition"
+        },
+        "color": {
+          "type": "string"
+        },
+        "strokeColor": {
+          "type": "string"
+        },
+        "strokeWidth": {
+          "type": "number"
+        },
+        "fontSize": {
+          "type": "number"
+        },
+        "transparentBg": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "marginRight": {
+          "type": "number"
+        },
+        "marginBottom": {
+          "type": "number"
+        },
+        "marginLeft": {
+          "type": "number"
+        },
+        "marginTop": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "WatermarkPosition": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "bottom-right",
+            "bottom-left",
+            "top-right",
+            "top-left",
+            "center"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "y": {
+              "type": [
+                "number",
+                "string"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

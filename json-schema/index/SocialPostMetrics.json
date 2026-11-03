@@ -1,18 +1,21 @@
 {
   "$ref": "#/definitions/SocialPostMetrics",
   "definitions": {
+    "SocialPlatform": {
+      "type": "string",
+      "enum": [
+        "bluesky",
+        "twitter",
+        "linkedin",
+        "tiktok",
+        "instagram"
+      ]
+    },
     "SocialPostMetrics": {
       "type": "object",
       "properties": {
         "platform": {
-          "type": "string",
-          "enum": [
-            "bluesky",
-            "twitter",
-            "linkedin",
-            "tiktok",
-            "instagram"
-          ]
+          "$ref": "#/definitions/SocialPlatform"
         },
         "id": {
           "type": "string"
@@ -27,16 +30,7 @@
           "type": "string"
         },
         "visibility": {
-          "type": "string",
-          "enum": [
-            "public",
-            "friends",
-            "private",
-            "under_review",
-            "restricted",
-            "removed",
-            "unknown"
-          ]
+          "$ref": "#/definitions/SocialPostVisibility"
         },
         "statusLabel": {
           "type": "string"
@@ -84,6 +78,18 @@
         "fetchedAt"
       ],
       "additionalProperties": false
+    },
+    "SocialPostVisibility": {
+      "type": "string",
+      "enum": [
+        "public",
+        "friends",
+        "private",
+        "under_review",
+        "restricted",
+        "removed",
+        "unknown"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

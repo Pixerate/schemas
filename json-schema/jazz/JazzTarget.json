@@ -9,15 +9,7 @@
           "minLength": 1
         },
         "kind": {
-          "type": "string",
-          "enum": [
-            "node",
-            "edge",
-            "layer",
-            "text",
-            "cell",
-            "other"
-          ],
+          "$ref": "#/definitions/JazzTargetKind",
           "default": "node"
         },
         "type": {
@@ -32,6 +24,17 @@
         "id"
       ],
       "additionalProperties": false
+    },
+    "JazzTargetKind": {
+      "type": "string",
+      "enum": [
+        "node",
+        "edge",
+        "layer",
+        "text",
+        "cell",
+        "other"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

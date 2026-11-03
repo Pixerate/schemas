@@ -1,6 +1,24 @@
 {
   "$ref": "#/definitions/NotificationDeliveryRecord",
   "definitions": {
+    "NotificationChannel": {
+      "type": "string",
+      "enum": [
+        "in_app",
+        "email",
+        "web_push",
+        "webhook",
+        "sms"
+      ]
+    },
+    "NotificationDeferredReason": {
+      "type": "string",
+      "enum": [
+        "retry",
+        "quiet_hours",
+        "digest"
+      ]
+    },
     "NotificationDeliveryRecord": {
       "type": "object",
       "properties": {
@@ -11,24 +29,10 @@
           "type": "string"
         },
         "channel": {
-          "type": "string",
-          "enum": [
-            "in_app",
-            "email",
-            "web_push",
-            "webhook",
-            "sms"
-          ]
+          "$ref": "#/definitions/NotificationChannel"
         },
         "state": {
-          "type": "string",
-          "enum": [
-            "pending",
-            "sent",
-            "delivered",
-            "failed",
-            "skipped"
-          ]
+          "$ref": "#/definitions/NotificationDeliveryState"
         },
         "error": {
           "type": "string"
@@ -97,12 +101,7 @@
           ]
         },
         "deferredReason": {
-          "type": "string",
-          "enum": [
-            "retry",
-            "quiet_hours",
-            "digest"
-          ]
+          "$ref": "#/definitions/NotificationDeferredReason"
         }
       },
       "required": [
@@ -112,6 +111,16 @@
         "state"
       ],
       "additionalProperties": false
+    },
+    "NotificationDeliveryState": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "sent",
+        "delivered",
+        "failed",
+        "skipped"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

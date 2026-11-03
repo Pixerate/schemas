@@ -5,12 +5,7 @@
       "type": "object",
       "properties": {
         "type": {
-          "type": "string",
-          "enum": [
-            "retain",
-            "insert",
-            "delete"
-          ]
+          "$ref": "#/definitions/OTTextOpType"
         },
         "count": {
           "type": "integer",
@@ -28,6 +23,14 @@
         "type"
       ],
       "additionalProperties": false
+    },
+    "OTTextOpType": {
+      "type": "string",
+      "enum": [
+        "retain",
+        "insert",
+        "delete"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

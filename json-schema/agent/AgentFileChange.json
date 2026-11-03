@@ -1,6 +1,24 @@
 {
   "$ref": "#/definitions/AgentFileChange",
   "definitions": {
+    "AgentDiffStats": {
+      "type": "object",
+      "properties": {
+        "added": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "removed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "added",
+        "removed"
+      ],
+      "additionalProperties": false
+    },
     "AgentFileChange": {
       "type": "object",
       "properties": {
@@ -8,12 +26,7 @@
           "type": "string"
         },
         "kind": {
-          "type": "string",
-          "enum": [
-            "created",
-            "modified",
-            "deleted"
-          ]
+          "$ref": "#/definitions/AgentFileChangeKind"
         },
         "before": {
           "type": "string"
@@ -25,22 +38,7 @@
           "type": "string"
         },
         "stats": {
-          "type": "object",
-          "properties": {
-            "added": {
-              "type": "integer",
-              "minimum": 0
-            },
-            "removed": {
-              "type": "integer",
-              "minimum": 0
-            }
-          },
-          "required": [
-            "added",
-            "removed"
-          ],
-          "additionalProperties": false
+          "$ref": "#/definitions/AgentDiffStats"
         }
       },
       "required": [
@@ -50,6 +48,14 @@
         "stats"
       ],
       "additionalProperties": false
+    },
+    "AgentFileChangeKind": {
+      "type": "string",
+      "enum": [
+        "created",
+        "modified",
+        "deleted"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

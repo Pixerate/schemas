@@ -1,6 +1,33 @@
 {
   "$ref": "#/definitions/ViewingIndicator",
   "definitions": {
+    "PresenceColor": {
+      "type": "string",
+      "enum": [
+        "slate",
+        "gray",
+        "zinc",
+        "neutral",
+        "stone",
+        "red",
+        "orange",
+        "amber",
+        "yellow",
+        "lime",
+        "green",
+        "emerald",
+        "teal",
+        "cyan",
+        "sky",
+        "blue",
+        "indigo",
+        "violet",
+        "purple",
+        "fuchsia",
+        "pink",
+        "rose"
+      ]
+    },
     "ViewingIndicator": {
       "type": "object",
       "properties": {
@@ -30,36 +57,11 @@
           "type": "string"
         },
         "color": {
-          "type": "string",
-          "enum": [
-            "slate",
-            "gray",
-            "zinc",
-            "neutral",
-            "stone",
-            "red",
-            "orange",
-            "amber",
-            "yellow",
-            "lime",
-            "green",
-            "emerald",
-            "teal",
-            "cyan",
-            "sky",
-            "blue",
-            "indigo",
-            "violet",
-            "purple",
-            "fuchsia",
-            "pink",
-            "rose"
-          ]
+          "$ref": "#/definitions/PresenceColor"
         },
         "lastSeen": {
           "type": "integer",
-          "exclusiveMinimum": 0,
-          "default": 0
+          "exclusiveMinimum": 0
         }
       },
       "required": [

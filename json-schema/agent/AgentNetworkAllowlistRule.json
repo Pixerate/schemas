@@ -10,25 +10,28 @@
         "transform": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "key": {
-                "type": "string"
-              },
-              "value": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "key",
-              "value"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/AgentNetworkTransformRule"
           }
         }
       },
       "required": [
         "domain"
+      ],
+      "additionalProperties": false
+    },
+    "AgentNetworkTransformRule": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value"
       ],
       "additionalProperties": false
     }

@@ -1,6 +1,26 @@
 {
   "$ref": "#/definitions/JazzContext",
   "definitions": {
+    "JazzAction": {
+      "type": "string",
+      "enum": [
+        "add",
+        "remove",
+        "edit",
+        "select",
+        "undo",
+        "redo",
+        "revert"
+      ]
+    },
+    "JazzAutonomy": {
+      "type": "string",
+      "enum": [
+        "off",
+        "suggest",
+        "assist"
+      ]
+    },
     "JazzContext": {
       "type": "object",
       "properties": {
@@ -31,133 +51,7 @@
         "phrases": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "minLength": 1
-              },
-              "surface": {
-                "type": "string",
-                "minLength": 1
-              },
-              "startedAt": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "endedAt": {
-                "$ref": "#/definitions/JazzContext/properties/phrases/items/properties/startedAt"
-              },
-              "observations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "at": {
-                      "$ref": "#/definitions/JazzContext/properties/phrases/items/properties/startedAt"
-                    },
-                    "surface": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "origin": {
-                      "type": "string",
-                      "pattern": "^(user|agent:.+)$"
-                    },
-                    "action": {
-                      "type": "string",
-                      "enum": [
-                        "add",
-                        "remove",
-                        "edit",
-                        "select",
-                        "undo",
-                        "redo",
-                        "revert"
-                      ]
-                    },
-                    "targets": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "minLength": 1
-                          },
-                          "kind": {
-                            "type": "string",
-                            "enum": [
-                              "node",
-                              "edge",
-                              "layer",
-                              "text",
-                              "cell",
-                              "other"
-                            ],
-                            "default": "node"
-                          },
-                          "type": {
-                            "type": "string"
-                          },
-                          "label": {
-                            "type": "string",
-                            "maxLength": 200
-                          }
-                        },
-                        "required": [
-                          "id"
-                        ],
-                        "additionalProperties": false
-                      },
-                      "maxItems": 200
-                    },
-                    "fields": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "maxItems": 50
-                    },
-                    "inGesture": {
-                      "type": "boolean",
-                      "default": false
-                    },
-                    "summary": {
-                      "type": "string",
-                      "maxLength": 280
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "at",
-                    "surface",
-                    "origin",
-                    "action",
-                    "targets"
-                  ],
-                  "additionalProperties": false
-                },
-                "minItems": 1,
-                "maxItems": 200
-              },
-              "summary": {
-                "type": "string",
-                "maxLength": 1000
-              }
-            },
-            "required": [
-              "id",
-              "surface",
-              "startedAt",
-              "endedAt",
-              "observations"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/JazzPhrase"
           },
           "maxItems": 20
         },
@@ -176,135 +70,13 @@
         "riffs": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "minLength": 1
-              },
-              "strategy": {
-                "type": "string",
-                "minLength": 1
-              },
-              "intent": {
-                "type": "string",
-                "enum": [
-                  "add",
-                  "annotate",
-                  "connect",
-                  "vary",
-                  "suggest"
-                ]
-              },
-              "title": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 80
-              },
-              "targets": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "maxItems": 50,
-                "default": []
-              },
-              "status": {
-                "type": "string",
-                "enum": [
-                  "proposed",
-                  "applied",
-                  "accepted",
-                  "rejected",
-                  "edited",
-                  "ignored",
-                  "withdrawn"
-                ]
-              }
-            },
-            "required": [
-              "id",
-              "strategy",
-              "intent",
-              "title",
-              "status"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/JazzRiffSummary"
           },
           "maxItems": 50,
           "default": []
         },
         "policy": {
-          "type": "object",
-          "properties": {
-            "autonomy": {
-              "type": "string",
-              "enum": [
-                "off",
-                "suggest",
-                "assist"
-              ],
-              "default": "suggest"
-            },
-            "tempo": {
-              "type": "object",
-              "properties": {
-                "idleMs": {
-                  "type": "integer",
-                  "minimum": 200,
-                  "maximum": 60000,
-                  "default": 1500
-                },
-                "minGapMs": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 600000,
-                  "default": 8000
-                }
-              },
-              "additionalProperties": false,
-              "default": {}
-            },
-            "budget": {
-              "type": "object",
-              "properties": {
-                "maxRiffsPerMinute": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 60,
-                  "default": 3
-                },
-                "maxPending": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 20,
-                  "default": 3
-                },
-                "cooldownAfterRejectMs": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 3600000,
-                  "default": 30000
-                }
-              },
-              "additionalProperties": false,
-              "default": {}
-            },
-            "allowEditUserContent": {
-              "type": "boolean",
-              "default": false
-            },
-            "strategies": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "minLength": 1
-              },
-              "maxItems": 50
-            }
-          },
-          "additionalProperties": false
+          "$ref": "#/definitions/JazzPolicy"
         },
         "skills": {
           "type": "array",
@@ -323,6 +95,269 @@
         "policy"
       ],
       "additionalProperties": false
+    },
+    "JazzObservation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "surface": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "$ref": "#/definitions/JazzOrigin"
+        },
+        "action": {
+          "$ref": "#/definitions/JazzAction"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzTarget"
+          },
+          "maxItems": 200
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50
+        },
+        "inGesture": {
+          "type": "boolean",
+          "default": false
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 280
+        }
+      },
+      "required": [
+        "id",
+        "at",
+        "surface",
+        "origin",
+        "action",
+        "targets"
+      ],
+      "additionalProperties": false
+    },
+    "JazzOrigin": {
+      "type": "string",
+      "pattern": "^(user|agent:.+)$"
+    },
+    "JazzPhrase": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "surface": {
+          "type": "string",
+          "minLength": 1
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzObservation"
+          },
+          "minItems": 1,
+          "maxItems": 200
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "id",
+        "surface",
+        "startedAt",
+        "endedAt",
+        "observations"
+      ],
+      "additionalProperties": false
+    },
+    "JazzPolicy": {
+      "type": "object",
+      "properties": {
+        "autonomy": {
+          "$ref": "#/definitions/JazzAutonomy",
+          "default": "suggest"
+        },
+        "tempo": {
+          "type": "object",
+          "properties": {
+            "idleMs": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 60000,
+              "default": 1500
+            },
+            "minGapMs": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 600000,
+              "default": 8000
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "budget": {
+          "type": "object",
+          "properties": {
+            "maxRiffsPerMinute": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 60,
+              "default": 3
+            },
+            "maxPending": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20,
+              "default": 3
+            },
+            "cooldownAfterRejectMs": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600000,
+              "default": 30000
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "allowEditUserContent": {
+          "type": "boolean",
+          "default": false
+        },
+        "strategies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 50
+        }
+      },
+      "additionalProperties": false
+    },
+    "JazzRiffIntent": {
+      "type": "string",
+      "enum": [
+        "add",
+        "annotate",
+        "connect",
+        "vary",
+        "suggest"
+      ]
+    },
+    "JazzRiffStatus": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "applied",
+        "accepted",
+        "rejected",
+        "edited",
+        "ignored",
+        "withdrawn"
+      ]
+    },
+    "JazzRiffSummary": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "strategy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "intent": {
+          "$ref": "#/definitions/JazzRiffIntent"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 50,
+          "default": []
+        },
+        "status": {
+          "$ref": "#/definitions/JazzRiffStatus"
+        }
+      },
+      "required": [
+        "id",
+        "strategy",
+        "intent",
+        "title",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTarget": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "$ref": "#/definitions/JazzTargetKind",
+          "default": "node"
+        },
+        "type": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTargetKind": {
+      "type": "string",
+      "enum": [
+        "node",
+        "edge",
+        "layer",
+        "text",
+        "cell",
+        "other"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

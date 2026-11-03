@@ -9,22 +9,14 @@
           "minLength": 1
         },
         "verdict": {
-          "type": "string",
-          "enum": [
-            "accepted",
-            "rejected",
-            "edited",
-            "ignored",
-            "withdrawn"
-          ]
+          "$ref": "#/definitions/JazzVerdict"
         },
         "at": {
           "type": "string",
           "format": "date-time"
         },
         "by": {
-          "type": "string",
-          "pattern": "^(user|agent:.+)$"
+          "$ref": "#/definitions/JazzOrigin"
         },
         "reason": {
           "type": "string",
@@ -45,6 +37,20 @@
         "by"
       ],
       "additionalProperties": false
+    },
+    "JazzOrigin": {
+      "type": "string",
+      "pattern": "^(user|agent:.+)$"
+    },
+    "JazzVerdict": {
+      "type": "string",
+      "enum": [
+        "accepted",
+        "rejected",
+        "edited",
+        "ignored",
+        "withdrawn"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

@@ -1,6 +1,34 @@
 {
   "$ref": "#/definitions/SubmissionScore",
   "definitions": {
+    "DimensionScore": {
+      "type": "object",
+      "properties": {
+        "dimensionId": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "points": {
+          "type": "number"
+        },
+        "weight": {
+          "type": "number"
+        },
+        "weighted": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "dimensionId",
+        "label",
+        "points",
+        "weight",
+        "weighted"
+      ],
+      "additionalProperties": false
+    },
     "SubmissionScore": {
       "type": "object",
       "properties": {
@@ -10,32 +38,7 @@
         "dimensions": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "dimensionId": {
-                "type": "string"
-              },
-              "label": {
-                "type": "string"
-              },
-              "points": {
-                "type": "number"
-              },
-              "weight": {
-                "type": "number"
-              },
-              "weighted": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "dimensionId",
-              "label",
-              "points",
-              "weight",
-              "weighted"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/DimensionScore"
           }
         },
         "band": {

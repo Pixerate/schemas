@@ -1,6 +1,38 @@
 {
   "$ref": "#/definitions/StatsBlock",
   "definitions": {
+    "StatItem": {
+      "type": "object",
+      "properties": {
+        "icon": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        },
+        "delta": {
+          "type": "string"
+        },
+        "tone": {
+          "type": "string",
+          "enum": [
+            "up",
+            "down",
+            "neutral"
+          ]
+        }
+      },
+      "required": [
+        "label",
+        "value"
+      ],
+      "additionalProperties": false
+    },
     "StatsBlock": {
       "type": "object",
       "properties": {
@@ -11,36 +43,7 @@
         "items": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "icon": {
-                "type": "string"
-              },
-              "label": {
-                "type": "string",
-                "minLength": 1
-              },
-              "value": {
-                "type": "string",
-                "minLength": 1
-              },
-              "delta": {
-                "type": "string"
-              },
-              "tone": {
-                "type": "string",
-                "enum": [
-                  "up",
-                  "down",
-                  "neutral"
-                ]
-              }
-            },
-            "required": [
-              "label",
-              "value"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/StatItem"
           },
           "minItems": 1
         }

@@ -1,6 +1,310 @@
 {
   "$ref": "#/definitions/QueueJob",
   "definitions": {
+    "ApplyEdits": {
+      "type": "object",
+      "properties": {
+        "editId": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "editId"
+      ],
+      "additionalProperties": false
+    },
+    "BasicImage": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "variantPrompt": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "fidelity": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "additionalProperties": false
+    },
+    "BasicIteration": {
+      "type": "object",
+      "properties": {
+        "sourceGenerationId": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "changes": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {}
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "category": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "BasicVariant": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "objectId": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "variantId": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "fidelity": {
+          "type": "string"
+        },
+        "promptChanges": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "seed": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "editableProperties": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {}
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "generationsToIncorporate": {
+          "anyOf": [
+            {
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "additionalProperties": false
+    },
+    "CombineImagePrompts": {
+      "type": "object",
+      "properties": {
+        "fusionId": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "fidelity": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "fusionId"
+      ],
+      "additionalProperties": false
+    },
+    "CreateIdeas": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "imageUrl": {
+          "type": "string"
+        },
+        "maxIdeas": {
+          "type": "number"
+        },
+        "sourcenodeId": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "fidelity": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "CreateLayers": {
+      "type": "object",
+      "properties": {
+        "generationId": {
+          "type": "number"
+        },
+        "imagePath": {
+          "type": "string"
+        },
+        "objectCategory": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "generationId"
+      ],
+      "additionalProperties": false
+    },
+    "CreateProperties": {
+      "type": "object",
+      "properties": {
+        "variantId": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "variantId"
+      ],
+      "additionalProperties": false
+    },
+    "EmptyParams": {
+      "anyOf": [
+        {
+          "not": {}
+        },
+        {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        }
+      ]
+    },
+    "GenerateElement": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sourceGenerationId": {
+          "type": "number"
+        },
+        "fidelity": {
+          "type": "string"
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "sourceElementId": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "sourceGenerationId"
+      ],
+      "additionalProperties": false
+    },
+    "ImageToGeneration": {
+      "type": "object",
+      "properties": {
+        "imageId": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "imageId"
+      ],
+      "additionalProperties": false
+    },
+    "PromptToImage": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "prompt"
+      ],
+      "additionalProperties": false
+    },
+    "PromptToVideo": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string"
+        },
+        "aspectRatio": {
+          "type": "string",
+          "enum": [
+            "16:9",
+            "9:16"
+          ]
+        },
+        "durationSeconds": {
+          "type": "number",
+          "enum": [
+            4,
+            6,
+            8
+          ]
+        }
+      },
+      "required": [
+        "prompt"
+      ],
+      "additionalProperties": false
+    },
     "QueueJob": {
       "anyOf": [
         {
@@ -11,22 +315,7 @@
               "const": "combine_image_prompts"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "fusionId": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
-                },
-                "fidelity": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "fusionId"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/CombineImagePrompts"
             }
           },
           "required": [
@@ -43,9 +332,7 @@
               "const": "update_missing_variant_properties"
             },
             "params": {
-              "type": "object",
-              "properties": {},
-              "additionalProperties": false
+              "$ref": "#/definitions/EmptyParams"
             }
           },
           "required": [
@@ -61,7 +348,7 @@
               "const": "update_missing_variant_tags"
             },
             "params": {
-              "$ref": "#/definitions/QueueJob/anyOf/1/properties/params"
+              "$ref": "#/definitions/EmptyParams"
             }
           },
           "required": [
@@ -77,19 +364,7 @@
               "const": "apply_edits"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "editId": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
-                }
-              },
-              "required": [
-                "editId"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/ApplyEdits"
             }
           },
           "required": [
@@ -106,48 +381,7 @@
               "const": "generate_element"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string"
-                },
-                "title": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "sourceGenerationId": {
-                  "type": "number"
-                },
-                "fidelity": {
-                  "type": "string"
-                },
-                "bbox": {
-                  "anyOf": [
-                    {
-                      "type": "array",
-                      "items": {
-                        "type": "number"
-                      }
-                    },
-                    {
-                      "type": "string"
-                    }
-                  ]
-                },
-                "sourceElementId": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
-                }
-              },
-              "required": [
-                "title",
-                "sourceGenerationId"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/GenerateElement"
             }
           },
           "required": [
@@ -164,16 +398,7 @@
               "const": "prompt_to_image"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "prompt": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "prompt"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/PromptToImage"
             }
           },
           "required": [
@@ -190,31 +415,7 @@
               "const": "prompt_to_video"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "prompt": {
-                  "type": "string"
-                },
-                "aspectRatio": {
-                  "type": "string",
-                  "enum": [
-                    "16:9",
-                    "9:16"
-                  ]
-                },
-                "durationSeconds": {
-                  "type": "number",
-                  "enum": [
-                    4,
-                    6,
-                    8
-                  ]
-                }
-              },
-              "required": [
-                "prompt"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/PromptToVideo"
             }
           },
           "required": [
@@ -231,25 +432,7 @@
               "const": "basic_image"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "type": "string"
-                },
-                "variantPrompt": {
-                  "type": "string"
-                },
-                "category": {
-                  "type": "string"
-                },
-                "fidelity": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "title"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/BasicImage"
             }
           },
           "required": [
@@ -266,64 +449,7 @@
               "const": "basic_variant"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "type": "string"
-                },
-                "objectId": {
-                  "type": [
-                    "number",
-                    "null"
-                  ]
-                },
-                "variantId": {
-                  "type": [
-                    "number",
-                    "null"
-                  ]
-                },
-                "fidelity": {
-                  "type": "string"
-                },
-                "promptChanges": {
-                  "type": "string"
-                },
-                "category": {
-                  "type": "string"
-                },
-                "seed": {
-                  "type": [
-                    "number",
-                    "null"
-                  ]
-                },
-                "editableProperties": {
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "additionalProperties": {}
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
-                },
-                "generationsToIncorporate": {
-                  "anyOf": [
-                    {
-                      "type": "array"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
-                }
-              },
-              "required": [
-                "title"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/BasicVariant"
             }
           },
           "required": [
@@ -340,30 +466,7 @@
               "const": "basic_iteration"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "sourceGenerationId": {
-                  "type": [
-                    "number",
-                    "null"
-                  ]
-                },
-                "changes": {
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "additionalProperties": {}
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
-                },
-                "category": {
-                  "type": "string"
-                }
-              },
-              "additionalProperties": false
+              "$ref": "#/definitions/BasicIteration"
             }
           },
           "required": [
@@ -380,16 +483,7 @@
               "const": "create_properties"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "variantId": {
-                  "type": "number"
-                }
-              },
-              "required": [
-                "variantId"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/CreateProperties"
             }
           },
           "required": [
@@ -406,22 +500,7 @@
               "const": "create_layers"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "generationId": {
-                  "type": "number"
-                },
-                "imagePath": {
-                  "type": "string"
-                },
-                "objectCategory": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "generationId"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/CreateLayers"
             }
           },
           "required": [
@@ -438,16 +517,7 @@
               "const": "image_to_generation"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "imageId": {
-                  "type": "number"
-                }
-              },
-              "required": [
-                "imageId"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/ImageToGeneration"
             }
           },
           "required": [
@@ -464,16 +534,7 @@
               "const": "video_to_generation"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "videoId": {
-                  "type": "number"
-                }
-              },
-              "required": [
-                "videoId"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/VideoToGeneration"
             }
           },
           "required": [
@@ -490,31 +551,7 @@
               "const": "create_ideas"
             },
             "params": {
-              "type": "object",
-              "properties": {
-                "text": {
-                  "type": "string"
-                },
-                "imageUrl": {
-                  "type": "string"
-                },
-                "maxIdeas": {
-                  "type": "number"
-                },
-                "sourcenodeId": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
-                },
-                "fidelity": {
-                  "type": "string"
-                },
-                "method": {
-                  "type": "string"
-                }
-              },
-              "additionalProperties": false
+              "$ref": "#/definitions/CreateIdeas"
             }
           },
           "required": [
@@ -524,6 +561,18 @@
           "additionalProperties": false
         }
       ]
+    },
+    "VideoToGeneration": {
+      "type": "object",
+      "properties": {
+        "videoId": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "videoId"
+      ],
+      "additionalProperties": false
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

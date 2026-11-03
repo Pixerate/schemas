@@ -22,8 +22,7 @@
         },
         "updatedAt": {
           "type": "integer",
-          "exclusiveMinimum": 0,
-          "default": 0
+          "exclusiveMinimum": 0
         }
       },
       "required": [

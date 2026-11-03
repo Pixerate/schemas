@@ -1,6 +1,29 @@
 {
   "$ref": "#/definitions/AgentDirectoryEntry",
   "definitions": {
+    "ActiveAgentTask": {
+      "type": "object",
+      "properties": {
+        "taskId": {
+          "type": "string"
+        },
+        "taskTitle": {
+          "type": "string"
+        },
+        "statusText": {
+          "type": "string"
+        },
+        "startedAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "taskId",
+        "taskTitle",
+        "startedAt"
+      ],
+      "additionalProperties": false
+    },
     "AgentDirectoryEntry": {
       "type": "object",
       "properties": {
@@ -52,27 +75,7 @@
         "activeTasks": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "taskId": {
-                "type": "string"
-              },
-              "taskTitle": {
-                "type": "string"
-              },
-              "statusText": {
-                "type": "string"
-              },
-              "startedAt": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "taskId",
-              "taskTitle",
-              "startedAt"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/ActiveAgentTask"
           }
         },
         "lastSeen": {

@@ -1,6 +1,71 @@
 {
   "$ref": "#/definitions/ThemeIngestionInput",
   "definitions": {
+    "ThemeColors": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "type": "string"
+        },
+        "primaryForeground": {
+          "type": "string"
+        },
+        "secondary": {
+          "type": "string"
+        },
+        "secondaryForeground": {
+          "type": "string"
+        },
+        "accent": {
+          "type": "string"
+        },
+        "accentForeground": {
+          "type": "string"
+        },
+        "background": {
+          "type": "string"
+        },
+        "foreground": {
+          "type": "string"
+        },
+        "surface": {
+          "type": "string"
+        },
+        "surfaceForeground": {
+          "type": "string"
+        },
+        "muted": {
+          "type": "string"
+        },
+        "mutedForeground": {
+          "type": "string"
+        },
+        "destructive": {
+          "type": "string"
+        },
+        "destructiveForeground": {
+          "type": "string"
+        },
+        "border": {
+          "type": "string"
+        },
+        "ring": {
+          "type": "string"
+        },
+        "customProperties": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "primary",
+        "background",
+        "foreground"
+      ],
+      "additionalProperties": false
+    },
     "ThemeIngestionInput": {
       "type": "object",
       "properties": {
@@ -14,211 +79,7 @@
           "type": "string"
         },
         "tokens": {
-          "type": "object",
-          "properties": {
-            "colors": {
-              "type": "object",
-              "properties": {
-                "light": {
-                  "type": "object",
-                  "properties": {
-                    "primary": {
-                      "type": "string"
-                    },
-                    "primaryForeground": {
-                      "type": "string"
-                    },
-                    "secondary": {
-                      "type": "string"
-                    },
-                    "secondaryForeground": {
-                      "type": "string"
-                    },
-                    "accent": {
-                      "type": "string"
-                    },
-                    "accentForeground": {
-                      "type": "string"
-                    },
-                    "background": {
-                      "type": "string"
-                    },
-                    "foreground": {
-                      "type": "string"
-                    },
-                    "surface": {
-                      "type": "string"
-                    },
-                    "surfaceForeground": {
-                      "type": "string"
-                    },
-                    "muted": {
-                      "type": "string"
-                    },
-                    "mutedForeground": {
-                      "type": "string"
-                    },
-                    "destructive": {
-                      "type": "string"
-                    },
-                    "destructiveForeground": {
-                      "type": "string"
-                    },
-                    "border": {
-                      "type": "string"
-                    },
-                    "ring": {
-                      "type": "string"
-                    },
-                    "customProperties": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  "required": [
-                    "primary",
-                    "background",
-                    "foreground"
-                  ],
-                  "additionalProperties": false
-                },
-                "dark": {
-                  "type": "object",
-                  "properties": {
-                    "primary": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/primary"
-                    },
-                    "primaryForeground": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/primaryForeground"
-                    },
-                    "secondary": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/secondary"
-                    },
-                    "secondaryForeground": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/secondaryForeground"
-                    },
-                    "accent": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/accent"
-                    },
-                    "accentForeground": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/accentForeground"
-                    },
-                    "background": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/background"
-                    },
-                    "foreground": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/foreground"
-                    },
-                    "surface": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/surface"
-                    },
-                    "surfaceForeground": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/surfaceForeground"
-                    },
-                    "muted": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/muted"
-                    },
-                    "mutedForeground": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/mutedForeground"
-                    },
-                    "destructive": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/destructive"
-                    },
-                    "destructiveForeground": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/destructiveForeground"
-                    },
-                    "border": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/border"
-                    },
-                    "ring": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/ring"
-                    },
-                    "customProperties": {
-                      "$ref": "#/definitions/ThemeIngestionInput/properties/tokens/properties/colors/properties/light/properties/customProperties"
-                    }
-                  },
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "light"
-              ],
-              "additionalProperties": false
-            },
-            "typography": {
-              "type": "object",
-              "properties": {
-                "fontSans": {
-                  "type": "string"
-                },
-                "fontMono": {
-                  "type": "string"
-                },
-                "fontHeading": {
-                  "type": "string"
-                },
-                "fontImports": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "fontCss": {
-                  "type": "string"
-                },
-                "fontSize": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "string"
-                  }
-                },
-                "fontWeight": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "string"
-                  }
-                }
-              },
-              "additionalProperties": false
-            },
-            "radii": {
-              "type": "object",
-              "additionalProperties": {
-                "anyOf": [
-                  {
-                    "not": {}
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
-              }
-            },
-            "spacing": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            },
-            "paddings": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            },
-            "shadows": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          },
-          "required": [
-            "colors"
-          ],
-          "additionalProperties": false
+          "$ref": "#/definitions/ThemeTokens"
         },
         "rawCss": {
           "type": "string"
@@ -233,6 +94,157 @@
       "required": [
         "name"
       ],
+      "additionalProperties": false
+    },
+    "ThemeTokens": {
+      "type": "object",
+      "properties": {
+        "colors": {
+          "type": "object",
+          "properties": {
+            "light": {
+              "$ref": "#/definitions/ThemeColors"
+            },
+            "dark": {
+              "type": "object",
+              "properties": {
+                "primary": {
+                  "type": "string"
+                },
+                "primaryForeground": {
+                  "type": "string"
+                },
+                "secondary": {
+                  "type": "string"
+                },
+                "secondaryForeground": {
+                  "type": "string"
+                },
+                "accent": {
+                  "type": "string"
+                },
+                "accentForeground": {
+                  "type": "string"
+                },
+                "background": {
+                  "type": "string"
+                },
+                "foreground": {
+                  "type": "string"
+                },
+                "surface": {
+                  "type": "string"
+                },
+                "surfaceForeground": {
+                  "type": "string"
+                },
+                "muted": {
+                  "type": "string"
+                },
+                "mutedForeground": {
+                  "type": "string"
+                },
+                "destructive": {
+                  "type": "string"
+                },
+                "destructiveForeground": {
+                  "type": "string"
+                },
+                "border": {
+                  "type": "string"
+                },
+                "ring": {
+                  "type": "string"
+                },
+                "customProperties": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "light"
+          ],
+          "additionalProperties": false
+        },
+        "typography": {
+          "$ref": "#/definitions/ThemeTypographyTokens"
+        },
+        "radii": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "not": {}
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "spacing": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "paddings": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "shadows": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "colors"
+      ],
+      "additionalProperties": false
+    },
+    "ThemeTypographyTokens": {
+      "type": "object",
+      "properties": {
+        "fontSans": {
+          "type": "string"
+        },
+        "fontMono": {
+          "type": "string"
+        },
+        "fontHeading": {
+          "type": "string"
+        },
+        "fontImports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fontCss": {
+          "type": "string"
+        },
+        "fontSize": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "fontWeight": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
       "additionalProperties": false
     }
   },

@@ -1,6 +1,15 @@
 {
   "$ref": "#/definitions/VideoAnalysis",
   "definitions": {
+    "Fidelity": {
+      "type": "string",
+      "enum": [
+        "outline",
+        "blocked",
+        "shaded",
+        "polished"
+      ]
+    },
     "VideoAnalysis": {
       "type": "object",
       "properties": {
@@ -11,27 +20,10 @@
           "type": "string"
         },
         "category": {
-          "type": "string",
-          "enum": [
-            "Scenes",
-            "Environments",
-            "Things",
-            "Creatures",
-            "People",
-            "Clothes",
-            "Shapes",
-            "Effects",
-            "Uploads"
-          ]
+          "$ref": "#/definitions/VideoAnalysisCategory"
         },
         "fidelity": {
-          "type": "string",
-          "enum": [
-            "outline",
-            "blocked",
-            "shaded",
-            "polished"
-          ]
+          "$ref": "#/definitions/Fidelity"
         }
       },
       "required": [
@@ -41,6 +33,20 @@
         "fidelity"
       ],
       "additionalProperties": false
+    },
+    "VideoAnalysisCategory": {
+      "type": "string",
+      "enum": [
+        "Scenes",
+        "Environments",
+        "Things",
+        "Creatures",
+        "People",
+        "Clothes",
+        "Shapes",
+        "Effects",
+        "Uploads"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

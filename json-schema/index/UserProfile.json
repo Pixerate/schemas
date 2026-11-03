@@ -1,6 +1,11 @@
 {
   "$ref": "#/definitions/UserProfile",
   "definitions": {
+    "UserPreferences": {
+      "type": "object",
+      "additionalProperties": {},
+      "default": {}
+    },
     "UserProfile": {
       "type": "object",
       "properties": {
@@ -54,9 +59,7 @@
           "default": []
         },
         "preferences": {
-          "type": "object",
-          "additionalProperties": {},
-          "default": {}
+          "$ref": "#/definitions/UserPreferences"
         },
         "onboarding": {
           "type": "object",

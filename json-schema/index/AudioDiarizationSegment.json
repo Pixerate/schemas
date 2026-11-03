@@ -29,28 +29,7 @@
         "words": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "word": {
-                "type": "string"
-              },
-              "startOffset": {
-                "type": [
-                  "string",
-                  "number"
-                ]
-              },
-              "endOffset": {
-                "type": [
-                  "string",
-                  "number"
-                ]
-              }
-            },
-            "required": [
-              "word"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/AudioDiarizationWord"
           },
           "description": "Word-level timestamps for words in this segment"
         }
@@ -58,6 +37,30 @@
       "required": [
         "speaker",
         "text"
+      ],
+      "additionalProperties": false
+    },
+    "AudioDiarizationWord": {
+      "type": "object",
+      "properties": {
+        "word": {
+          "type": "string"
+        },
+        "startOffset": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "endOffset": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "word"
       ],
       "additionalProperties": false
     }

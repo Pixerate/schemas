@@ -1,6 +1,44 @@
 {
   "$ref": "#/definitions/LlmsTxtConfig",
   "definitions": {
+    "LlmsLink": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "LlmsSection": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LlmsLink"
+          }
+        }
+      },
+      "required": [
+        "title",
+        "links"
+      ],
+      "additionalProperties": false
+    },
     "LlmsTxtConfig": {
       "type": "object",
       "properties": {
@@ -19,45 +57,13 @@
         "sections": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "title": {
-                "type": "string"
-              },
-              "links": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "title": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "title",
-                    "url"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            },
-            "required": [
-              "title",
-              "links"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/LlmsSection"
           }
         },
         "optionalSections": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/LlmsTxtConfig/properties/sections/items"
+            "$ref": "#/definitions/LlmsSection"
           }
         }
       },

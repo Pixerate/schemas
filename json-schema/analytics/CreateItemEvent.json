@@ -1,6 +1,27 @@
 {
   "$ref": "#/definitions/CreateItemEvent",
   "definitions": {
+    "AnalyticsItemType": {
+      "type": "string",
+      "enum": [
+        "silo",
+        "bucket",
+        "pipeline",
+        "template",
+        "exploration",
+        "composition",
+        "fusion",
+        "edit",
+        "board",
+        "pitch",
+        "deliverable",
+        "organization",
+        "project",
+        "task",
+        "agent",
+        "workflow"
+      ]
+    },
     "CreateItemEvent": {
       "type": "object",
       "properties": {
@@ -12,25 +33,7 @@
           "type": "object",
           "properties": {
             "item_type": {
-              "type": "string",
-              "enum": [
-                "silo",
-                "bucket",
-                "pipeline",
-                "template",
-                "exploration",
-                "composition",
-                "fusion",
-                "edit",
-                "board",
-                "pitch",
-                "deliverable",
-                "organization",
-                "project",
-                "task",
-                "agent",
-                "workflow"
-              ]
+              "$ref": "#/definitions/AnalyticsItemType"
             }
           },
           "required": [

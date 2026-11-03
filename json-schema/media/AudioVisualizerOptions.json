@@ -5,12 +5,7 @@
       "type": "object",
       "properties": {
         "type": {
-          "type": "string",
-          "enum": [
-            "waves",
-            "spectrum",
-            "bars"
-          ],
+          "$ref": "#/definitions/AudioVisualizerType",
           "default": "waves"
         },
         "width": {
@@ -60,6 +55,14 @@
         }
       },
       "additionalProperties": false
+    },
+    "AudioVisualizerType": {
+      "type": "string",
+      "enum": [
+        "waves",
+        "spectrum",
+        "bars"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

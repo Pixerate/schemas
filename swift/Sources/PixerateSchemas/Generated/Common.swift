@@ -1,4 +1,4 @@
-// Generated from @pixerate/schemas common contracts. Do not edit.
+// Generated from @pixerate/schemas common contracts by scripts/gen-swift.mjs. Do not edit.
 import Foundation
 
 public enum AspectRatio: String, Codable, Sendable, CaseIterable {
@@ -43,3 +43,128 @@ public enum VideoResolution: String, Codable, Sendable, CaseIterable {
     case r4K = "4K"
 }
 
+public struct VideoAttachmentData: Codable, Sendable, Equatable {
+    public var bytesBase64Encoded: String?
+    public var data: JSONValue?
+    public var mimeType: String?
+    public var url: String?
+
+    enum CodingKeys: String, CodingKey {
+        case bytesBase64Encoded = "bytesBase64Encoded"
+        case data = "data"
+        case mimeType = "mimeType"
+        case url = "url"
+    }
+
+    public init(
+        bytesBase64Encoded: String? = nil,
+        data: JSONValue? = nil,
+        mimeType: String? = nil,
+        url: String? = nil
+    ) {
+        self.bytesBase64Encoded = bytesBase64Encoded
+        self.data = data
+        self.mimeType = mimeType
+        self.url = url
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.bytesBase64Encoded = try container.decodeIfPresent(String.self, forKey: .bytesBase64Encoded)
+        self.data = try container.decodeIfPresent(JSONValue.self, forKey: .data)
+        self.mimeType = try container.decodeIfPresent(String.self, forKey: .mimeType)
+        self.url = try container.decodeIfPresent(String.self, forKey: .url)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(bytesBase64Encoded, forKey: .bytesBase64Encoded)
+        try container.encodeIfPresent(data, forKey: .data)
+        try container.encodeIfPresent(mimeType, forKey: .mimeType)
+        try container.encodeIfPresent(url, forKey: .url)
+    }
+}
+
+/// A string, or a `VideoAttachmentData` object.
+public enum VideoAttachment: Codable, Sendable, Equatable {
+    case string(String)
+    case object(VideoAttachmentData)
+
+    public init(from decoder: Decoder) throws {
+        if let container = try? decoder.singleValueContainer(), let string = try? container.decode(String.self) {
+            self = .string(string)
+            return
+        }
+        self = .object(try VideoAttachmentData(from: decoder))
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        switch self {
+        case .string(let string):
+            var container = encoder.singleValueContainer()
+            try container.encode(string)
+        case .object(let data):
+            try data.encode(to: encoder)
+        }
+    }
+}
+
+public struct VideoFrameImageData: Codable, Sendable, Equatable {
+    public var bytesBase64Encoded: String?
+    public var data: String?
+    public var mimeType: String?
+
+    enum CodingKeys: String, CodingKey {
+        case bytesBase64Encoded = "bytesBase64Encoded"
+        case data = "data"
+        case mimeType = "mimeType"
+    }
+
+    public init(
+        bytesBase64Encoded: String? = nil,
+        data: String? = nil,
+        mimeType: String? = nil
+    ) {
+        self.bytesBase64Encoded = bytesBase64Encoded
+        self.data = data
+        self.mimeType = mimeType
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.bytesBase64Encoded = try container.decodeIfPresent(String.self, forKey: .bytesBase64Encoded)
+        self.data = try container.decodeIfPresent(String.self, forKey: .data)
+        self.mimeType = try container.decodeIfPresent(String.self, forKey: .mimeType)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(bytesBase64Encoded, forKey: .bytesBase64Encoded)
+        try container.encodeIfPresent(data, forKey: .data)
+        try container.encodeIfPresent(mimeType, forKey: .mimeType)
+    }
+}
+
+/// A string, or a `VideoFrameImageData` object.
+public enum VideoFrameImage: Codable, Sendable, Equatable {
+    case string(String)
+    case object(VideoFrameImageData)
+
+    public init(from decoder: Decoder) throws {
+        if let container = try? decoder.singleValueContainer(), let string = try? container.decode(String.self) {
+            self = .string(string)
+            return
+        }
+        self = .object(try VideoFrameImageData(from: decoder))
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        switch self {
+        case .string(let string):
+            var container = encoder.singleValueContainer()
+            try container.encode(string)
+        case .object(let data):
+            try data.encode(to: encoder)
+        }
+    }
+}

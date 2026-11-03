@@ -1,6 +1,33 @@
 {
   "$ref": "#/definitions/TypingIndicator",
   "definitions": {
+    "PresenceColor": {
+      "type": "string",
+      "enum": [
+        "slate",
+        "gray",
+        "zinc",
+        "neutral",
+        "stone",
+        "red",
+        "orange",
+        "amber",
+        "yellow",
+        "lime",
+        "green",
+        "emerald",
+        "teal",
+        "cyan",
+        "sky",
+        "blue",
+        "indigo",
+        "violet",
+        "purple",
+        "fuchsia",
+        "pink",
+        "rose"
+      ]
+    },
     "TypingIndicator": {
       "type": "object",
       "properties": {
@@ -20,31 +47,7 @@
           "type": "string"
         },
         "color": {
-          "type": "string",
-          "enum": [
-            "slate",
-            "gray",
-            "zinc",
-            "neutral",
-            "stone",
-            "red",
-            "orange",
-            "amber",
-            "yellow",
-            "lime",
-            "green",
-            "emerald",
-            "teal",
-            "cyan",
-            "sky",
-            "blue",
-            "indigo",
-            "violet",
-            "purple",
-            "fuchsia",
-            "pink",
-            "rose"
-          ]
+          "$ref": "#/definitions/PresenceColor"
         },
         "isTyping": {
           "type": "boolean",
@@ -52,8 +55,7 @@
         },
         "timestamp": {
           "type": "integer",
-          "exclusiveMinimum": 0,
-          "default": 0
+          "exclusiveMinimum": 0
         }
       },
       "required": [

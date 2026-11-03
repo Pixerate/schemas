@@ -1,6 +1,25 @@
 {
   "$ref": "#/definitions/LlmsSection",
   "definitions": {
+    "LlmsLink": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "url"
+      ],
+      "additionalProperties": false
+    },
     "LlmsSection": {
       "type": "object",
       "properties": {
@@ -10,23 +29,7 @@
         "links": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "title": {
-                "type": "string"
-              },
-              "url": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "title",
-              "url"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/LlmsLink"
           }
         }
       },

@@ -1,6 +1,40 @@
 {
   "$ref": "#/definitions/OTOperation",
   "definitions": {
+    "OTJsonOp": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "type": {
+          "$ref": "#/definitions/OTJsonOpType"
+        },
+        "value": {},
+        "prevValue": {}
+      },
+      "required": [
+        "path",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "OTJsonOpType": {
+      "type": "string",
+      "enum": [
+        "set",
+        "delete",
+        "insert",
+        "move",
+        "replace"
+      ]
+    },
     "OTOperation": {
       "type": "object",
       "properties": {
@@ -20,72 +54,18 @@
         "textOps": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "retain",
-                  "insert",
-                  "delete"
-                ]
-              },
-              "count": {
-                "type": "integer",
-                "minimum": 0
-              },
-              "text": {
-                "type": "string"
-              },
-              "attributes": {
-                "type": "object",
-                "additionalProperties": {}
-              }
-            },
-            "required": [
-              "type"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/OTTextOp"
           }
         },
         "jsonOps": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "path": {
-                "type": "array",
-                "items": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
-                }
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "set",
-                  "delete",
-                  "insert",
-                  "move",
-                  "replace"
-                ]
-              },
-              "value": {},
-              "prevValue": {}
-            },
-            "required": [
-              "path",
-              "type"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/OTJsonOp"
           }
         },
         "timestamp": {
           "type": "integer",
-          "exclusiveMinimum": 0,
-          "default": 0
+          "exclusiveMinimum": 0
         },
         "metadata": {
           "type": "object",
@@ -100,6 +80,37 @@
         "authorId"
       ],
       "additionalProperties": false
+    },
+    "OTTextOp": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/OTTextOpType"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "text": {
+          "type": "string"
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "OTTextOpType": {
+      "type": "string",
+      "enum": [
+        "retain",
+        "insert",
+        "delete"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

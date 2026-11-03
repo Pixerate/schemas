@@ -23,83 +23,28 @@
           "type": "string"
         },
         "category": {
-          "type": "string",
-          "enum": [
-            "mention",
-            "reply",
-            "team_invite",
-            "fuel_alert",
-            "system",
-            "job_completed",
-            "job_failed",
-            "custom"
-          ],
+          "$ref": "#/definitions/NotificationCategory",
           "default": "system"
         },
         "priority": {
-          "type": "string",
-          "enum": [
-            "low",
-            "normal",
-            "high",
-            "urgent"
-          ],
+          "$ref": "#/definitions/NotificationPriority",
           "default": "normal"
         },
         "channels": {
           "type": "array",
           "items": {
-            "type": "string",
-            "enum": [
-              "in_app",
-              "email",
-              "web_push",
-              "webhook",
-              "sms"
-            ]
+            "$ref": "#/definitions/NotificationChannel"
           },
           "default": [
             "in_app"
           ]
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "unread",
-            "read",
-            "archived"
-          ],
+          "$ref": "#/definitions/NotificationStatus",
           "default": "unread"
         },
         "actor": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            },
-            "email": {
-              "type": "string"
-            },
-            "avatarUrl": {
-              "type": "string"
-            },
-            "type": {
-              "type": "string",
-              "enum": [
-                "user",
-                "agent",
-                "system"
-              ],
-              "default": "user"
-            }
-          },
-          "required": [
-            "id"
-          ],
-          "additionalProperties": false
+          "$ref": "#/definitions/NotificationActor"
         },
         "targetType": {
           "type": "string"
@@ -127,8 +72,7 @@
               "type": "string",
               "format": "date-time"
             }
-          ],
-          "default": "1970-01-01T00:00:00.000Z"
+          ]
         },
         "readAt": {
           "anyOf": [
@@ -166,6 +110,76 @@
         "body"
       ],
       "additionalProperties": false
+    },
+    "NotificationActor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "user",
+            "agent",
+            "system"
+          ],
+          "default": "user"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "NotificationCategory": {
+      "type": "string",
+      "enum": [
+        "mention",
+        "reply",
+        "team_invite",
+        "fuel_alert",
+        "system",
+        "job_completed",
+        "job_failed",
+        "custom"
+      ]
+    },
+    "NotificationChannel": {
+      "type": "string",
+      "enum": [
+        "in_app",
+        "email",
+        "web_push",
+        "webhook",
+        "sms"
+      ]
+    },
+    "NotificationPriority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "urgent"
+      ]
+    },
+    "NotificationStatus": {
+      "type": "string",
+      "enum": [
+        "unread",
+        "read",
+        "archived"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

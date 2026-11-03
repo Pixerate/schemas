@@ -18,64 +18,7 @@
         "segments": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "speaker": {
-                "type": "string",
-                "description": "Speaker identifier (e.g. Speaker 1, Speaker 2)"
-              },
-              "text": {
-                "type": "string",
-                "description": "Spoken segment text"
-              },
-              "startOffset": {
-                "type": [
-                  "string",
-                  "number"
-                ],
-                "description": "Start timestamp of the segment"
-              },
-              "endOffset": {
-                "type": [
-                  "string",
-                  "number"
-                ],
-                "description": "End timestamp of the segment"
-              },
-              "words": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "word": {
-                      "type": "string"
-                    },
-                    "startOffset": {
-                      "type": [
-                        "string",
-                        "number"
-                      ]
-                    },
-                    "endOffset": {
-                      "type": [
-                        "string",
-                        "number"
-                      ]
-                    }
-                  },
-                  "required": [
-                    "word"
-                  ],
-                  "additionalProperties": false
-                },
-                "description": "Word-level timestamps for words in this segment"
-              }
-            },
-            "required": [
-              "speaker",
-              "text"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/AudioDiarizationSegment"
           },
           "description": "Ordered chronological segments of speech by speaker with timestamps"
         }
@@ -84,6 +27,69 @@
         "transcript",
         "speakers",
         "segments"
+      ],
+      "additionalProperties": false
+    },
+    "AudioDiarizationSegment": {
+      "type": "object",
+      "properties": {
+        "speaker": {
+          "type": "string",
+          "description": "Speaker identifier (e.g. Speaker 1, Speaker 2)"
+        },
+        "text": {
+          "type": "string",
+          "description": "Spoken segment text"
+        },
+        "startOffset": {
+          "type": [
+            "string",
+            "number"
+          ],
+          "description": "Start timestamp of the segment"
+        },
+        "endOffset": {
+          "type": [
+            "string",
+            "number"
+          ],
+          "description": "End timestamp of the segment"
+        },
+        "words": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AudioDiarizationWord"
+          },
+          "description": "Word-level timestamps for words in this segment"
+        }
+      },
+      "required": [
+        "speaker",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "AudioDiarizationWord": {
+      "type": "object",
+      "properties": {
+        "word": {
+          "type": "string"
+        },
+        "startOffset": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "endOffset": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "word"
       ],
       "additionalProperties": false
     }

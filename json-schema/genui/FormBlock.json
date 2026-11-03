@@ -22,82 +22,88 @@
         "questions": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "label": {
-                "type": "string"
-              },
-              "question": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "text",
-                  "textarea",
-                  "radio",
-                  "select",
-                  "checkbox",
-                  "rank"
-                ]
-              },
-              "options": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "choices": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "label": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "isRecommended": {
-                      "type": "boolean"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "label"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "allowCustom": {
-                "type": "boolean"
-              },
-              "placeholder": {
-                "type": "string"
-              },
-              "required": {
-                "type": "boolean"
-              },
-              "defaultValue": {}
-            },
-            "additionalProperties": false
+            "$ref": "#/definitions/FormQuestion"
           }
         },
         "fields": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/FormBlock/properties/questions/items"
+            "$ref": "#/definitions/FormQuestion"
           }
         },
         "submitLabel": {
           "type": "string"
         }
+      },
+      "additionalProperties": false
+    },
+    "FormChoice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "isRecommended": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "FormQuestion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "text",
+            "textarea",
+            "radio",
+            "select",
+            "checkbox",
+            "rank"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FormChoice"
+          }
+        },
+        "allowCustom": {
+          "type": "boolean"
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "defaultValue": {}
       },
       "additionalProperties": false
     }

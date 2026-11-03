@@ -1,6 +1,15 @@
 {
   "$ref": "#/definitions/RecordLock",
   "definitions": {
+    "LockStatus": {
+      "type": "string",
+      "enum": [
+        "unlocked",
+        "locked",
+        "expired",
+        "claimed"
+      ]
+    },
     "RecordLock": {
       "type": "object",
       "properties": {
@@ -15,25 +24,7 @@
           "default": "record"
         },
         "lockedBy": {
-          "type": "object",
-          "properties": {
-            "userId": {
-              "type": "string"
-            },
-            "username": {
-              "type": "string"
-            },
-            "clientId": {
-              "type": "string"
-            },
-            "avatarUrl": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "userId"
-          ],
-          "additionalProperties": false
+          "$ref": "#/definitions/RecordLockInfo"
         },
         "lockedAt": {
           "type": "integer",
@@ -49,13 +40,7 @@
           "default": 60
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "unlocked",
-            "locked",
-            "expired",
-            "claimed"
-          ],
+          "$ref": "#/definitions/LockStatus",
           "default": "locked"
         },
         "metadata": {
@@ -70,6 +55,27 @@
         "lockedBy",
         "lockedAt",
         "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "RecordLockInfo": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "userId"
       ],
       "additionalProperties": false
     }

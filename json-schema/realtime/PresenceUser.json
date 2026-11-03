@@ -1,6 +1,77 @@
 {
   "$ref": "#/definitions/PresenceUser",
   "definitions": {
+    "ActorType": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent",
+        "system"
+      ]
+    },
+    "AgentActorMetadata": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string"
+        },
+        "parentAgentId": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "string"
+        },
+        "currentTask": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PresenceColor": {
+      "type": "string",
+      "enum": [
+        "slate",
+        "gray",
+        "zinc",
+        "neutral",
+        "stone",
+        "red",
+        "orange",
+        "amber",
+        "yellow",
+        "lime",
+        "green",
+        "emerald",
+        "teal",
+        "cyan",
+        "sky",
+        "blue",
+        "indigo",
+        "violet",
+        "purple",
+        "fuchsia",
+        "pink",
+        "rose"
+      ]
+    },
+    "PresenceStatus": {
+      "type": "string",
+      "enum": [
+        "online",
+        "idle",
+        "away",
+        "busy",
+        "offline",
+        "planning",
+        "thinking",
+        "executing_tool",
+        "waiting_for_input",
+        "waiting_for_agent",
+        "streaming",
+        "paused",
+        "error"
+      ]
+    },
     "PresenceUser": {
       "type": "object",
       "properties": {
@@ -17,82 +88,22 @@
           "type": "string"
         },
         "actorType": {
-          "type": "string",
-          "enum": [
-            "human",
-            "agent",
-            "system"
-          ]
+          "$ref": "#/definitions/ActorType"
         },
         "color": {
-          "type": "string",
-          "enum": [
-            "slate",
-            "gray",
-            "zinc",
-            "neutral",
-            "stone",
-            "red",
-            "orange",
-            "amber",
-            "yellow",
-            "lime",
-            "green",
-            "emerald",
-            "teal",
-            "cyan",
-            "sky",
-            "blue",
-            "indigo",
-            "violet",
-            "purple",
-            "fuchsia",
-            "pink",
-            "rose"
-          ],
+          "$ref": "#/definitions/PresenceColor",
           "default": "blue"
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "online",
-            "idle",
-            "away",
-            "busy",
-            "offline",
-            "planning",
-            "thinking",
-            "executing_tool",
-            "waiting_for_input",
-            "waiting_for_agent",
-            "streaming",
-            "paused",
-            "error"
-          ],
+          "$ref": "#/definitions/PresenceStatus",
           "default": "online"
         },
         "agent": {
-          "type": "object",
-          "properties": {
-            "role": {
-              "type": "string"
-            },
-            "parentAgentId": {
-              "type": "string"
-            },
-            "runId": {
-              "type": "string"
-            },
-            "currentTask": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
+          "$ref": "#/definitions/AgentActorMetadata"
         },
         "lastSeen": {
           "type": "integer",
-          "exclusiveMinimum": 0,
-          "default": 0
+          "exclusiveMinimum": 0
         },
         "metadata": {
           "type": "object",

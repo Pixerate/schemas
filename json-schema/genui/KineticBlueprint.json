@@ -18,15 +18,7 @@
           "description": "Motion personality (e.g. bouncy, snappy, smooth, mechanical, organic)"
         },
         "styleArchetype": {
-          "type": "string",
-          "enum": [
-            "minimalist",
-            "neubrutalist",
-            "skeuomorphic",
-            "flat",
-            "custom",
-            "prompt-driven"
-          ],
+          "$ref": "#/definitions/SvgStyleArchetype",
           "description": "Visual style archetype derived from references or prompt"
         },
         "palette": {
@@ -100,6 +92,17 @@
         "primaryAnchor"
       ],
       "additionalProperties": false
+    },
+    "SvgStyleArchetype": {
+      "type": "string",
+      "enum": [
+        "minimalist",
+        "neubrutalist",
+        "skeuomorphic",
+        "flat",
+        "custom",
+        "prompt-driven"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

@@ -1,7 +1,7 @@
 {
-  "$ref": "#/definitions/PublishResult",
+  "$ref": "#/definitions/SocialPublishResult",
   "definitions": {
-    "PublishResult": {
+    "SocialPublishResult": {
       "type": "object",
       "properties": {
         "success": {

@@ -1,7 +1,7 @@
 {
-  "$ref": "#/definitions/ComponentPropDefinition",
+  "$ref": "#/definitions/ComponentPropDoc",
   "definitions": {
-    "ComponentPropDefinition": {
+    "ComponentPropDoc": {
       "type": "object",
       "properties": {
         "name": {

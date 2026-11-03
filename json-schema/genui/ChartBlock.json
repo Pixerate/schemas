@@ -28,12 +28,7 @@
           "type": "string"
         },
         "valueFormat": {
-          "type": "string",
-          "enum": [
-            "number",
-            "percent",
-            "currency"
-          ]
+          "$ref": "#/definitions/ChartValueFormat"
         },
         "yLabel": {
           "type": "string"
@@ -50,53 +45,11 @@
         "series": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "data": {
-                "type": "array",
-                "items": {
-                  "type": "number"
-                }
-              },
-              "color": {
-                "type": "string",
-                "enum": [
-                  "chart-1",
-                  "chart-2",
-                  "chart-3",
-                  "chart-4",
-                  "chart-5"
-                ]
-              }
-            },
-            "required": [
-              "name",
-              "data"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/ChartSeries"
           }
         },
         "drilldown": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "details": {
-              "type": "object",
-              "additionalProperties": {}
-            },
-            "followUps": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          "additionalProperties": false
+          "$ref": "#/definitions/ChartDrilldown"
         },
         "followUps": {
           "type": "array",
@@ -111,6 +64,65 @@
         "series"
       ],
       "additionalProperties": false
+    },
+    "ChartDrilldown": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "followUps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "ChartSeries": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "color": {
+          "$ref": "#/definitions/ChartThemeToken"
+        }
+      },
+      "required": [
+        "name",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "ChartThemeToken": {
+      "type": "string",
+      "enum": [
+        "chart-1",
+        "chart-2",
+        "chart-3",
+        "chart-4",
+        "chart-5"
+      ]
+    },
+    "ChartValueFormat": {
+      "type": "string",
+      "enum": [
+        "number",
+        "percent",
+        "currency"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

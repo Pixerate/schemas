@@ -1,6 +1,29 @@
 {
   "$ref": "#/definitions/GenerateHarnessOptions",
   "definitions": {
+    "ComponentPropDoc": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "default": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "description"
+      ],
+      "additionalProperties": false
+    },
     "GenerateHarnessOptions": {
       "type": "object",
       "properties": {
@@ -8,12 +31,7 @@
           "type": "string"
         },
         "language": {
-          "type": "string",
-          "enum": [
-            "svelte",
-            "react",
-            "webcomponent"
-          ]
+          "$ref": "#/definitions/PlatformLanguage"
         },
         "componentName": {
           "type": "string"
@@ -21,27 +39,7 @@
         "docsProps": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string"
-              },
-              "default": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name",
-              "type",
-              "description"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/ComponentPropDoc"
           }
         }
       },
@@ -51,6 +49,14 @@
         "componentName"
       ],
       "additionalProperties": false
+    },
+    "PlatformLanguage": {
+      "type": "string",
+      "enum": [
+        "svelte",
+        "react",
+        "webcomponent"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

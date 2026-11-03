@@ -11,27 +11,7 @@
         "props": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string"
-              },
-              "default": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name",
-              "type",
-              "description"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/ComponentPropDoc"
           },
           "description": "List of prop definitions and types"
         },
@@ -43,6 +23,29 @@
       "required": [
         "usage",
         "props"
+      ],
+      "additionalProperties": false
+    },
+    "ComponentPropDoc": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "default": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "description"
       ],
       "additionalProperties": false
     }

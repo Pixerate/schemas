@@ -1,6 +1,22 @@
 {
   "$ref": "#/definitions/PublicApiKey",
   "definitions": {
+    "ApiKeyOwnerType": {
+      "type": "string",
+      "enum": [
+        "user",
+        "service_account",
+        "team",
+        "organization"
+      ]
+    },
+    "ApiKeyStatus": {
+      "type": "string",
+      "enum": [
+        "active",
+        "revoked"
+      ]
+    },
     "PublicApiKey": {
       "type": "object",
       "properties": {
@@ -14,13 +30,7 @@
           "type": "string"
         },
         "ownerType": {
-          "type": "string",
-          "enum": [
-            "user",
-            "service_account",
-            "team",
-            "organization"
-          ]
+          "$ref": "#/definitions/ApiKeyOwnerType"
         },
         "ownerId": {
           "type": "string"
@@ -50,11 +60,7 @@
           }
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "revoked"
-          ]
+          "$ref": "#/definitions/ApiKeyStatus"
         },
         "metadata": {
           "type": "object",

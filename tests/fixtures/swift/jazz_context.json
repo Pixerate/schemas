@@ -1,0 +1,34 @@
+{
+  "sessionId": "session-abc",
+  "agent": {
+    "id": "pixie",
+    "name": "Pixie"
+  },
+  "surface": "canvas",
+  "phrases": [],
+  "selection": [],
+  "riffs": [
+    {
+      "id": "riff-42",
+      "strategy": "continue-series",
+      "intent": "add",
+      "title": "Add subtitle",
+      "targets": [],
+      "status": "proposed"
+    }
+  ],
+  "policy": {
+    "autonomy": "assist",
+    "tempo": {
+      "idleMs": 900,
+      "minGapMs": 8000
+    },
+    "budget": {
+      "maxRiffsPerMinute": 3,
+      "maxPending": 3,
+      "cooldownAfterRejectMs": 30000
+    },
+    "allowEditUserContent": false
+  },
+  "skills": []
+}

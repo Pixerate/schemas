@@ -1,4 +1,4 @@
-// Generated from @pixerate/schemas agent contracts. Do not edit.
+// Generated from @pixerate/schemas agent contracts by scripts/gen-swift.mjs. Do not edit.
 import Foundation
 
 public enum AgentFileChangeKind: String, Codable, Sendable, CaseIterable {
@@ -79,20 +79,21 @@ public struct ActiveAgentTask: Codable, Sendable, Equatable {
         self.statusText = try container.decodeIfPresent(String.self, forKey: .statusText)
         self.startedAt = try container.decode(String.self, forKey: .startedAt)
     }
-}
 
-public enum AgentApprovalRequestRiskLevel: String, Codable, Sendable, CaseIterable {
-    case low = "low"
-    case medium = "medium"
-    case high = "high"
-    case critical = "critical"
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(taskId, forKey: .taskId)
+        try container.encode(taskTitle, forKey: .taskTitle)
+        try container.encodeIfPresent(statusText, forKey: .statusText)
+        try container.encode(startedAt, forKey: .startedAt)
+    }
 }
 
 public struct AgentApprovalRequest: Codable, Sendable, Equatable {
     public var toolCallId: String
     public var toolName: String
     public var parameters: [String: JSONValue]
-    public var riskLevel: AgentApprovalRequestRiskLevel
+    public var riskLevel: AgentRiskLevel
     public var riskReason: String?
 
     enum CodingKeys: String, CodingKey {
@@ -107,7 +108,7 @@ public struct AgentApprovalRequest: Codable, Sendable, Equatable {
         toolCallId: String,
         toolName: String,
         parameters: [String: JSONValue],
-        riskLevel: AgentApprovalRequestRiskLevel,
+        riskLevel: AgentRiskLevel,
         riskReason: String? = nil
     ) {
         self.toolCallId = toolCallId
@@ -122,8 +123,17 @@ public struct AgentApprovalRequest: Codable, Sendable, Equatable {
         self.toolCallId = try container.decode(String.self, forKey: .toolCallId)
         self.toolName = try container.decode(String.self, forKey: .toolName)
         self.parameters = try container.decode([String: JSONValue].self, forKey: .parameters)
-        self.riskLevel = try container.decode(AgentApprovalRequestRiskLevel.self, forKey: .riskLevel)
+        self.riskLevel = try container.decode(AgentRiskLevel.self, forKey: .riskLevel)
         self.riskReason = try container.decodeIfPresent(String.self, forKey: .riskReason)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(toolCallId, forKey: .toolCallId)
+        try container.encode(toolName, forKey: .toolName)
+        try container.encode(parameters, forKey: .parameters)
+        try container.encode(riskLevel, forKey: .riskLevel)
+        try container.encodeIfPresent(riskReason, forKey: .riskReason)
     }
 }
 
@@ -165,6 +175,14 @@ public struct AgentApprovalResponse: Codable, Sendable, Equatable {
         self.modifiedParameters = try container.decodeIfPresent([String: JSONValue].self, forKey: .modifiedParameters)
         self.feedback = try container.decodeIfPresent(String.self, forKey: .feedback)
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(toolCallId, forKey: .toolCallId)
+        try container.encode(status, forKey: .status)
+        try container.encodeIfPresent(modifiedParameters, forKey: .modifiedParameters)
+        try container.encodeIfPresent(feedback, forKey: .feedback)
+    }
 }
 
 public struct AgentConfig: Codable, Sendable, Equatable {
@@ -194,6 +212,13 @@ public struct AgentConfig: Codable, Sendable, Equatable {
         self.model = try container.decodeIfPresent(String.self, forKey: .model)
         self.options = try container.decodeIfPresent([String: JSONValue].self, forKey: .options)
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(model, forKey: .model)
+        try container.encodeIfPresent(options, forKey: .options)
+    }
 }
 
 public struct AgentDiffStats: Codable, Sendable, Equatable {
@@ -218,39 +243,11 @@ public struct AgentDiffStats: Codable, Sendable, Equatable {
         self.added = try container.decode(Int.self, forKey: .added)
         self.removed = try container.decode(Int.self, forKey: .removed)
     }
-}
 
-public struct AgentDirectoryEntryActiveTasksItem: Codable, Sendable, Equatable {
-    public var taskId: String
-    public var taskTitle: String
-    public var statusText: String?
-    public var startedAt: String
-
-    enum CodingKeys: String, CodingKey {
-        case taskId = "taskId"
-        case taskTitle = "taskTitle"
-        case statusText = "statusText"
-        case startedAt = "startedAt"
-    }
-
-    public init(
-        taskId: String,
-        taskTitle: String,
-        statusText: String? = nil,
-        startedAt: String
-    ) {
-        self.taskId = taskId
-        self.taskTitle = taskTitle
-        self.statusText = statusText
-        self.startedAt = startedAt
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.taskId = try container.decode(String.self, forKey: .taskId)
-        self.taskTitle = try container.decode(String.self, forKey: .taskTitle)
-        self.statusText = try container.decodeIfPresent(String.self, forKey: .statusText)
-        self.startedAt = try container.decode(String.self, forKey: .startedAt)
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(added, forKey: .added)
+        try container.encode(removed, forKey: .removed)
     }
 }
 
@@ -265,10 +262,10 @@ public struct AgentDirectoryEntry: Codable, Sendable, Equatable {
     public var role: String?
     public var `description`: String?
     public var currentStatus: String?
-    public var currentTaskId: JSONValue?
-    public var currentTaskTitle: JSONValue?
+    public var currentTaskId: String?
+    public var currentTaskTitle: String?
     public var isEngaged: Bool?
-    public var activeTasks: [AgentDirectoryEntryActiveTasksItem]?
+    public var activeTasks: [ActiveAgentTask]?
     public var lastSeen: Double?
     public var createdAt: String
     public var updatedAt: String
@@ -304,10 +301,10 @@ public struct AgentDirectoryEntry: Codable, Sendable, Equatable {
         role: String? = nil,
         `description`: String? = nil,
         currentStatus: String? = nil,
-        currentTaskId: JSONValue? = nil,
-        currentTaskTitle: JSONValue? = nil,
+        currentTaskId: String? = nil,
+        currentTaskTitle: String? = nil,
         isEngaged: Bool? = nil,
-        activeTasks: [AgentDirectoryEntryActiveTasksItem]? = nil,
+        activeTasks: [ActiveAgentTask]? = nil,
         lastSeen: Double? = nil,
         createdAt: String,
         updatedAt: String
@@ -343,13 +340,34 @@ public struct AgentDirectoryEntry: Codable, Sendable, Equatable {
         self.role = try container.decodeIfPresent(String.self, forKey: .role)
         self.`description` = try container.decodeIfPresent(String.self, forKey: .`description`)
         self.currentStatus = try container.decodeIfPresent(String.self, forKey: .currentStatus)
-        self.currentTaskId = try container.decodeIfPresent(JSONValue.self, forKey: .currentTaskId)
-        self.currentTaskTitle = try container.decodeIfPresent(JSONValue.self, forKey: .currentTaskTitle)
+        self.currentTaskId = try container.decodeIfPresent(String.self, forKey: .currentTaskId)
+        self.currentTaskTitle = try container.decodeIfPresent(String.self, forKey: .currentTaskTitle)
         self.isEngaged = try container.decodeIfPresent(Bool.self, forKey: .isEngaged)
-        self.activeTasks = try container.decodeIfPresent([AgentDirectoryEntryActiveTasksItem].self, forKey: .activeTasks)
+        self.activeTasks = try container.decodeIfPresent([ActiveAgentTask].self, forKey: .activeTasks)
         self.lastSeen = try container.decodeIfPresent(Double.self, forKey: .lastSeen)
         self.createdAt = try container.decode(String.self, forKey: .createdAt)
         self.updatedAt = try container.decode(String.self, forKey: .updatedAt)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(orgId, forKey: .orgId)
+        try container.encode(name, forKey: .name)
+        try container.encodeIfPresent(handle, forKey: .handle)
+        try container.encode(colorName, forKey: .colorName)
+        try container.encode(hexColor, forKey: .hexColor)
+        try container.encodeIfPresent(avatarUrl, forKey: .avatarUrl)
+        try container.encodeIfPresent(role, forKey: .role)
+        try container.encodeIfPresent(`description`, forKey: .`description`)
+        try container.encodeIfPresent(currentStatus, forKey: .currentStatus)
+        try container.encode(currentTaskId, forKey: .currentTaskId)
+        try container.encode(currentTaskTitle, forKey: .currentTaskTitle)
+        try container.encodeIfPresent(isEngaged, forKey: .isEngaged)
+        try container.encodeIfPresent(activeTasks, forKey: .activeTasks)
+        try container.encodeIfPresent(lastSeen, forKey: .lastSeen)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
     }
 }
 
@@ -385,6 +403,14 @@ public struct AgentDocumentAttachment: Codable, Sendable, Equatable {
         self.mimeType = try container.decode(String.self, forKey: .mimeType)
         self.fileName = try container.decodeIfPresent(String.self, forKey: .fileName)
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(data, forKey: .data)
+        try container.encodeIfPresent(uri, forKey: .uri)
+        try container.encode(mimeType, forKey: .mimeType)
+        try container.encodeIfPresent(fileName, forKey: .fileName)
+    }
 }
 
 public enum AgentEnvironmentType: String, Codable, Sendable, CaseIterable {
@@ -392,70 +418,27 @@ public enum AgentEnvironmentType: String, Codable, Sendable, CaseIterable {
     case local = "local"
 }
 
-public struct AgentEnvironmentNetworkAllowlistItemTransformItem: Codable, Sendable, Equatable {
-    public var key: String
-    public var value: String
-
-    enum CodingKeys: String, CodingKey {
-        case key = "key"
-        case value = "value"
-    }
-
-    public init(
-        key: String,
-        value: String
-    ) {
-        self.key = key
-        self.value = value
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.key = try container.decode(String.self, forKey: .key)
-        self.value = try container.decode(String.self, forKey: .value)
-    }
-}
-
-public struct AgentEnvironmentNetworkAllowlistItem: Codable, Sendable, Equatable {
-    public var domain: String
-    public var transform: [AgentEnvironmentNetworkAllowlistItemTransformItem]?
-
-    enum CodingKeys: String, CodingKey {
-        case domain = "domain"
-        case transform = "transform"
-    }
-
-    public init(
-        domain: String,
-        transform: [AgentEnvironmentNetworkAllowlistItemTransformItem]? = nil
-    ) {
-        self.domain = domain
-        self.transform = transform
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.domain = try container.decode(String.self, forKey: .domain)
-        self.transform = try container.decodeIfPresent([AgentEnvironmentNetworkAllowlistItemTransformItem].self, forKey: .transform)
-    }
-}
-
 public struct AgentEnvironmentNetwork: Codable, Sendable, Equatable {
-    public var allowlist: [AgentEnvironmentNetworkAllowlistItem]?
+    public var allowlist: [AgentNetworkAllowlistRule]?
 
     enum CodingKeys: String, CodingKey {
         case allowlist = "allowlist"
     }
 
     public init(
-        allowlist: [AgentEnvironmentNetworkAllowlistItem]? = nil
+        allowlist: [AgentNetworkAllowlistRule]? = nil
     ) {
         self.allowlist = allowlist
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.allowlist = try container.decodeIfPresent([AgentEnvironmentNetworkAllowlistItem].self, forKey: .allowlist)
+        self.allowlist = try container.decodeIfPresent([AgentNetworkAllowlistRule].self, forKey: .allowlist)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(allowlist, forKey: .allowlist)
     }
 }
 
@@ -481,29 +464,11 @@ public struct AgentEnvironment: Codable, Sendable, Equatable {
         self.type = try container.decodeIfPresent(AgentEnvironmentType.self, forKey: .type)
         self.network = try container.decodeIfPresent(AgentEnvironmentNetwork.self, forKey: .network)
     }
-}
 
-public struct AgentFileChangeStats: Codable, Sendable, Equatable {
-    public var added: Int
-    public var removed: Int
-
-    enum CodingKeys: String, CodingKey {
-        case added = "added"
-        case removed = "removed"
-    }
-
-    public init(
-        added: Int,
-        removed: Int
-    ) {
-        self.added = added
-        self.removed = removed
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.added = try container.decode(Int.self, forKey: .added)
-        self.removed = try container.decode(Int.self, forKey: .removed)
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(network, forKey: .network)
     }
 }
 
@@ -513,7 +478,7 @@ public struct AgentFileChange: Codable, Sendable, Equatable {
     public var before: String?
     public var after: String?
     public var diff: String
-    public var stats: AgentFileChangeStats
+    public var stats: AgentDiffStats
 
     enum CodingKeys: String, CodingKey {
         case path = "path"
@@ -530,7 +495,7 @@ public struct AgentFileChange: Codable, Sendable, Equatable {
         before: String? = nil,
         after: String? = nil,
         diff: String,
-        stats: AgentFileChangeStats
+        stats: AgentDiffStats
     ) {
         self.path = path
         self.kind = kind
@@ -547,190 +512,17 @@ public struct AgentFileChange: Codable, Sendable, Equatable {
         self.before = try container.decodeIfPresent(String.self, forKey: .before)
         self.after = try container.decodeIfPresent(String.self, forKey: .after)
         self.diff = try container.decode(String.self, forKey: .diff)
-        self.stats = try container.decode(AgentFileChangeStats.self, forKey: .stats)
-    }
-}
-
-public struct AgentInteractionRequestToolsItem: Codable, Sendable, Equatable {
-    public var type: String
-    public var config: [String: JSONValue]?
-
-    enum CodingKeys: String, CodingKey {
-        case type = "type"
-        case config = "config"
+        self.stats = try container.decode(AgentDiffStats.self, forKey: .stats)
     }
 
-    public init(
-        type: String,
-        config: [String: JSONValue]? = nil
-    ) {
-        self.type = type
-        self.config = config
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.type = try container.decode(String.self, forKey: .type)
-        self.config = try container.decodeIfPresent([String: JSONValue].self, forKey: .config)
-    }
-}
-
-public struct AgentInteractionRequestAgentConfig: Codable, Sendable, Equatable {
-    public var type: String?
-    public var model: String?
-    public var options: [String: JSONValue]?
-
-    enum CodingKeys: String, CodingKey {
-        case type = "type"
-        case model = "model"
-        case options = "options"
-    }
-
-    public init(
-        type: String? = nil,
-        model: String? = nil,
-        options: [String: JSONValue]? = nil
-    ) {
-        self.type = type
-        self.model = model
-        self.options = options
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.type = try container.decodeIfPresent(String.self, forKey: .type)
-        self.model = try container.decodeIfPresent(String.self, forKey: .model)
-        self.options = try container.decodeIfPresent([String: JSONValue].self, forKey: .options)
-    }
-}
-
-public enum AgentInteractionRequestEnvironmentType: String, Codable, Sendable, CaseIterable {
-    case remote = "remote"
-    case local = "local"
-}
-
-public struct AgentInteractionRequestEnvironmentNetworkAllowlistItemTransformItem: Codable, Sendable, Equatable {
-    public var key: String
-    public var value: String
-
-    enum CodingKeys: String, CodingKey {
-        case key = "key"
-        case value = "value"
-    }
-
-    public init(
-        key: String,
-        value: String
-    ) {
-        self.key = key
-        self.value = value
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.key = try container.decode(String.self, forKey: .key)
-        self.value = try container.decode(String.self, forKey: .value)
-    }
-}
-
-public struct AgentInteractionRequestEnvironmentNetworkAllowlistItem: Codable, Sendable, Equatable {
-    public var domain: String
-    public var transform: [AgentInteractionRequestEnvironmentNetworkAllowlistItemTransformItem]?
-
-    enum CodingKeys: String, CodingKey {
-        case domain = "domain"
-        case transform = "transform"
-    }
-
-    public init(
-        domain: String,
-        transform: [AgentInteractionRequestEnvironmentNetworkAllowlistItemTransformItem]? = nil
-    ) {
-        self.domain = domain
-        self.transform = transform
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.domain = try container.decode(String.self, forKey: .domain)
-        self.transform = try container.decodeIfPresent([AgentInteractionRequestEnvironmentNetworkAllowlistItemTransformItem].self, forKey: .transform)
-    }
-}
-
-public struct AgentInteractionRequestEnvironmentNetwork: Codable, Sendable, Equatable {
-    public var allowlist: [AgentInteractionRequestEnvironmentNetworkAllowlistItem]?
-
-    enum CodingKeys: String, CodingKey {
-        case allowlist = "allowlist"
-    }
-
-    public init(
-        allowlist: [AgentInteractionRequestEnvironmentNetworkAllowlistItem]? = nil
-    ) {
-        self.allowlist = allowlist
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.allowlist = try container.decodeIfPresent([AgentInteractionRequestEnvironmentNetworkAllowlistItem].self, forKey: .allowlist)
-    }
-}
-
-public struct AgentInteractionRequestEnvironment: Codable, Sendable, Equatable {
-    public var type: AgentInteractionRequestEnvironmentType?
-    public var network: AgentInteractionRequestEnvironmentNetwork?
-
-    enum CodingKeys: String, CodingKey {
-        case type = "type"
-        case network = "network"
-    }
-
-    public init(
-        type: AgentInteractionRequestEnvironmentType? = nil,
-        network: AgentInteractionRequestEnvironmentNetwork? = nil
-    ) {
-        self.type = type
-        self.network = network
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.type = try container.decodeIfPresent(AgentInteractionRequestEnvironmentType.self, forKey: .type)
-        self.network = try container.decodeIfPresent(AgentInteractionRequestEnvironmentNetwork.self, forKey: .network)
-    }
-}
-
-public struct AgentInteractionRequestDocumentsItem: Codable, Sendable, Equatable {
-    public var data: String?
-    public var uri: String?
-    public var mimeType: String
-    public var fileName: String?
-
-    enum CodingKeys: String, CodingKey {
-        case data = "data"
-        case uri = "uri"
-        case mimeType = "mimeType"
-        case fileName = "fileName"
-    }
-
-    public init(
-        data: String? = nil,
-        uri: String? = nil,
-        mimeType: String,
-        fileName: String? = nil
-    ) {
-        self.data = data
-        self.uri = uri
-        self.mimeType = mimeType
-        self.fileName = fileName
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.data = try container.decodeIfPresent(String.self, forKey: .data)
-        self.uri = try container.decodeIfPresent(String.self, forKey: .uri)
-        self.mimeType = try container.decode(String.self, forKey: .mimeType)
-        self.fileName = try container.decodeIfPresent(String.self, forKey: .fileName)
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(path, forKey: .path)
+        try container.encode(kind, forKey: .kind)
+        try container.encodeIfPresent(before, forKey: .before)
+        try container.encodeIfPresent(after, forKey: .after)
+        try container.encode(diff, forKey: .diff)
+        try container.encode(stats, forKey: .stats)
     }
 }
 
@@ -739,10 +531,10 @@ public struct AgentInteractionRequest: Codable, Sendable, Equatable {
     public var input: String
     public var systemInstruction: String?
     public var background: Bool
-    public var tools: [AgentInteractionRequestToolsItem]?
-    public var agentConfig: AgentInteractionRequestAgentConfig?
-    public var environment: AgentInteractionRequestEnvironment?
-    public var documents: [AgentInteractionRequestDocumentsItem]?
+    public var tools: [AgentTool]?
+    public var agentConfig: AgentConfig?
+    public var environment: AgentEnvironment?
+    public var documents: [AgentDocumentAttachment]?
     public var coachingRules: [String]?
 
     enum CodingKeys: String, CodingKey {
@@ -762,10 +554,10 @@ public struct AgentInteractionRequest: Codable, Sendable, Equatable {
         input: String,
         systemInstruction: String? = nil,
         background: Bool = true,
-        tools: [AgentInteractionRequestToolsItem]? = nil,
-        agentConfig: AgentInteractionRequestAgentConfig? = nil,
-        environment: AgentInteractionRequestEnvironment? = nil,
-        documents: [AgentInteractionRequestDocumentsItem]? = nil,
+        tools: [AgentTool]? = nil,
+        agentConfig: AgentConfig? = nil,
+        environment: AgentEnvironment? = nil,
+        documents: [AgentDocumentAttachment]? = nil,
         coachingRules: [String]? = nil
     ) {
         self.agent = agent
@@ -785,26 +577,31 @@ public struct AgentInteractionRequest: Codable, Sendable, Equatable {
         self.input = try container.decode(String.self, forKey: .input)
         self.systemInstruction = try container.decodeIfPresent(String.self, forKey: .systemInstruction)
         self.background = try container.decodeIfPresent(Bool.self, forKey: .background) ?? true
-        self.tools = try container.decodeIfPresent([AgentInteractionRequestToolsItem].self, forKey: .tools)
-        self.agentConfig = try container.decodeIfPresent(AgentInteractionRequestAgentConfig.self, forKey: .agentConfig)
-        self.environment = try container.decodeIfPresent(AgentInteractionRequestEnvironment.self, forKey: .environment)
-        self.documents = try container.decodeIfPresent([AgentInteractionRequestDocumentsItem].self, forKey: .documents)
+        self.tools = try container.decodeIfPresent([AgentTool].self, forKey: .tools)
+        self.agentConfig = try container.decodeIfPresent(AgentConfig.self, forKey: .agentConfig)
+        self.environment = try container.decodeIfPresent(AgentEnvironment.self, forKey: .environment)
+        self.documents = try container.decodeIfPresent([AgentDocumentAttachment].self, forKey: .documents)
         self.coachingRules = try container.decodeIfPresent([String].self, forKey: .coachingRules)
     }
-}
 
-public enum AgentInteractionResultStatus: String, Codable, Sendable, CaseIterable {
-    case queued = "queued"
-    case inProgress = "in_progress"
-    case completed = "completed"
-    case failed = "failed"
-    case cancelled = "cancelled"
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(agent, forKey: .agent)
+        try container.encode(input, forKey: .input)
+        try container.encodeIfPresent(systemInstruction, forKey: .systemInstruction)
+        try container.encode(background, forKey: .background)
+        try container.encodeIfPresent(tools, forKey: .tools)
+        try container.encodeIfPresent(agentConfig, forKey: .agentConfig)
+        try container.encodeIfPresent(environment, forKey: .environment)
+        try container.encodeIfPresent(documents, forKey: .documents)
+        try container.encodeIfPresent(coachingRules, forKey: .coachingRules)
+    }
 }
 
 public struct AgentInteractionResult: Codable, Sendable, Equatable {
     public var id: String
     public var agent: String
-    public var status: AgentInteractionResultStatus
+    public var status: AgentInteractionStatus
     public var outputText: String?
     public var error: String?
     public var latencyMs: Double?
@@ -827,7 +624,7 @@ public struct AgentInteractionResult: Codable, Sendable, Equatable {
     public init(
         id: String,
         agent: String,
-        status: AgentInteractionResultStatus,
+        status: AgentInteractionStatus,
         outputText: String? = nil,
         error: String? = nil,
         latencyMs: Double? = nil,
@@ -850,7 +647,7 @@ public struct AgentInteractionResult: Codable, Sendable, Equatable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
         self.agent = try container.decode(String.self, forKey: .agent)
-        self.status = try container.decode(AgentInteractionResultStatus.self, forKey: .status)
+        self.status = try container.decode(AgentInteractionStatus.self, forKey: .status)
         self.outputText = try container.decodeIfPresent(String.self, forKey: .outputText)
         self.error = try container.decodeIfPresent(String.self, forKey: .error)
         self.latencyMs = try container.decodeIfPresent(Double.self, forKey: .latencyMs)
@@ -858,35 +655,24 @@ public struct AgentInteractionResult: Codable, Sendable, Equatable {
         self.createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt)
         self.updatedAt = try container.decodeIfPresent(String.self, forKey: .updatedAt)
     }
-}
 
-public struct AgentNetworkAllowlistRuleTransformItem: Codable, Sendable, Equatable {
-    public var key: String
-    public var value: String
-
-    enum CodingKeys: String, CodingKey {
-        case key = "key"
-        case value = "value"
-    }
-
-    public init(
-        key: String,
-        value: String
-    ) {
-        self.key = key
-        self.value = value
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.key = try container.decode(String.self, forKey: .key)
-        self.value = try container.decode(String.self, forKey: .value)
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(agent, forKey: .agent)
+        try container.encode(status, forKey: .status)
+        try container.encodeIfPresent(outputText, forKey: .outputText)
+        try container.encodeIfPresent(error, forKey: .error)
+        try container.encodeIfPresent(latencyMs, forKey: .latencyMs)
+        try container.encodeIfPresent(metadata, forKey: .metadata)
+        try container.encodeIfPresent(createdAt, forKey: .createdAt)
+        try container.encodeIfPresent(updatedAt, forKey: .updatedAt)
     }
 }
 
 public struct AgentNetworkAllowlistRule: Codable, Sendable, Equatable {
     public var domain: String
-    public var transform: [AgentNetworkAllowlistRuleTransformItem]?
+    public var transform: [AgentNetworkTransformRule]?
 
     enum CodingKeys: String, CodingKey {
         case domain = "domain"
@@ -895,7 +681,7 @@ public struct AgentNetworkAllowlistRule: Codable, Sendable, Equatable {
 
     public init(
         domain: String,
-        transform: [AgentNetworkAllowlistRuleTransformItem]? = nil
+        transform: [AgentNetworkTransformRule]? = nil
     ) {
         self.domain = domain
         self.transform = transform
@@ -904,7 +690,13 @@ public struct AgentNetworkAllowlistRule: Codable, Sendable, Equatable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.domain = try container.decode(String.self, forKey: .domain)
-        self.transform = try container.decodeIfPresent([AgentNetworkAllowlistRuleTransformItem].self, forKey: .transform)
+        self.transform = try container.decodeIfPresent([AgentNetworkTransformRule].self, forKey: .transform)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(domain, forKey: .domain)
+        try container.encodeIfPresent(transform, forKey: .transform)
     }
 }
 
@@ -930,6 +722,12 @@ public struct AgentNetworkTransformRule: Codable, Sendable, Equatable {
         self.key = try container.decode(String.self, forKey: .key)
         self.value = try container.decode(String.self, forKey: .value)
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(key, forKey: .key)
+        try container.encode(value, forKey: .value)
+    }
 }
 
 public struct AgentTool: Codable, Sendable, Equatable {
@@ -953,6 +751,12 @@ public struct AgentTool: Codable, Sendable, Equatable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.type = try container.decode(String.self, forKey: .type)
         self.config = try container.decodeIfPresent([String: JSONValue].self, forKey: .config)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(type, forKey: .type)
+        try container.encodeIfPresent(config, forKey: .config)
     }
 }
 
@@ -983,6 +787,13 @@ public struct AgentWorkspaceEntry: Codable, Sendable, Equatable {
         self.type = try container.decode(AgentWorkspaceEntryType.self, forKey: .type)
         self.size = try container.decodeIfPresent(Int.self, forKey: .size)
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(path, forKey: .path)
+        try container.encode(type, forKey: .type)
+        try container.encodeIfPresent(size, forKey: .size)
+    }
 }
 
 public struct ApiKey: Codable, Sendable, Equatable {
@@ -1002,9 +813,9 @@ public struct ApiKey: Codable, Sendable, Equatable {
     public var metadata: [String: JSONValue]?
     public var createdAt: String
     public var updatedAt: String
-    public var expiresAt: JSONValue?
-    public var lastUsedAt: JSONValue?
-    public var revokedAt: JSONValue?
+    public var expiresAt: String?
+    public var lastUsedAt: String?
+    public var revokedAt: String?
 
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -1045,9 +856,9 @@ public struct ApiKey: Codable, Sendable, Equatable {
         metadata: [String: JSONValue]? = nil,
         createdAt: String,
         updatedAt: String,
-        expiresAt: JSONValue? = nil,
-        lastUsedAt: JSONValue? = nil,
-        revokedAt: JSONValue? = nil
+        expiresAt: String? = nil,
+        lastUsedAt: String? = nil,
+        revokedAt: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -1088,9 +899,32 @@ public struct ApiKey: Codable, Sendable, Equatable {
         self.metadata = try container.decodeIfPresent([String: JSONValue].self, forKey: .metadata)
         self.createdAt = try container.decode(String.self, forKey: .createdAt)
         self.updatedAt = try container.decode(String.self, forKey: .updatedAt)
-        self.expiresAt = try container.decodeIfPresent(JSONValue.self, forKey: .expiresAt)
-        self.lastUsedAt = try container.decodeIfPresent(JSONValue.self, forKey: .lastUsedAt)
-        self.revokedAt = try container.decodeIfPresent(JSONValue.self, forKey: .revokedAt)
+        self.expiresAt = try container.decodeIfPresent(String.self, forKey: .expiresAt)
+        self.lastUsedAt = try container.decodeIfPresent(String.self, forKey: .lastUsedAt)
+        self.revokedAt = try container.decodeIfPresent(String.self, forKey: .revokedAt)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(keyPrefix, forKey: .keyPrefix)
+        try container.encode(hashedSecret, forKey: .hashedSecret)
+        try container.encode(ownerType, forKey: .ownerType)
+        try container.encode(ownerId, forKey: .ownerId)
+        try container.encodeIfPresent(orgId, forKey: .orgId)
+        try container.encodeIfPresent(teamId, forKey: .teamId)
+        try container.encodeIfPresent(serviceAccountId, forKey: .serviceAccountId)
+        try container.encode(createdBy, forKey: .createdBy)
+        try container.encode(scopes, forKey: .scopes)
+        try container.encodeIfPresent(resourceIds, forKey: .resourceIds)
+        try container.encode(status, forKey: .status)
+        try container.encodeIfPresent(metadata, forKey: .metadata)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+        try container.encode(expiresAt, forKey: .expiresAt)
+        try container.encode(lastUsedAt, forKey: .lastUsedAt)
+        try container.encode(revokedAt, forKey: .revokedAt)
     }
 }
 
@@ -1130,6 +964,14 @@ public struct ApiKeyLookup: Codable, Sendable, Equatable {
         self.orgId = try container.decode(String.self, forKey: .orgId)
         self.status = try container.decode(ApiKeyLookupStatus.self, forKey: .status)
         self.createdAt = try container.decode(String.self, forKey: .createdAt)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(serviceAccountId, forKey: .serviceAccountId)
+        try container.encode(orgId, forKey: .orgId)
+        try container.encode(status, forKey: .status)
+        try container.encode(createdAt, forKey: .createdAt)
     }
 }
 
@@ -1200,6 +1042,21 @@ public struct CachedPage: Codable, Sendable, Equatable {
         self.hasInjectionWarning = try container.decodeIfPresent(Bool.self, forKey: .hasInjectionWarning)
         self.metadata = try container.decodeIfPresent([String: JSONValue].self, forKey: .metadata)
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(url, forKey: .url)
+        try container.encode(path, forKey: .path)
+        try container.encode(title, forKey: .title)
+        try container.encode(markdown, forKey: .markdown)
+        try container.encode(textLength, forKey: .textLength)
+        try container.encode(links, forKey: .links)
+        try container.encode(imageAssetIds, forKey: .imageAssetIds)
+        try container.encode(fetchedAt, forKey: .fetchedAt)
+        try container.encodeIfPresent(expiresAt, forKey: .expiresAt)
+        try container.encodeIfPresent(hasInjectionWarning, forKey: .hasInjectionWarning)
+        try container.encodeIfPresent(metadata, forKey: .metadata)
+    }
 }
 
 public struct CachedPageSearchResult: Codable, Sendable, Equatable {
@@ -1238,6 +1095,15 @@ public struct CachedPageSearchResult: Codable, Sendable, Equatable {
         self.title = try container.decode(String.self, forKey: .title)
         self.snippet = try container.decode(String.self, forKey: .snippet)
         self.matchScore = try container.decode(Double.self, forKey: .matchScore)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(url, forKey: .url)
+        try container.encode(path, forKey: .path)
+        try container.encode(title, forKey: .title)
+        try container.encode(snippet, forKey: .snippet)
+        try container.encode(matchScore, forKey: .matchScore)
     }
 }
 
@@ -1283,6 +1149,16 @@ public struct CachedPageSummary: Codable, Sendable, Equatable {
         self.imageCount = try container.decode(Double.self, forKey: .imageCount)
         self.fetchedAt = try container.decode(String.self, forKey: .fetchedAt)
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(url, forKey: .url)
+        try container.encode(path, forKey: .path)
+        try container.encode(title, forKey: .title)
+        try container.encode(textLength, forKey: .textLength)
+        try container.encode(imageCount, forKey: .imageCount)
+        try container.encode(fetchedAt, forKey: .fetchedAt)
+    }
 }
 
 public struct CreateApiKeyInput: Codable, Sendable, Equatable {
@@ -1292,7 +1168,7 @@ public struct CreateApiKeyInput: Codable, Sendable, Equatable {
     public var teamId: String?
     public var scopes: [String]?
     public var resourceIds: [String]?
-    public var expiresAt: JSONValue?
+    public var expiresAt: String?
     public var metadata: [String: JSONValue]?
 
     enum CodingKeys: String, CodingKey {
@@ -1313,7 +1189,7 @@ public struct CreateApiKeyInput: Codable, Sendable, Equatable {
         teamId: String? = nil,
         scopes: [String]? = nil,
         resourceIds: [String]? = nil,
-        expiresAt: JSONValue? = nil,
+        expiresAt: String? = nil,
         metadata: [String: JSONValue]? = nil
     ) {
         self.name = name
@@ -1334,8 +1210,20 @@ public struct CreateApiKeyInput: Codable, Sendable, Equatable {
         self.teamId = try container.decodeIfPresent(String.self, forKey: .teamId)
         self.scopes = try container.decodeIfPresent([String].self, forKey: .scopes)
         self.resourceIds = try container.decodeIfPresent([String].self, forKey: .resourceIds)
-        self.expiresAt = try container.decodeIfPresent(JSONValue.self, forKey: .expiresAt)
+        self.expiresAt = try container.decodeIfPresent(String.self, forKey: .expiresAt)
         self.metadata = try container.decodeIfPresent([String: JSONValue].self, forKey: .metadata)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(createdBy, forKey: .createdBy)
+        try container.encodeIfPresent(orgId, forKey: .orgId)
+        try container.encodeIfPresent(teamId, forKey: .teamId)
+        try container.encodeIfPresent(scopes, forKey: .scopes)
+        try container.encodeIfPresent(resourceIds, forKey: .resourceIds)
+        try container.encode(expiresAt, forKey: .expiresAt)
+        try container.encodeIfPresent(metadata, forKey: .metadata)
     }
 }
 
@@ -1396,25 +1284,26 @@ public struct CreateServiceAccountInput: Codable, Sendable, Equatable {
         self.hexColor = try container.decodeIfPresent(String.self, forKey: .hexColor)
         self.avatarUrl = try container.decodeIfPresent(String.self, forKey: .avatarUrl)
     }
-}
 
-public enum PublicApiKeyOwnerType: String, Codable, Sendable, CaseIterable {
-    case user = "user"
-    case serviceAccount = "service_account"
-    case team = "team"
-    case organization = "organization"
-}
-
-public enum PublicApiKeyStatus: String, Codable, Sendable, CaseIterable {
-    case active = "active"
-    case revoked = "revoked"
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encodeIfPresent(handle, forKey: .handle)
+        try container.encodeIfPresent(`description`, forKey: .`description`)
+        try container.encodeIfPresent(role, forKey: .role)
+        try container.encodeIfPresent(projectIds, forKey: .projectIds)
+        try container.encodeIfPresent(createdBy, forKey: .createdBy)
+        try container.encodeIfPresent(colorName, forKey: .colorName)
+        try container.encodeIfPresent(hexColor, forKey: .hexColor)
+        try container.encodeIfPresent(avatarUrl, forKey: .avatarUrl)
+    }
 }
 
 public struct PublicApiKey: Codable, Sendable, Equatable {
     public var id: String
     public var name: String
     public var keyPrefix: String
-    public var ownerType: PublicApiKeyOwnerType
+    public var ownerType: ApiKeyOwnerType
     public var ownerId: String
     public var orgId: String?
     public var teamId: String?
@@ -1422,13 +1311,13 @@ public struct PublicApiKey: Codable, Sendable, Equatable {
     public var createdBy: String
     public var scopes: [String]
     public var resourceIds: [String]?
-    public var status: PublicApiKeyStatus
+    public var status: ApiKeyStatus
     public var metadata: [String: JSONValue]?
     public var createdAt: String
     public var updatedAt: String
-    public var expiresAt: JSONValue?
-    public var lastUsedAt: JSONValue?
-    public var revokedAt: JSONValue?
+    public var expiresAt: String?
+    public var lastUsedAt: String?
+    public var revokedAt: String?
 
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -1455,7 +1344,7 @@ public struct PublicApiKey: Codable, Sendable, Equatable {
         id: String,
         name: String,
         keyPrefix: String,
-        ownerType: PublicApiKeyOwnerType,
+        ownerType: ApiKeyOwnerType,
         ownerId: String,
         orgId: String? = nil,
         teamId: String? = nil,
@@ -1463,13 +1352,13 @@ public struct PublicApiKey: Codable, Sendable, Equatable {
         createdBy: String,
         scopes: [String],
         resourceIds: [String]? = nil,
-        status: PublicApiKeyStatus,
+        status: ApiKeyStatus,
         metadata: [String: JSONValue]? = nil,
         createdAt: String,
         updatedAt: String,
-        expiresAt: JSONValue? = nil,
-        lastUsedAt: JSONValue? = nil,
-        revokedAt: JSONValue? = nil
+        expiresAt: String? = nil,
+        lastUsedAt: String? = nil,
+        revokedAt: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -1496,7 +1385,7 @@ public struct PublicApiKey: Codable, Sendable, Equatable {
         self.id = try container.decode(String.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.keyPrefix = try container.decode(String.self, forKey: .keyPrefix)
-        self.ownerType = try container.decode(PublicApiKeyOwnerType.self, forKey: .ownerType)
+        self.ownerType = try container.decode(ApiKeyOwnerType.self, forKey: .ownerType)
         self.ownerId = try container.decode(String.self, forKey: .ownerId)
         self.orgId = try container.decodeIfPresent(String.self, forKey: .orgId)
         self.teamId = try container.decodeIfPresent(String.self, forKey: .teamId)
@@ -1504,14 +1393,40 @@ public struct PublicApiKey: Codable, Sendable, Equatable {
         self.createdBy = try container.decode(String.self, forKey: .createdBy)
         self.scopes = try container.decode([String].self, forKey: .scopes)
         self.resourceIds = try container.decodeIfPresent([String].self, forKey: .resourceIds)
-        self.status = try container.decode(PublicApiKeyStatus.self, forKey: .status)
+        self.status = try container.decode(ApiKeyStatus.self, forKey: .status)
         self.metadata = try container.decodeIfPresent([String: JSONValue].self, forKey: .metadata)
         self.createdAt = try container.decode(String.self, forKey: .createdAt)
         self.updatedAt = try container.decode(String.self, forKey: .updatedAt)
-        self.expiresAt = try container.decodeIfPresent(JSONValue.self, forKey: .expiresAt)
-        self.lastUsedAt = try container.decodeIfPresent(JSONValue.self, forKey: .lastUsedAt)
-        self.revokedAt = try container.decodeIfPresent(JSONValue.self, forKey: .revokedAt)
+        self.expiresAt = try container.decodeIfPresent(String.self, forKey: .expiresAt)
+        self.lastUsedAt = try container.decodeIfPresent(String.self, forKey: .lastUsedAt)
+        self.revokedAt = try container.decodeIfPresent(String.self, forKey: .revokedAt)
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(keyPrefix, forKey: .keyPrefix)
+        try container.encode(ownerType, forKey: .ownerType)
+        try container.encode(ownerId, forKey: .ownerId)
+        try container.encodeIfPresent(orgId, forKey: .orgId)
+        try container.encodeIfPresent(teamId, forKey: .teamId)
+        try container.encodeIfPresent(serviceAccountId, forKey: .serviceAccountId)
+        try container.encode(createdBy, forKey: .createdBy)
+        try container.encode(scopes, forKey: .scopes)
+        try container.encodeIfPresent(resourceIds, forKey: .resourceIds)
+        try container.encode(status, forKey: .status)
+        try container.encodeIfPresent(metadata, forKey: .metadata)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+        try container.encode(expiresAt, forKey: .expiresAt)
+        try container.encode(lastUsedAt, forKey: .lastUsedAt)
+        try container.encode(revokedAt, forKey: .revokedAt)
+    }
+}
+
+public enum ServiceAccountType: String, Codable, Sendable, CaseIterable {
+    case virtualUser = "virtual_user"
 }
 
 public enum ServiceAccountStatus: String, Codable, Sendable, CaseIterable {
@@ -1526,7 +1441,7 @@ public struct ServiceAccount: Codable, Sendable, Equatable {
     public var handle: String
     public var `description`: String?
     public var role: String
-    public var type: String
+    public var type: ServiceAccountType
     public var avatarUrl: String?
     public var colorName: String?
     public var hexColor: String?
@@ -1536,9 +1451,9 @@ public struct ServiceAccount: Codable, Sendable, Equatable {
     public var createdBy: String
     public var createdAt: String
     public var updatedAt: String
-    public var lastUsedAt: JSONValue?
+    public var lastUsedAt: String?
     public var status: ServiceAccountStatus
-    public var revokedAt: JSONValue?
+    public var revokedAt: String?
 
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -1569,7 +1484,7 @@ public struct ServiceAccount: Codable, Sendable, Equatable {
         handle: String,
         `description`: String? = nil,
         role: String,
-        type: String,
+        type: ServiceAccountType,
         avatarUrl: String? = nil,
         colorName: String? = nil,
         hexColor: String? = nil,
@@ -1579,9 +1494,9 @@ public struct ServiceAccount: Codable, Sendable, Equatable {
         createdBy: String,
         createdAt: String,
         updatedAt: String,
-        lastUsedAt: JSONValue? = nil,
+        lastUsedAt: String? = nil,
         status: ServiceAccountStatus,
-        revokedAt: JSONValue? = nil
+        revokedAt: String? = nil
     ) {
         self.id = id
         self.orgId = orgId
@@ -1612,7 +1527,7 @@ public struct ServiceAccount: Codable, Sendable, Equatable {
         self.handle = try container.decode(String.self, forKey: .handle)
         self.`description` = try container.decodeIfPresent(String.self, forKey: .`description`)
         self.role = try container.decode(String.self, forKey: .role)
-        self.type = try container.decode(String.self, forKey: .type)
+        self.type = try container.decode(ServiceAccountType.self, forKey: .type)
         self.avatarUrl = try container.decodeIfPresent(String.self, forKey: .avatarUrl)
         self.colorName = try container.decodeIfPresent(String.self, forKey: .colorName)
         self.hexColor = try container.decodeIfPresent(String.self, forKey: .hexColor)
@@ -1622,53 +1537,32 @@ public struct ServiceAccount: Codable, Sendable, Equatable {
         self.createdBy = try container.decode(String.self, forKey: .createdBy)
         self.createdAt = try container.decode(String.self, forKey: .createdAt)
         self.updatedAt = try container.decode(String.self, forKey: .updatedAt)
-        self.lastUsedAt = try container.decodeIfPresent(JSONValue.self, forKey: .lastUsedAt)
+        self.lastUsedAt = try container.decodeIfPresent(String.self, forKey: .lastUsedAt)
         self.status = try container.decode(ServiceAccountStatus.self, forKey: .status)
-        self.revokedAt = try container.decodeIfPresent(JSONValue.self, forKey: .revokedAt)
-    }
-}
-
-public struct WebsiteCacheSummaryPagesItem: Codable, Sendable, Equatable {
-    public var url: String
-    public var path: String
-    public var title: String
-    public var textLength: Double
-    public var imageCount: Double
-    public var fetchedAt: String
-
-    enum CodingKeys: String, CodingKey {
-        case url = "url"
-        case path = "path"
-        case title = "title"
-        case textLength = "textLength"
-        case imageCount = "imageCount"
-        case fetchedAt = "fetchedAt"
+        self.revokedAt = try container.decodeIfPresent(String.self, forKey: .revokedAt)
     }
 
-    public init(
-        url: String,
-        path: String,
-        title: String,
-        textLength: Double,
-        imageCount: Double,
-        fetchedAt: String
-    ) {
-        self.url = url
-        self.path = path
-        self.title = title
-        self.textLength = textLength
-        self.imageCount = imageCount
-        self.fetchedAt = fetchedAt
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.url = try container.decode(String.self, forKey: .url)
-        self.path = try container.decode(String.self, forKey: .path)
-        self.title = try container.decode(String.self, forKey: .title)
-        self.textLength = try container.decode(Double.self, forKey: .textLength)
-        self.imageCount = try container.decode(Double.self, forKey: .imageCount)
-        self.fetchedAt = try container.decode(String.self, forKey: .fetchedAt)
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(orgId, forKey: .orgId)
+        try container.encode(name, forKey: .name)
+        try container.encode(handle, forKey: .handle)
+        try container.encodeIfPresent(`description`, forKey: .`description`)
+        try container.encode(role, forKey: .role)
+        try container.encode(type, forKey: .type)
+        try container.encodeIfPresent(avatarUrl, forKey: .avatarUrl)
+        try container.encodeIfPresent(colorName, forKey: .colorName)
+        try container.encodeIfPresent(hexColor, forKey: .hexColor)
+        try container.encode(keyPrefix, forKey: .keyPrefix)
+        try container.encode(hashedSecret, forKey: .hashedSecret)
+        try container.encodeIfPresent(projectIds, forKey: .projectIds)
+        try container.encode(createdBy, forKey: .createdBy)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+        try container.encode(lastUsedAt, forKey: .lastUsedAt)
+        try container.encode(status, forKey: .status)
+        try container.encode(revokedAt, forKey: .revokedAt)
     }
 }
 
@@ -1677,7 +1571,7 @@ public struct WebsiteCacheSummary: Codable, Sendable, Equatable {
     public var seedUrl: String
     public var pagesCount: Double
     public var imagesCount: Double
-    public var pages: [WebsiteCacheSummaryPagesItem]
+    public var pages: [CachedPageSummary]
     public var isFromCache: Bool
     public var cachedAt: String
 
@@ -1696,7 +1590,7 @@ public struct WebsiteCacheSummary: Codable, Sendable, Equatable {
         seedUrl: String,
         pagesCount: Double,
         imagesCount: Double,
-        pages: [WebsiteCacheSummaryPagesItem],
+        pages: [CachedPageSummary],
         isFromCache: Bool,
         cachedAt: String
     ) {
@@ -1715,9 +1609,20 @@ public struct WebsiteCacheSummary: Codable, Sendable, Equatable {
         self.seedUrl = try container.decode(String.self, forKey: .seedUrl)
         self.pagesCount = try container.decode(Double.self, forKey: .pagesCount)
         self.imagesCount = try container.decode(Double.self, forKey: .imagesCount)
-        self.pages = try container.decode([WebsiteCacheSummaryPagesItem].self, forKey: .pages)
+        self.pages = try container.decode([CachedPageSummary].self, forKey: .pages)
         self.isFromCache = try container.decode(Bool.self, forKey: .isFromCache)
         self.cachedAt = try container.decode(String.self, forKey: .cachedAt)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(cacheId, forKey: .cacheId)
+        try container.encode(seedUrl, forKey: .seedUrl)
+        try container.encode(pagesCount, forKey: .pagesCount)
+        try container.encode(imagesCount, forKey: .imagesCount)
+        try container.encode(pages, forKey: .pages)
+        try container.encode(isFromCache, forKey: .isFromCache)
+        try container.encode(cachedAt, forKey: .cachedAt)
     }
 }
 
@@ -1823,5 +1728,26 @@ public struct WebsiteCrawlScope: Codable, Sendable, Equatable {
         self.requestTimeoutMs = try container.decodeIfPresent(Double.self, forKey: .requestTimeoutMs) ?? 15000
         self.userAgent = try container.decodeIfPresent(String.self, forKey: .userAgent)
     }
-}
 
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(url, forKey: .url)
+        try container.encode(maxDepth, forKey: .maxDepth)
+        try container.encode(maxPages, forKey: .maxPages)
+        try container.encode(sameDomainOnly, forKey: .sameDomainOnly)
+        try container.encode(allowSubdomains, forKey: .allowSubdomains)
+        try container.encodeIfPresent(pathPrefix, forKey: .pathPrefix)
+        try container.encodeIfPresent(urlMatchPattern, forKey: .urlMatchPattern)
+        try container.encodeIfPresent(urlExcludePattern, forKey: .urlExcludePattern)
+        try container.encode(includeImages, forKey: .includeImages)
+        try container.encode(maxImagesPerPage, forKey: .maxImagesPerPage)
+        try container.encode(maxImageBytes, forKey: .maxImageBytes)
+        try container.encode(maxPageBytes, forKey: .maxPageBytes)
+        try container.encodeIfPresent(allowedImageTypes, forKey: .allowedImageTypes)
+        try container.encodeIfPresent(cacheId, forKey: .cacheId)
+        try container.encodeIfPresent(ttlMs, forKey: .ttlMs)
+        try container.encode(forceRefresh, forKey: .forceRefresh)
+        try container.encode(requestTimeoutMs, forKey: .requestTimeoutMs)
+        try container.encodeIfPresent(userAgent, forKey: .userAgent)
+    }
+}

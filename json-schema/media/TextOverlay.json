@@ -1,22 +1,84 @@
 {
-  "$ref": "#/definitions/TextOverlay",
+  "$ref": "#/definitions/VideoTextOverlay",
   "definitions": {
-    "TextOverlay": {
+    "DropShadow": {
+      "type": "object",
+      "properties": {
+        "dx": {
+          "type": "number"
+        },
+        "dy": {
+          "type": "number"
+        },
+        "blur": {
+          "type": "number"
+        },
+        "color": {
+          "type": "string"
+        },
+        "opacity": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "TextAlignment": {
+      "type": "string",
+      "enum": [
+        "left",
+        "center",
+        "right"
+      ]
+    },
+    "TextOverlayPosition": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "top",
+            "center",
+            "bottom"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "y": {
+              "type": [
+                "number",
+                "string"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "VideoOverlayStyle": {
+      "type": "string",
+      "enum": [
+        "neubrutalist",
+        "neubrutalist-dark",
+        "badge",
+        "meme",
+        "custom",
+        "none"
+      ]
+    },
+    "VideoTextOverlay": {
       "type": "object",
       "properties": {
         "text": {
           "type": "string"
         },
         "style": {
-          "type": "string",
-          "enum": [
-            "neubrutalist",
-            "neubrutalist-dark",
-            "badge",
-            "meme",
-            "custom",
-            "none"
-          ]
+          "$ref": "#/definitions/VideoOverlayStyle"
         },
         "font": {
           "type": "string"
@@ -25,42 +87,10 @@
           "type": "string"
         },
         "position": {
-          "anyOf": [
-            {
-              "type": "string",
-              "enum": [
-                "top",
-                "center",
-                "bottom"
-              ]
-            },
-            {
-              "type": "object",
-              "properties": {
-                "x": {
-                  "type": [
-                    "number",
-                    "string"
-                  ]
-                },
-                "y": {
-                  "type": [
-                    "number",
-                    "string"
-                  ]
-                }
-              },
-              "additionalProperties": false
-            }
-          ]
+          "$ref": "#/definitions/TextOverlayPosition"
         },
         "alignment": {
-          "type": "string",
-          "enum": [
-            "left",
-            "center",
-            "right"
-          ]
+          "$ref": "#/definitions/TextAlignment"
         },
         "fontSize": {
           "type": "number"
@@ -95,25 +125,7 @@
               "type": "boolean"
             },
             {
-              "type": "object",
-              "properties": {
-                "dx": {
-                  "type": "number"
-                },
-                "dy": {
-                  "type": "number"
-                },
-                "blur": {
-                  "type": "number"
-                },
-                "color": {
-                  "type": "string"
-                },
-                "opacity": {
-                  "type": "number"
-                }
-              },
-              "additionalProperties": false
+              "$ref": "#/definitions/DropShadow"
             }
           ]
         },
@@ -170,84 +182,7 @@
               "type": "string"
             },
             {
-              "type": "object",
-              "properties": {
-                "text": {
-                  "type": "string"
-                },
-                "imagePath": {
-                  "type": "string"
-                },
-                "font": {
-                  "type": "string"
-                },
-                "fontPath": {
-                  "type": "string"
-                },
-                "position": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "enum": [
-                        "bottom-right",
-                        "bottom-left",
-                        "top-right",
-                        "top-left",
-                        "center"
-                      ]
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "x": {
-                          "type": [
-                            "number",
-                            "string"
-                          ]
-                        },
-                        "y": {
-                          "type": [
-                            "number",
-                            "string"
-                          ]
-                        }
-                      },
-                      "additionalProperties": false
-                    }
-                  ]
-                },
-                "color": {
-                  "type": "string"
-                },
-                "strokeColor": {
-                  "type": "string"
-                },
-                "strokeWidth": {
-                  "type": "number"
-                },
-                "fontSize": {
-                  "type": "number"
-                },
-                "transparentBg": {
-                  "type": "boolean"
-                },
-                "opacity": {
-                  "type": "number"
-                },
-                "marginRight": {
-                  "type": "number"
-                },
-                "marginBottom": {
-                  "type": "number"
-                },
-                "marginLeft": {
-                  "type": "number"
-                },
-                "marginTop": {
-                  "type": "number"
-                }
-              },
-              "additionalProperties": false
+              "$ref": "#/definitions/Watermark"
             }
           ]
         }
@@ -256,6 +191,89 @@
         "text"
       ],
       "additionalProperties": false
+    },
+    "Watermark": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "imagePath": {
+          "type": "string"
+        },
+        "font": {
+          "type": "string"
+        },
+        "fontPath": {
+          "type": "string"
+        },
+        "position": {
+          "$ref": "#/definitions/WatermarkPosition"
+        },
+        "color": {
+          "type": "string"
+        },
+        "strokeColor": {
+          "type": "string"
+        },
+        "strokeWidth": {
+          "type": "number"
+        },
+        "fontSize": {
+          "type": "number"
+        },
+        "transparentBg": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "marginRight": {
+          "type": "number"
+        },
+        "marginBottom": {
+          "type": "number"
+        },
+        "marginLeft": {
+          "type": "number"
+        },
+        "marginTop": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "WatermarkPosition": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "bottom-right",
+            "bottom-left",
+            "top-right",
+            "top-left",
+            "center"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "y": {
+              "type": [
+                "number",
+                "string"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

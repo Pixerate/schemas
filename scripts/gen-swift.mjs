@@ -7,10 +7,18 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 const jsonSchemaDir = path.resolve(rootDir, 'json-schema');
 const swiftGeneratedDir = path.resolve(rootDir, 'swift', 'Sources', 'PixerateSchemas', 'Generated');
+const reportPath = path.resolve(rootDir, 'swift', 'GENERATED.md');
 
 const isCheck = process.argv.includes('--check');
 
-// Reserved Swift keywords to escape or remap
+// JSON Schema modules generated into Swift, one file each.
+const MODULES = [
+  { module: 'common', file: 'Common.swift' },
+  { module: 'jazz', file: 'Jazz.swift' },
+  { module: 'agent', file: 'Agent.swift' }
+];
+
+// Reserved Swift keywords to escape
 const SWIFT_KEYWORDS = new Set([
   'associatedtype', 'class', 'deinit', 'enum', 'extension', 'fileprivate', 'func',
   'import', 'init', 'inout', 'internal', 'let', 'open', 'operator', 'private',
@@ -21,441 +29,436 @@ const SWIFT_KEYWORDS = new Set([
   'super', 'true', 'try', 'throws', 'description'
 ]);
 
+const ANY_JSON_TYPES = ['array', 'boolean', 'null', 'number', 'object', 'string'];
+
+function escapeKeyword(name) {
+  return SWIFT_KEYWORDS.has(name) ? '`' + name + '`' : name;
+}
+
 function toSwiftIdentifier(str) {
   // If it starts with numbers, prefix with 'r'
   if (/^[0-9]/.test(str)) {
-    return 'r' + str.replace(/[:.-]/g, '_');
+    return 'r' + str.replace(/[^a-zA-Z0-9]/g, '_');
   }
   // Convert kebab-case or special chars to camelCase
-  let formatted = str
-    .replace(/[-_]([a-z0-9])/gi, (_, c) => c.toUpperCase())
+  const formatted = str
+    .replace(/[-_ ./]([a-z0-9])/gi, (_, c) => c.toUpperCase())
     .replace(/[^a-zA-Z0-9_]/g, '_');
-  if (SWIFT_KEYWORDS.has(formatted)) {
-    return '`' + formatted + '`';
-  }
-  return formatted;
+  return escapeKeyword(formatted);
 }
 
-function toEnumCase(value) {
-  // e.g. "1:1" -> "r1_1"
-  if (/^[0-9]/.test(value)) {
-    return 'r' + value.replace(/[:.-]/g, '_');
-  }
-  // "surreal-ui" -> "surrealUI"
-  if (value.includes('-')) {
-    return value.replace(/-([a-z0-9])/gi, (_, c) => c.toUpperCase());
-  }
-  // "code_execution" -> "codeExecution"
-  if (value.includes('_')) {
-    return value.replace(/_([a-z0-9])/gi, (_, c) => c.toUpperCase());
-  }
-  if (SWIFT_KEYWORDS.has(value)) {
-    return '`' + value + '`';
-  }
-  return value;
+// "1:1" -> "r1_1", "surreal-ui" -> "surrealUi", "code_execution" -> "codeExecution"
+const toEnumCase = toSwiftIdentifier;
+
+function toTypeName(str) {
+  const id = toSwiftIdentifier(str).replace(/`/g, '');
+  return id.charAt(0).toUpperCase() + id.slice(1);
 }
 
-function resolveJsonPointer(rootJson, ref) {
-  if (!ref || typeof ref !== 'string' || !ref.startsWith('#/')) return null;
-  const parts = ref.slice(2).split('/');
-  let current = rootJson;
-  for (const part of parts) {
-    if (current && typeof current === 'object' && part in current) {
-      current = current[part];
-    } else {
-      return null;
-    }
+/** A Swift string literal for `value`. */
+function swiftString(value) {
+  let out = '"';
+  for (const ch of value) {
+    const code = ch.codePointAt(0);
+    if (ch === '\\') out += '\\\\';
+    else if (ch === '"') out += '\\"';
+    else if (ch === '\n') out += '\\n';
+    else if (ch === '\r') out += '\\r';
+    else if (ch === '\t') out += '\\t';
+    else if (code < 0x20 || code === 0x7f) out += `\\u{${code.toString(16)}}`;
+    else out += ch;
   }
-  return current;
+  return out + '"';
 }
 
-function resolvePropertyType(prop, propName, parentName, auxiliaryTypes = [], rootDoc = null, declaredTypes = new Set(), knownEnums = new Set()) {
-  if (!prop) return 'JSONValue';
+function docComment(text, indent = '') {
+  if (!text) return '';
+  return text.split('\n').map((line) => `${indent}/// ${line}`.trimEnd()).join('\n') + '\n';
+}
 
-  if (prop.$ref) {
-    if (prop.$ref === '#/definitions/JazzJsonValue') {
-      return 'JSONValue';
+function refName(ref) {
+  const match = typeof ref === 'string' && ref.match(/^#\/definitions\/([^/]+)$/);
+  if (!match) throw new Error(`Unsupported $ref ${ref}: the JSON Schema export should only emit whole-definition refs.`);
+  return match[1];
+}
+
+/** Splits `null` out of a schema: `{ schema, nullable }`. */
+function splitNullable(schema) {
+  if (!schema || typeof schema !== 'object') return { schema, nullable: false };
+  if (Array.isArray(schema.type) && schema.type.includes('null')) {
+    const types = schema.type.filter((t) => t !== 'null');
+    return { schema: { ...schema, type: types.length === 1 ? types[0] : types }, nullable: true };
+  }
+  const variants = schema.anyOf || schema.oneOf;
+  if (variants && variants.some((v) => v.type === 'null' && Object.keys(v).length === 1)) {
+    const rest = variants.filter((v) => !(v.type === 'null' && Object.keys(v).length === 1));
+    const { anyOf, oneOf, ...outer } = schema;
+    const inner = rest.length === 1 ? { ...outer, ...rest[0] } : { ...outer, anyOf: rest };
+    return { schema: inner, nullable: true };
+  }
+  if (schema.nullable === true) {
+    const { nullable, ...rest } = schema;
+    return { schema: rest, nullable: true };
+  }
+  return { schema, nullable: false };
+}
+
+/** String literal values when every variant is a string literal (`enum` or `const`), else null. */
+function literalStrings(schema) {
+  if (schema.type === 'string' && Array.isArray(schema.enum)) return schema.enum;
+  if (typeof schema.const === 'string') return [schema.const];
+  const variants = schema.anyOf || schema.oneOf;
+  if (!variants) return null;
+  const values = [];
+  for (const variant of variants) {
+    const literal = literalStrings(variant);
+    if (!literal) return null;
+    values.push(...literal);
+  }
+  return [...new Set(values)];
+}
+
+function isAnyJson(schema) {
+  const variants = schema.anyOf || schema.oneOf;
+  if (!variants) return false;
+  const types = new Set(variants.map((v) => v.type));
+  return ANY_JSON_TYPES.every((t) => types.has(t));
+}
+
+class Generator {
+  constructor() {
+    this.index = JSON.parse(fs.readFileSync(path.resolve(jsonSchemaDir, 'index.json'), 'utf8'));
+    this.generatedModules = new Set(MODULES.map((m) => m.module));
+    this.schemas = new Map(); // name -> { module, def }
+    for (const entry of this.index) {
+      if (!this.generatedModules.has(entry.module)) continue;
+      const json = JSON.parse(fs.readFileSync(path.resolve(jsonSchemaDir, entry.file), 'utf8'));
+      this.schemas.set(entry.name, { module: entry.module, def: json.definitions?.[entry.name] ?? json });
     }
-    // If it is a pointer path like #/definitions/JazzPhrase/properties/startedAt
-    if (prop.$ref.includes('/properties/') || prop.$ref.includes('/items/') || prop.$ref.includes('/anyOf/')) {
-      const resolved = resolveJsonPointer(rootDoc, prop.$ref);
-      if (resolved) {
-        return resolvePropertyType(resolved, propName, parentName, auxiliaryTypes, rootDoc, declaredTypes, knownEnums);
-      }
+    this.declared = new Map(); // Swift type name -> what declared it
+    this.enums = new Set();
+    this.fallbacks = []; // { module, where, reason }
+    this.skipped = []; // { module, name, reason }
+    for (const [name, { def }] of this.schemas) {
+      this.declared.set(name, `${name} (top level)`);
+      if (literalStrings(def)) this.enums.add(name);
     }
-    const refMatch = prop.$ref.match(/^#\/definitions\/([^\/]+)$/);
-    if (refMatch) {
-      const refName = refMatch[1];
-      if (refName === 'JazzJsonValue') return 'JSONValue';
-      return refName;
+  }
+
+  claim(name, by) {
+    if (this.declared.has(name)) {
+      throw new Error(`Swift type name ${name} for ${by} is already used by ${this.declared.get(name)}. Name the inner schema in Zod and export it, so it becomes its own definition.`);
     }
+    this.declared.set(name, by);
+  }
+
+  fallback(ctx, where, reason) {
+    this.fallbacks.push({ module: ctx.module, where, reason });
     return 'JSONValue';
   }
 
-  if (prop.type === 'string') {
-    if (prop.enum && Array.isArray(prop.enum)) {
-      // Inline enum
-      const enumName = `${parentName}${propName.charAt(0).toUpperCase() + propName.slice(1)}`;
-      knownEnums.add(enumName);
-      if (!declaredTypes.has(enumName)) {
-        auxiliaryTypes.push(generateEnum(enumName, prop.enum, declaredTypes));
+  /** Swift type for a property schema, declaring inline types into `ctx.aux`. Returns `{ type, nullable }`. */
+  propertyType(rawSchema, typeName, where, ctx) {
+    const { schema, nullable } = splitNullable(rawSchema);
+    return { type: this.baseType(schema, typeName, where, ctx), nullable };
+  }
+
+  baseType(schema, typeName, where, ctx) {
+    if (!schema || typeof schema !== 'object' || Object.keys(schema).filter((k) => k !== 'description' && k !== 'default').length === 0) {
+      return 'JSONValue'; // `{}` accepts any JSON value
+    }
+    if (schema.$ref) {
+      const name = refName(schema.$ref);
+      if (!this.schemas.has(name)) {
+        const entry = this.index.find((e) => e.name === name);
+        throw new Error(`${where} refers to ${name} from module ${entry?.module ?? '?'}, which is not generated into Swift. Add that module to MODULES in scripts/gen-swift.mjs.`);
       }
-      return enumName;
+      return name;
     }
-    return 'String';
-  }
-
-  if (prop.type === 'integer') return 'Int';
-  if (prop.type === 'number') return 'Double';
-  if (prop.type === 'boolean') return 'Bool';
-
-  if (prop.type === 'array') {
-    const itemType = resolvePropertyType(prop.items, `${propName}Item`, parentName, auxiliaryTypes, rootDoc, declaredTypes, knownEnums);
-    return `[${itemType}]`;
-  }
-
-  if (prop.type === 'object') {
-    if (prop.additionalProperties) {
-      if (typeof prop.additionalProperties === 'object') {
-        const valType = resolvePropertyType(prop.additionalProperties, `${propName}Value`, parentName, auxiliaryTypes, rootDoc, declaredTypes, knownEnums);
-        return `[String: ${valType}]`;
-      }
-      return '[String: JSONValue]';
+    const literals = literalStrings(schema);
+    if (literals) {
+      this.claim(typeName, where);
+      this.enums.add(typeName);
+      ctx.aux.push(this.enumCode(typeName, literals, schema.description));
+      return typeName;
     }
-    if (prop.properties) {
-      // Inline struct
-      const subStructName = `${parentName}${propName.charAt(0).toUpperCase() + propName.slice(1)}`;
-      if (!declaredTypes.has(subStructName)) {
-        auxiliaryTypes.push(generateStruct(subStructName, prop, rootDoc, declaredTypes, knownEnums));
-      }
-      return subStructName;
-    }
-    return '[String: JSONValue]';
-  }
+    if (isAnyJson(schema)) return 'JSONValue';
 
-  if (prop.anyOf || prop.oneOf) {
-    const variants = prop.anyOf || prop.oneOf;
-    // Check if it's string enum
-    if (variants.every(v => v.type === 'string')) {
-      return 'String';
-    }
-    // Check if it contains null -> nullable
-    const nonNull = variants.filter(v => v.type !== 'null');
-    if (nonNull.length === 1) {
-      return resolvePropertyType(nonNull[0], propName, parentName, auxiliaryTypes, rootDoc, declaredTypes, knownEnums);
-    }
-    return 'JSONValue';
-  }
-
-  return 'JSONValue';
-}
-
-function generateEnum(name, values, declaredTypes) {
-  if (declaredTypes && declaredTypes.has(name)) {
-    return '';
-  }
-  if (declaredTypes) declaredTypes.add(name);
-  let code = `public enum ${name}: String, Codable, Sendable, CaseIterable {\n`;
-  for (const val of values) {
-    const caseName = toEnumCase(val);
-    code += `    case ${caseName} = "${val}"\n`;
-  }
-  code += `}\n`;
-  return code;
-}
-
-function generateStruct(name, schema, rootDoc, declaredTypes, knownEnums) {
-  if (declaredTypes && declaredTypes.has(name)) {
-    return '';
-  }
-  if (declaredTypes) declaredTypes.add(name);
-
-  const properties = schema.properties || {};
-  const requiredSet = new Set(schema.required || []);
-  const auxTypes = [];
-
-  const fields = [];
-  const codingKeys = [];
-  let needsCodingKeys = false;
-
-  for (const [propName, propDef] of Object.entries(properties)) {
-    const isRequired = requiredSet.has(propName);
-    const hasDefault = propDef.default !== undefined;
-    const baseType = resolvePropertyType(propDef, propName, name, auxTypes, rootDoc, declaredTypes, knownEnums);
-
-    const isOptional = !isRequired && !hasDefault;
-    const swiftType = isOptional ? `${baseType}?` : baseType;
-    const swiftPropName = toSwiftIdentifier(propName);
-
-    if (swiftPropName !== propName || swiftPropName.startsWith('`')) {
-      needsCodingKeys = true;
-    }
-    codingKeys.push({ swift: swiftPropName, json: propName });
-
-    let defaultValueStr = null;
-    if (hasDefault) {
-      const def = propDef.default;
-      if (typeof def === 'string') {
-        if (propDef.enum || (knownEnums && knownEnums.has(baseType))) {
-          defaultValueStr = `.${toEnumCase(def)}`;
-        } else {
-          defaultValueStr = `"${def}"`;
+    switch (schema.type) {
+      case 'string':
+        return 'String';
+      case 'integer':
+        return 'Int';
+      case 'number':
+        return 'Double';
+      case 'boolean':
+        return 'Bool';
+      case 'array':
+        return `[${this.propertyTypeName(schema.items, `${typeName}Item`, `${where}[]`, ctx)}]`;
+      case 'object':
+        if (schema.properties && Object.keys(schema.properties).length > 0) {
+          this.claim(typeName, where);
+          ctx.aux.push(this.structCode(typeName, schema, ctx));
+          return typeName;
         }
-      } else if (typeof def === 'number') {
-        defaultValueStr = `${def}`;
-      } else if (typeof def === 'boolean') {
-        defaultValueStr = `${def}`;
-      } else if (Array.isArray(def)) {
-        defaultValueStr = `[]`;
-      } else if (typeof def === 'object' && def !== null) {
-        if (baseType.startsWith('[String:')) {
-          defaultValueStr = `[:]`;
-        } else {
-          defaultValueStr = `${baseType}()`;
+        if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
+          return `[String: ${this.propertyTypeName(schema.additionalProperties, `${typeName}Value`, `${where}{}`, ctx)}]`;
         }
-      }
-    } else if (isOptional) {
-      defaultValueStr = 'nil';
+        return '[String: JSONValue]';
     }
 
-    fields.push({
-      name: propName,
-      swiftName: swiftPropName,
-      type: swiftType,
-      baseType,
-      isOptional,
-      hasDefault,
-      defaultValueStr
+    const variants = schema.anyOf || schema.oneOf;
+    if (variants && variants.every((v) => v.type === 'string')) return 'String';
+    if (variants) return this.fallback(ctx, where, `union of ${variants.map((v) => v.type ?? (v.$ref ? refName(v.$ref) : '?')).join(' | ')}`);
+    return this.fallback(ctx, where, `unsupported schema (${Object.keys(schema).join(', ')})`);
+  }
+
+  /** Element types: an optional element becomes `T?`. */
+  propertyTypeName(schema, typeName, where, ctx) {
+    if (!schema) return 'JSONValue';
+    const { type, nullable } = this.propertyType(schema, typeName, where, ctx);
+    return nullable ? `${type}?` : type;
+  }
+
+  defaultExpr(value, type, where) {
+    if (this.enums.has(type)) {
+      if (typeof value !== 'string') throw new Error(`${where}: default ${JSON.stringify(value)} is not a case of ${type}`);
+      return `.${toEnumCase(value)}`;
+    }
+    if (type === 'String' && typeof value === 'string') return swiftString(value);
+    if (type === 'Int' && Number.isInteger(value)) return String(value);
+    if (type === 'Double' && typeof value === 'number') return String(value);
+    if (type === 'Bool' && typeof value === 'boolean') return String(value);
+    if (Array.isArray(value) && value.length === 0 && type.startsWith('[') && !type.startsWith('[String:')) return '[]';
+    if (value && typeof value === 'object' && Object.keys(value).length === 0 && type.startsWith('[String:')) return '[:]';
+    // Anything else (structs, non-empty arrays and dictionaries, JSONValue) decodes from its JSON.
+    return `SchemaDefault.decode(${type}.self, json: ${swiftString(JSON.stringify(value))})`;
+  }
+
+  enumCode(name, values, description) {
+    const cases = new Set();
+    let code = docComment(description);
+    code += `public enum ${name}: String, Codable, Sendable, CaseIterable {\n`;
+    for (const value of values) {
+      const caseName = toEnumCase(value);
+      if (cases.has(caseName)) throw new Error(`Enum ${name} has two values that map to the Swift case ${caseName}`);
+      cases.add(caseName);
+      code += `    case ${caseName} = ${swiftString(value)}\n`;
+    }
+    return code + '}\n';
+  }
+
+  structCode(name, schema, ctx) {
+    const required = new Set(schema.required || []);
+    const fields = Object.entries(schema.properties || {}).map(([jsonName, prop]) => {
+      const swiftName = toSwiftIdentifier(jsonName);
+      const where = `${name}.${jsonName}`;
+      const { type, nullable } = this.propertyType(prop, `${name}${toTypeName(jsonName)}`, where, ctx);
+      const hasDefault = prop.default !== undefined;
+      const isRequired = required.has(jsonName);
+      // Optional in Swift when the key may be missing (no default) or the value may be null.
+      const optional = nullable || (!isRequired && !hasDefault);
+      let defaultValue = null;
+      if (hasDefault && prop.default !== null) defaultValue = this.defaultExpr(prop.default, type, where);
+      else if (optional) defaultValue = 'nil';
+      return { jsonName, swiftName, type, optional, nullable, isRequired, hasDefault, defaultValue, description: prop.description };
     });
-  }
 
-  let code = '';
-  for (const aux of auxTypes) {
-    if (aux) code += aux + '\n';
-  }
+    let code = docComment(schema.description);
+    code += `public struct ${name}: Codable, Sendable, Equatable {\n`;
+    for (const f of fields) {
+      code += docComment(f.description, '    ');
+      code += `    public var ${f.swiftName}: ${f.type}${f.optional ? '?' : ''}\n`;
+    }
 
-  code += `public struct ${name}: Codable, Sendable, Equatable {\n`;
+    code += `\n    enum CodingKeys: String, CodingKey {\n`;
+    for (const f of fields) code += `        case ${f.swiftName} = ${swiftString(f.jsonName)}\n`;
+    code += `    }\n\n`;
 
-  // Property declarations
-  for (const f of fields) {
-    code += `    public var ${f.swiftName}: ${f.type}\n`;
-  }
+    // Memberwise initializer
+    const params = fields.map((f) => {
+      const declared = `${f.swiftName}: ${f.type}${f.optional ? '?' : ''}`;
+      return f.defaultValue !== null ? `${declared} = ${f.defaultValue}` : declared;
+    });
+    code += `    public init(\n        ${params.join(',\n        ')}\n    ) {\n`;
+    for (const f of fields) code += `        self.${f.swiftName} = ${f.swiftName}\n`;
+    code += `    }\n\n`;
 
-  // CodingKeys
-  code += `\n    enum CodingKeys: String, CodingKey {\n`;
-  for (const ck of codingKeys) {
-    code += `        case ${ck.swift} = "${ck.json}"\n`;
-  }
-  code += `    }\n\n`;
-
-  // Memberwise initializer
-  const initParams = fields
-    .map(f => {
-      if (f.defaultValueStr !== null) {
-        return `${f.swiftName}: ${f.type} = ${f.defaultValueStr}`;
+    // Decoder initializer (applies defaults)
+    code += `    public init(from decoder: Decoder) throws {\n`;
+    code += `        let container = try decoder.container(keyedBy: CodingKeys.self)\n`;
+    for (const f of fields) {
+      const decodeIfPresent = `try container.decodeIfPresent(${f.type}.self, forKey: .${f.swiftName})`;
+      if (f.hasDefault && f.defaultValue !== null && f.defaultValue !== 'nil') {
+        code += `        self.${f.swiftName} = ${decodeIfPresent} ?? ${f.defaultValue}\n`;
+      } else if (f.optional) {
+        code += `        self.${f.swiftName} = ${decodeIfPresent}\n`;
+      } else {
+        code += `        self.${f.swiftName} = try container.decode(${f.type}.self, forKey: .${f.swiftName})\n`;
       }
-      return `${f.swiftName}: ${f.type}`;
-    })
-    .join(',\n        ');
-
-  code += `    public init(\n        ${initParams}\n    ) {\n`;
-  for (const f of fields) {
-    code += `        self.${f.swiftName} = ${f.swiftName}\n`;
-  }
-  code += `    }\n\n`;
-
-  // Decoder initializer (applies defaults)
-  code += `    public init(from decoder: Decoder) throws {\n`;
-  code += `        let container = try decoder.container(keyedBy: CodingKeys.self)\n`;
-  for (const f of fields) {
-    if (f.hasDefault && f.defaultValueStr !== null) {
-      code += `        self.${f.swiftName} = try container.decodeIfPresent(${f.baseType}.self, forKey: .${f.swiftName}) ?? ${f.defaultValueStr}\n`;
-    } else if (f.isOptional) {
-      code += `        self.${f.swiftName} = try container.decodeIfPresent(${f.baseType}.self, forKey: .${f.swiftName})\n`;
-    } else {
-      code += `        self.${f.swiftName} = try container.decode(${f.baseType}.self, forKey: .${f.swiftName})\n`;
     }
-  }
-  code += `    }\n`;
+    code += `    }\n\n`;
 
-  code += `}\n`;
-  return code;
+    // Encoder: a nullable field that is nil is written as null (Swift cannot tell a missing key from
+    // null, and records written by TypeScript keep the null); other nil values are left out.
+    code += `    public func encode(to encoder: Encoder) throws {\n`;
+    code += `        var container = encoder.container(keyedBy: CodingKeys.self)\n`;
+    for (const f of fields) {
+      const method = f.optional && !f.nullable ? 'encodeIfPresent' : 'encode';
+      code += `        try container.${method}(${f.swiftName}, forKey: .${f.swiftName})\n`;
+    }
+    code += `    }\n`;
+
+    return code + '}\n';
+  }
+
+  /** A string-or-object union: `.string(String)` or `.object(<Name>Data)`. */
+  stringOrObjectCode(name, objectSchema, description, ctx) {
+    const dataName = `${name}Data`;
+    this.claim(dataName, `${name} object variant`);
+    let code = this.structCode(dataName, objectSchema, ctx) + '\n';
+    code += docComment(description ?? `A string, or a \`${dataName}\` object.`);
+    code += `public enum ${name}: Codable, Sendable, Equatable {
+    case string(String)
+    case object(${dataName})
+
+    public init(from decoder: Decoder) throws {
+        if let container = try? decoder.singleValueContainer(), let string = try? container.decode(String.self) {
+            self = .string(string)
+            return
+        }
+        self = .object(try ${dataName}(from: decoder))
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        switch self {
+        case .string(let string):
+            var container = encoder.singleValueContainer()
+            try container.encode(string)
+        case .object(let data):
+            try data.encode(to: encoder)
+        }
+    }
 }
-
-function generateCommon() {
-  let code = `// Generated from @pixerate/schemas common contracts. Do not edit.\nimport Foundation\n\n`;
-
-  const commonFiles = fs.readdirSync(path.resolve(jsonSchemaDir, 'common')).filter(f => f.endsWith('.json')).sort();
-  const items = [];
-  const declaredTypes = new Set(['VideoFrameImage', 'VideoAttachment']);
-  const knownEnums = new Set();
-
-  for (const f of commonFiles) {
-    const schemaName = f.replace(/\.json$/, '');
-    if (schemaName === 'VideoFrameImage' || schemaName === 'VideoAttachment') {
-      // Handled in Runtime/Unions.swift
-      continue;
-    }
-    const json = JSON.parse(fs.readFileSync(path.resolve(jsonSchemaDir, 'common', f), 'utf8'));
-    const def = json.definitions?.[schemaName] || json;
-    if (def.type === 'string' && Array.isArray(def.enum)) {
-      knownEnums.add(schemaName);
-    }
-    items.push({ name: schemaName, def, json });
+`;
+    return code;
   }
 
-  items.sort((a, b) => {
-    const aIsEnum = a.def.type === 'string' && Array.isArray(a.def.enum);
-    const bIsEnum = b.def.type === 'string' && Array.isArray(b.def.enum);
-    if (aIsEnum && !bIsEnum) return -1;
-    if (!aIsEnum && bIsEnum) return 1;
-    return a.name.localeCompare(b.name);
-  });
+  topLevelCode(name, def, ctx) {
+    if (def.$ref) return docComment(def.description) + `public typealias ${name} = ${refName(def.$ref)}\n`;
+    const literals = literalStrings(def);
+    if (literals) return this.enumCode(name, literals, def.description);
+    if (isAnyJson(def)) return docComment(def.description ?? 'Any JSON value.') + `public typealias ${name} = JSONValue\n`;
 
-  for (const item of items) {
-    const { name, def, json } = item;
-    if (def.type === 'string' && Array.isArray(def.enum)) {
-      const enumCode = generateEnum(name, def.enum, declaredTypes);
-      if (enumCode) code += enumCode + '\n';
-    } else if (def.type === 'object') {
-      const structCode = generateStruct(name, def, json, declaredTypes, knownEnums);
-      if (structCode) code += structCode + '\n';
+    const variants = def.anyOf || def.oneOf;
+    if (variants && variants.length === 2) {
+      const string = variants.find((v) => v.type === 'string' && !v.enum && v.const === undefined);
+      const object = variants.find((v) => v.type === 'object' && v.properties);
+      if (string && object) return this.stringOrObjectCode(name, object, def.description, ctx);
     }
-  }
-  return code;
-}
 
-function generateJazz() {
-  let code = `// Generated from @pixerate/schemas jazz contracts. Do not edit.\nimport Foundation\n\n`;
-
-  // Top level aliases
-  code += `public typealias JazzOrigin = String\n`;
-  code += `public typealias JazzJsonValue = JSONValue\n\n`;
-
-  const jazzFiles = fs.readdirSync(path.resolve(jsonSchemaDir, 'jazz')).filter(f => f.endsWith('.json')).sort();
-
-  const items = [];
-  const declaredTypes = new Set(['JazzOrigin', 'JazzJsonValue']);
-  const knownEnums = new Set();
-
-  for (const f of jazzFiles) {
-    const schemaName = f.replace(/\.json$/, '');
-    if (schemaName === 'JazzOrigin' || schemaName === 'JazzJsonValue') continue;
-
-    const json = JSON.parse(fs.readFileSync(path.resolve(jsonSchemaDir, 'jazz', f), 'utf8'));
-    const def = json.definitions?.[schemaName] || json;
-    if (def.type === 'string' && Array.isArray(def.enum)) {
-      knownEnums.add(schemaName);
+    switch (def.type) {
+      case 'object':
+        if (def.properties) return this.structCode(name, def, ctx);
+        break;
+      case 'string':
+      case 'integer':
+      case 'number':
+      case 'boolean': {
+        const swiftType = { string: 'String', integer: 'Int', number: 'Double', boolean: 'Bool' }[def.type];
+        const notes = [def.description, def.pattern && `Pattern: \`${def.pattern}\``].filter(Boolean).join('\n\n');
+        return docComment(notes) + `public typealias ${name} = ${swiftType}\n`;
+      }
     }
-    items.push({ name: schemaName, def, json });
+    return null;
   }
 
-  // Sort so enums appear before structs
-  items.sort((a, b) => {
-    const aIsEnum = a.def.type === 'string' && Array.isArray(a.def.enum);
-    const bIsEnum = b.def.type === 'string' && Array.isArray(b.def.enum);
-    if (aIsEnum && !bIsEnum) return -1;
-    if (!aIsEnum && bIsEnum) return 1;
-    return a.name.localeCompare(b.name);
-  });
+  generateModule({ module }) {
+    const ctx = { module, aux: [] };
+    const header = `// Generated from @pixerate/schemas ${module} contracts by scripts/gen-swift.mjs. Do not edit.\nimport Foundation\n\n`;
+    const names = [...this.schemas].filter(([, s]) => s.module === module).map(([name]) => name);
+    // Enums first, then everything else by name
+    names.sort((a, b) => {
+      const aIsEnum = this.enums.has(a);
+      const bIsEnum = this.enums.has(b);
+      if (aIsEnum !== bIsEnum) return aIsEnum ? -1 : 1;
+      return a.localeCompare(b);
+    });
 
-  for (const item of items) {
-    const { name, def, json } = item;
-    if (def.type === 'string' && Array.isArray(def.enum)) {
-      const enumCode = generateEnum(name, def.enum, declaredTypes);
-      if (enumCode) code += enumCode + '\n';
-    } else if (def.type === 'object') {
-      const structCode = generateStruct(name, def, json, declaredTypes, knownEnums);
-      if (structCode) code += structCode + '\n';
+    let code = header;
+    for (const name of names) {
+      ctx.aux = [];
+      const main = this.topLevelCode(name, this.schemas.get(name).def, ctx);
+      if (main === null) {
+        this.skipped.push({ module, name, reason: `unsupported top-level schema (${Object.keys(this.schemas.get(name).def).join(', ')})` });
+        continue;
+      }
+      for (const aux of ctx.aux) code += aux + '\n';
+      code += main + '\n';
     }
+    return code.replace(/\n+$/, '\n');
   }
 
-  return code;
-}
-
-function generateAgent() {
-  let code = `// Generated from @pixerate/schemas agent contracts. Do not edit.\nimport Foundation\n\n`;
-
-  const agentFiles = fs.readdirSync(path.resolve(jsonSchemaDir, 'agent')).filter(f => f.endsWith('.json')).sort();
-
-  const items = [];
-  const declaredTypes = new Set();
-  const knownEnums = new Set();
-
-  for (const f of agentFiles) {
-    const schemaName = f.replace(/\.json$/, '');
-    const json = JSON.parse(fs.readFileSync(path.resolve(jsonSchemaDir, 'agent', f), 'utf8'));
-    const def = json.definitions?.[schemaName] || json;
-    if (def.type === 'string' && Array.isArray(def.enum)) {
-      knownEnums.add(schemaName);
-    }
-    items.push({ name: schemaName, def, json });
+  report() {
+    const otherModules = [...new Set(this.index.map((e) => e.module))].filter((m) => !this.generatedModules.has(m)).sort();
+    let md = '<!-- Generated by scripts/gen-swift.mjs. Do not edit. -->\n# Generated Swift coverage\n\n';
+    md += `Generated modules: ${MODULES.map((m) => `\`${m.module}\``).join(', ')}.\n\n`;
+    md += `JSON Schema only (not generated into Swift yet): ${otherModules.map((m) => `\`${m}\``).join(', ')}.\n\n`;
+    md += '## Skipped schemas\n\n';
+    md += this.skipped.length
+      ? this.skipped.map((s) => `- \`${s.module}\` \`${s.name}\`: ${s.reason}`).join('\n') + '\n\n'
+      : 'None.\n\n';
+    md += '## Fields typed as `JSONValue`\n\nThe generator could not map these to a specific Swift type.\n\n';
+    md += this.fallbacks.length
+      ? this.fallbacks.map((f) => `- \`${f.module}\` \`${f.where}\`: ${f.reason}`).join('\n') + '\n'
+      : 'None.\n';
+    return md;
   }
-
-  // Enums first
-  items.sort((a, b) => {
-    const aIsEnum = a.def.type === 'string' && Array.isArray(a.def.enum);
-    const bIsEnum = b.def.type === 'string' && Array.isArray(b.def.enum);
-    if (aIsEnum && !bIsEnum) return -1;
-    if (!aIsEnum && bIsEnum) return 1;
-    return a.name.localeCompare(b.name);
-  });
-
-  for (const item of items) {
-    const { name, def, json } = item;
-    if (def.type === 'string' && Array.isArray(def.enum)) {
-      const enumCode = generateEnum(name, def.enum, declaredTypes);
-      if (enumCode) code += enumCode + '\n';
-    } else if (def.type === 'object') {
-      const structCode = generateStruct(name, def, json, declaredTypes, knownEnums);
-      if (structCode) code += structCode + '\n';
-    }
-  }
-
-  return code;
 }
 
 async function main() {
-  fs.mkdirSync(swiftGeneratedDir, { recursive: true });
-
-  const modulesToGenerate = {
-    'Common.swift': generateCommon(),
-    'Jazz.swift': generateJazz(),
-    'Agent.swift': generateAgent()
-  };
+  const generator = new Generator();
+  const outputs = new Map(); // absolute path -> content
+  for (const mod of MODULES) {
+    outputs.set(path.resolve(swiftGeneratedDir, mod.file), generator.generateModule(mod));
+  }
+  outputs.set(reportPath, generator.report());
 
   if (isCheck) {
     let hasDiff = false;
-    for (const [filename, expectedContent] of Object.entries(modulesToGenerate)) {
-      const fullPath = path.resolve(swiftGeneratedDir, filename);
+    for (const [fullPath, expectedContent] of outputs) {
+      const rel = path.relative(rootDir, fullPath);
       if (!fs.existsSync(fullPath)) {
-        console.error(`Missing Swift file: ${filename}`);
+        console.error(`Missing generated file: ${rel}`);
         hasDiff = true;
-      } else {
-        const actualContent = fs.readFileSync(fullPath, 'utf8');
-        if (actualContent !== expectedContent) {
-          console.error(`Stale Swift file: ${filename}`);
-          hasDiff = true;
-        }
+      } else if (fs.readFileSync(fullPath, 'utf8') !== expectedContent) {
+        console.error(`Stale generated file: ${rel}`);
+        hasDiff = true;
+      }
+    }
+    for (const file of fs.existsSync(swiftGeneratedDir) ? fs.readdirSync(swiftGeneratedDir) : []) {
+      if (!outputs.has(path.resolve(swiftGeneratedDir, file))) {
+        console.error(`Unexpected extra file in Generated/: ${file}`);
+        hasDiff = true;
       }
     }
     if (hasDiff) {
       console.error('Generated Swift is stale. Run `npm run gen:swift` to re-generate.');
       process.exit(1);
-    } else {
-      console.log('Generated Swift check passed.');
-      return;
     }
+    console.log('Generated Swift check passed.');
+    return;
   }
 
-  for (const [filename, content] of Object.entries(modulesToGenerate)) {
-    const fullPath = path.resolve(swiftGeneratedDir, filename);
+  fs.rmSync(swiftGeneratedDir, { recursive: true, force: true });
+  fs.mkdirSync(swiftGeneratedDir, { recursive: true });
+  for (const [fullPath, content] of outputs) {
     fs.writeFileSync(fullPath, content, 'utf8');
-    console.log(`Wrote ${fullPath}`);
+    console.log(`Wrote ${path.relative(rootDir, fullPath)}`);
   }
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error(err);
   process.exit(1);
 });

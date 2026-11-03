@@ -1,16 +1,19 @@
 {
   "$ref": "#/definitions/JazzPolicy",
   "definitions": {
+    "JazzAutonomy": {
+      "type": "string",
+      "enum": [
+        "off",
+        "suggest",
+        "assist"
+      ]
+    },
     "JazzPolicy": {
       "type": "object",
       "properties": {
         "autonomy": {
-          "type": "string",
-          "enum": [
-            "off",
-            "suggest",
-            "assist"
-          ],
+          "$ref": "#/definitions/JazzAutonomy",
           "default": "suggest"
         },
         "tempo": {

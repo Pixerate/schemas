@@ -11,11 +11,7 @@
           "type": "string"
         },
         "targetType": {
-          "type": "string",
-          "enum": [
-            "organization",
-            "team"
-          ]
+          "$ref": "#/definitions/InviteTargetType"
         },
         "targetId": {
           "type": "string"
@@ -39,27 +35,14 @@
           ]
         },
         "role": {
-          "type": "string",
-          "enum": [
-            "owner",
-            "admin",
-            "editor",
-            "viewer",
-            "member"
-          ],
+          "$ref": "#/definitions/TeamRole",
           "default": "member"
         },
         "invitedBy": {
           "type": "string"
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "pending",
-            "accepted",
-            "revoked",
-            "expired"
-          ],
+          "$ref": "#/definitions/InviteStatus",
           "default": "pending"
         },
         "maxUses": {
@@ -136,6 +119,32 @@
         "expiresAt"
       ],
       "additionalProperties": false
+    },
+    "InviteStatus": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "revoked",
+        "expired"
+      ]
+    },
+    "InviteTargetType": {
+      "type": "string",
+      "enum": [
+        "organization",
+        "team"
+      ]
+    },
+    "TeamRole": {
+      "type": "string",
+      "enum": [
+        "owner",
+        "admin",
+        "editor",
+        "viewer",
+        "member"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

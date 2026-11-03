@@ -1,6 +1,59 @@
 {
   "$ref": "#/definitions/FormHandoffAction",
   "definitions": {
+    "Condition": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "fieldId": {
+          "type": "string"
+        },
+        "operator": {
+          "$ref": "#/definitions/ConditionOperator"
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        }
+      },
+      "required": [
+        "operator"
+      ],
+      "additionalProperties": false
+    },
+    "ConditionOperator": {
+      "type": "string",
+      "enum": [
+        "equals",
+        "notEquals",
+        "not_equals",
+        "includes",
+        "contains",
+        "greaterThan",
+        "greater_than",
+        "lessThan",
+        "less_than",
+        "exists"
+      ]
+    },
+    "FormConfig": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/FormConfigValue"
+      }
+    },
+    "FormConfigValue": {
+      "type": [
+        "string",
+        "number",
+        "boolean"
+      ]
+    },
     "FormHandoffAction": {
       "type": "object",
       "properties": {
@@ -16,41 +69,7 @@
         "condition": {
           "anyOf": [
             {
-              "type": "object",
-              "properties": {
-                "field": {
-                  "type": "string"
-                },
-                "fieldId": {
-                  "type": "string"
-                },
-                "operator": {
-                  "type": "string",
-                  "enum": [
-                    "equals",
-                    "notEquals",
-                    "not_equals",
-                    "includes",
-                    "contains",
-                    "greaterThan",
-                    "greater_than",
-                    "lessThan",
-                    "less_than",
-                    "exists"
-                  ]
-                },
-                "value": {
-                  "type": [
-                    "string",
-                    "number",
-                    "boolean"
-                  ]
-                }
-              },
-              "required": [
-                "operator"
-              ],
-              "additionalProperties": false
+              "$ref": "#/definitions/Condition"
             },
             {
               "type": "string"
@@ -67,14 +86,7 @@
           "type": "string"
         },
         "config": {
-          "type": "object",
-          "additionalProperties": {
-            "type": [
-              "string",
-              "number",
-              "boolean"
-            ]
-          }
+          "$ref": "#/definitions/FormConfig"
         }
       },
       "additionalProperties": false

@@ -1,16 +1,44 @@
 {
   "$ref": "#/definitions/SemanticReviewResult",
   "definitions": {
+    "SemanticReviewIssue": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "warning",
+            "error"
+          ]
+        },
+        "message": {
+          "type": "string"
+        },
+        "fieldId": {
+          "type": "string"
+        },
+        "fieldLabel": {
+          "type": "string"
+        },
+        "suggestion": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "severity",
+        "message"
+      ],
+      "additionalProperties": false
+    },
     "SemanticReviewResult": {
       "type": "object",
       "properties": {
         "status": {
-          "type": "string",
-          "enum": [
-            "pass",
-            "flagged",
-            "unavailable"
-          ]
+          "$ref": "#/definitions/SemanticReviewStatus"
         },
         "summary": {
           "type": "string"
@@ -18,37 +46,7 @@
         "issues": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "severity": {
-                "type": "string",
-                "enum": [
-                  "warning",
-                  "error"
-                ]
-              },
-              "message": {
-                "type": "string"
-              },
-              "fieldId": {
-                "type": "string"
-              },
-              "fieldLabel": {
-                "type": "string"
-              },
-              "suggestion": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "id",
-              "severity",
-              "message"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/SemanticReviewIssue"
           }
         }
       },
@@ -57,6 +55,14 @@
         "issues"
       ],
       "additionalProperties": false
+    },
+    "SemanticReviewStatus": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "flagged",
+        "unavailable"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

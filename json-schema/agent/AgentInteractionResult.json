@@ -11,14 +11,7 @@
           "type": "string"
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "queued",
-            "in_progress",
-            "completed",
-            "failed",
-            "cancelled"
-          ]
+          "$ref": "#/definitions/AgentInteractionStatus"
         },
         "outputText": {
           "type": "string"
@@ -46,6 +39,16 @@
         "status"
       ],
       "additionalProperties": false
+    },
+    "AgentInteractionStatus": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "in_progress",
+        "completed",
+        "failed",
+        "cancelled"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

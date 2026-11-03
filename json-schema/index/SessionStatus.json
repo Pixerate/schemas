@@ -1,7 +1,7 @@
 {
-  "$ref": "#/definitions/SessionStatus",
+  "$ref": "#/definitions/SocialSessionStatus",
   "definitions": {
-    "SessionStatus": {
+    "SocialSessionStatus": {
       "type": "object",
       "properties": {
         "authenticated": {

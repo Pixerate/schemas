@@ -1,6 +1,28 @@
 {
   "$ref": "#/definitions/NotificationPreferences",
   "definitions": {
+    "ChannelPreferences": {
+      "type": "object",
+      "properties": {
+        "in_app": {
+          "type": "boolean",
+          "default": true
+        },
+        "email": {
+          "type": "boolean",
+          "default": true
+        },
+        "web_push": {
+          "type": "boolean",
+          "default": false
+        },
+        "webhook": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
     "NotificationPreferences": {
       "type": "object",
       "properties": {
@@ -10,26 +32,7 @@
         "channels": {
           "type": "object",
           "additionalProperties": {
-            "type": "object",
-            "properties": {
-              "in_app": {
-                "type": "boolean",
-                "default": true
-              },
-              "email": {
-                "type": "boolean",
-                "default": true
-              },
-              "web_push": {
-                "type": "boolean",
-                "default": false
-              },
-              "webhook": {
-                "type": "boolean",
-                "default": false
-              }
-            },
-            "additionalProperties": false
+            "$ref": "#/definitions/ChannelPreferences"
           },
           "propertyNames": {
             "enum": [
@@ -90,8 +93,7 @@
               "type": "string",
               "format": "date-time"
             }
-          ],
-          "default": "1970-01-01T00:00:00.000Z"
+          ]
         }
       },
       "required": [

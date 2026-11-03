@@ -1,6 +1,33 @@
 {
   "$ref": "#/definitions/BeginCheckoutEvent",
   "definitions": {
+    "AnalyticsEcommerceItem": {
+      "type": "object",
+      "properties": {
+        "item_id": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "item_name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "item_category": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "price": {
+          "type": "number"
+        },
+        "quantity": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "item_id"
+      ],
+      "additionalProperties": true
+    },
     "BeginCheckoutEvent": {
       "type": "object",
       "properties": {
@@ -21,31 +48,7 @@
             "items": {
               "type": "array",
               "items": {
-                "type": "object",
-                "properties": {
-                  "item_id": {
-                    "type": "string",
-                    "maxLength": 100
-                  },
-                  "item_name": {
-                    "type": "string",
-                    "maxLength": 100
-                  },
-                  "item_category": {
-                    "type": "string",
-                    "maxLength": 100
-                  },
-                  "price": {
-                    "type": "number"
-                  },
-                  "quantity": {
-                    "type": "integer"
-                  }
-                },
-                "required": [
-                  "item_id"
-                ],
-                "additionalProperties": true
+                "$ref": "#/definitions/AnalyticsEcommerceItem"
               }
             }
           },

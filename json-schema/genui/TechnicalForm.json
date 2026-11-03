@@ -1,6 +1,691 @@
 {
   "$ref": "#/definitions/TechnicalForm",
   "definitions": {
+    "BaseFormControl": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/FormControlType"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "helperText": {
+          "type": "string"
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "suggestions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "defaultValue": {
+          "$ref": "#/definitions/FormDefaultValue"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FormOption"
+          }
+        },
+        "dataSource": {
+          "$ref": "#/definitions/ReferenceDataSource"
+        },
+        "validation": {
+          "$ref": "#/definitions/ControlValidation"
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "step": {
+          "type": "number"
+        },
+        "minItems": {
+          "type": "number"
+        },
+        "maxItems": {
+          "type": "number"
+        },
+        "formula": {
+          "type": "string"
+        },
+        "computed": {
+          "type": "object",
+          "properties": {
+            "formula": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "visibleWhen": {
+          "$ref": "#/definitions/Condition"
+        },
+        "condition": {
+          "$ref": "#/definitions/Condition"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "Condition": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "fieldId": {
+          "type": "string"
+        },
+        "operator": {
+          "$ref": "#/definitions/ConditionOperator"
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        }
+      },
+      "required": [
+        "operator"
+      ],
+      "additionalProperties": false
+    },
+    "ConditionOperator": {
+      "type": "string",
+      "enum": [
+        "equals",
+        "notEquals",
+        "not_equals",
+        "includes",
+        "contains",
+        "greaterThan",
+        "greater_than",
+        "lessThan",
+        "less_than",
+        "exists"
+      ]
+    },
+    "ControlValidation": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "minLength": {
+          "type": "number"
+        },
+        "maxLength": {
+          "type": "number"
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "unit": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DecisionGate": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "stageId": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/definitions/DecisionGateKind"
+        },
+        "trigger": {
+          "type": "string"
+        },
+        "requiredAction": {
+          "type": "string"
+        },
+        "consequence": {
+          "type": "string"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Condition"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "blocking": {
+          "type": "boolean"
+        },
+        "reviewerRole": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "stageId",
+        "blocking"
+      ],
+      "additionalProperties": false
+    },
+    "DecisionGateKind": {
+      "type": "string",
+      "enum": [
+        "approval",
+        "review",
+        "decision"
+      ]
+    },
+    "FormConfig": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/FormConfigValue"
+      }
+    },
+    "FormConfigValue": {
+      "type": [
+        "string",
+        "number",
+        "boolean"
+      ]
+    },
+    "FormControl": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/FormControlType"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "helperText": {
+          "type": "string"
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "suggestions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "defaultValue": {
+          "$ref": "#/definitions/FormDefaultValue"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FormOption"
+          }
+        },
+        "dataSource": {
+          "$ref": "#/definitions/ReferenceDataSource"
+        },
+        "validation": {
+          "$ref": "#/definitions/ControlValidation"
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "step": {
+          "type": "number"
+        },
+        "minItems": {
+          "type": "number"
+        },
+        "maxItems": {
+          "type": "number"
+        },
+        "formula": {
+          "type": "string"
+        },
+        "computed": {
+          "type": "object",
+          "properties": {
+            "formula": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "visibleWhen": {
+          "$ref": "#/definitions/Condition"
+        },
+        "condition": {
+          "$ref": "#/definitions/Condition"
+        },
+        "itemControls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BaseFormControl"
+          }
+        },
+        "controls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BaseFormControl"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "FormControlType": {
+      "type": "string",
+      "enum": [
+        "text",
+        "textarea",
+        "number",
+        "select",
+        "multiselect",
+        "radio",
+        "checkbox",
+        "date",
+        "file",
+        "company",
+        "user",
+        "slider",
+        "computed",
+        "repeater"
+      ]
+    },
+    "FormDefaultValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "FormHandoffAction": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "destination": {
+          "type": "string"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Condition"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "payloadFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "type": {
+          "type": "string"
+        },
+        "config": {
+          "$ref": "#/definitions/FormConfig"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FormOption": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "FormReviewMeta": {
+      "type": "object",
+      "properties": {
+        "humanReviewRequired": {
+          "type": "boolean"
+        },
+        "reviewAreas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "humanReviewRequired",
+        "reviewAreas"
+      ],
+      "additionalProperties": false
+    },
+    "FormSection": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "controls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FormControl"
+          }
+        },
+        "visibleWhen": {
+          "$ref": "#/definitions/Condition"
+        },
+        "condition": {
+          "$ref": "#/definitions/Condition"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "controls"
+      ],
+      "additionalProperties": false
+    },
+    "FormStage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FormSection"
+          }
+        },
+        "gate": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "sections"
+      ],
+      "additionalProperties": false
+    },
+    "FormValidator": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "severity": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "error",
+                "warning"
+              ]
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "type": {
+          "type": "string"
+        },
+        "config": {
+          "$ref": "#/definitions/FormConfig"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "ReferenceDataSource": {
+      "type": "string",
+      "enum": [
+        "companies",
+        "users"
+      ]
+    },
+    "ScoreBand": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "min"
+      ],
+      "additionalProperties": false
+    },
+    "ScoringConfig": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ScoringDimension"
+          }
+        },
+        "bands": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ScoreBand"
+          }
+        }
+      },
+      "required": [
+        "dimensions"
+      ],
+      "additionalProperties": false
+    },
+    "ScoringDimension": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "number"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ScoringRule"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "rules"
+      ],
+      "additionalProperties": false
+    },
+    "ScoringRule": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "optionPoints": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "ranges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              },
+              "points": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "points"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "multiplier": {
+          "type": "number"
+        },
+        "truePoints": {
+          "type": "number"
+        },
+        "falsePoints": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "additionalProperties": false
+    },
     "TechnicalForm": {
       "type": "object",
       "properties": {
@@ -22,521 +707,29 @@
         "stages": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "title": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              },
-              "sections": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "controls": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "type": {
-                            "type": "string",
-                            "enum": [
-                              "text",
-                              "textarea",
-                              "number",
-                              "select",
-                              "multiselect",
-                              "radio",
-                              "checkbox",
-                              "date",
-                              "file",
-                              "company",
-                              "user",
-                              "slider",
-                              "computed",
-                              "repeater"
-                            ]
-                          },
-                          "label": {
-                            "type": "string"
-                          },
-                          "description": {
-                            "type": "string"
-                          },
-                          "helperText": {
-                            "type": "string"
-                          },
-                          "placeholder": {
-                            "type": "string"
-                          },
-                          "examples": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                          },
-                          "suggestions": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                          },
-                          "required": {
-                            "type": "boolean"
-                          },
-                          "defaultValue": {
-                            "anyOf": [
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "number"
-                              },
-                              {
-                                "type": "boolean"
-                              },
-                              {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                }
-                              }
-                            ]
-                          },
-                          "options": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "label": {
-                                  "type": "string"
-                                },
-                                "value": {
-                                  "type": "string"
-                                }
-                              },
-                              "required": [
-                                "label",
-                                "value"
-                              ],
-                              "additionalProperties": false
-                            }
-                          },
-                          "dataSource": {
-                            "type": "string",
-                            "enum": [
-                              "companies",
-                              "users"
-                            ]
-                          },
-                          "validation": {
-                            "type": "object",
-                            "properties": {
-                              "min": {
-                                "type": "number"
-                              },
-                              "max": {
-                                "type": "number"
-                              },
-                              "minLength": {
-                                "type": "number"
-                              },
-                              "maxLength": {
-                                "type": "number"
-                              },
-                              "pattern": {
-                                "type": "string"
-                              },
-                              "message": {
-                                "type": "string"
-                              },
-                              "unit": {
-                                "type": "string"
-                              }
-                            },
-                            "additionalProperties": false
-                          },
-                          "pattern": {
-                            "type": "string"
-                          },
-                          "min": {
-                            "type": "number"
-                          },
-                          "max": {
-                            "type": "number"
-                          },
-                          "step": {
-                            "type": "number"
-                          },
-                          "minItems": {
-                            "type": "number"
-                          },
-                          "maxItems": {
-                            "type": "number"
-                          },
-                          "formula": {
-                            "type": "string"
-                          },
-                          "computed": {
-                            "type": "object",
-                            "properties": {
-                              "formula": {
-                                "type": "string"
-                              }
-                            },
-                            "additionalProperties": false
-                          },
-                          "visibleWhen": {
-                            "type": "object",
-                            "properties": {
-                              "field": {
-                                "type": "string"
-                              },
-                              "fieldId": {
-                                "type": "string"
-                              },
-                              "operator": {
-                                "type": "string",
-                                "enum": [
-                                  "equals",
-                                  "notEquals",
-                                  "not_equals",
-                                  "includes",
-                                  "contains",
-                                  "greaterThan",
-                                  "greater_than",
-                                  "lessThan",
-                                  "less_than",
-                                  "exists"
-                                ]
-                              },
-                              "value": {
-                                "type": [
-                                  "string",
-                                  "number",
-                                  "boolean"
-                                ]
-                              }
-                            },
-                            "required": [
-                              "operator"
-                            ],
-                            "additionalProperties": false
-                          },
-                          "condition": {
-                            "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/visibleWhen"
-                          },
-                          "itemControls": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/id"
-                                },
-                                "type": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/type"
-                                },
-                                "label": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/label"
-                                },
-                                "description": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/description"
-                                },
-                                "helperText": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/helperText"
-                                },
-                                "placeholder": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/placeholder"
-                                },
-                                "examples": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/examples"
-                                },
-                                "suggestions": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/suggestions"
-                                },
-                                "required": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/required"
-                                },
-                                "defaultValue": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/defaultValue"
-                                },
-                                "options": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/options"
-                                },
-                                "dataSource": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/dataSource"
-                                },
-                                "validation": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/validation"
-                                },
-                                "pattern": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/pattern"
-                                },
-                                "min": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/min"
-                                },
-                                "max": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/max"
-                                },
-                                "step": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/step"
-                                },
-                                "minItems": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/minItems"
-                                },
-                                "maxItems": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/maxItems"
-                                },
-                                "formula": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/formula"
-                                },
-                                "computed": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/computed"
-                                },
-                                "visibleWhen": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/visibleWhen"
-                                },
-                                "condition": {
-                                  "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/condition"
-                                }
-                              },
-                              "required": [
-                                "id",
-                                "type",
-                                "label"
-                              ],
-                              "additionalProperties": false
-                            }
-                          },
-                          "controls": {
-                            "type": "array",
-                            "items": {
-                              "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/itemControls/items"
-                            }
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "type",
-                          "label"
-                        ],
-                        "additionalProperties": false
-                      }
-                    },
-                    "visibleWhen": {
-                      "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/visibleWhen"
-                    },
-                    "condition": {
-                      "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/visibleWhen"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "controls"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "gate": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "id",
-              "title",
-              "sections"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/FormStage"
           }
         },
         "decisionGates": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "title": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              },
-              "stageId": {
-                "type": "string"
-              },
-              "kind": {
-                "type": "string",
-                "enum": [
-                  "approval",
-                  "review",
-                  "decision"
-                ]
-              },
-              "trigger": {
-                "type": "string"
-              },
-              "requiredAction": {
-                "type": "string"
-              },
-              "consequence": {
-                "type": "string"
-              },
-              "condition": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/visibleWhen"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
-              },
-              "blocking": {
-                "type": "boolean"
-              },
-              "reviewerRole": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "id",
-              "title",
-              "stageId",
-              "blocking"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/DecisionGate"
           }
         },
         "validators": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              },
-              "fields": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "severity": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "enum": [
-                      "error",
-                      "warning"
-                    ]
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
-              },
-              "type": {
-                "type": "string"
-              },
-              "config": {
-                "type": "object",
-                "additionalProperties": {
-                  "type": [
-                    "string",
-                    "number",
-                    "boolean"
-                  ]
-                }
-              }
-            },
-            "required": [
-              "id"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/FormValidator"
           }
         },
         "handoffActions": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "label": {
-                "type": "string"
-              },
-              "destination": {
-                "type": "string"
-              },
-              "condition": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/TechnicalForm/properties/stages/items/properties/sections/items/properties/controls/items/properties/visibleWhen"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
-              },
-              "payloadFields": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "type": {
-                "type": "string"
-              },
-              "config": {
-                "$ref": "#/definitions/TechnicalForm/properties/validators/items/properties/config"
-              }
-            },
-            "additionalProperties": false
+            "$ref": "#/definitions/FormHandoffAction"
           }
         },
         "review": {
-          "type": "object",
-          "properties": {
-            "humanReviewRequired": {
-              "type": "boolean"
-            },
-            "reviewAreas": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          "required": [
-            "humanReviewRequired",
-            "reviewAreas"
-          ],
-          "additionalProperties": false
+          "$ref": "#/definitions/FormReviewMeta"
         },
         "reviewMetadata": {
           "type": "object",
@@ -561,119 +754,7 @@
           "additionalProperties": false
         },
         "scoring": {
-          "type": "object",
-          "properties": {
-            "description": {
-              "type": "string"
-            },
-            "dimensions": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "label": {
-                    "type": "string"
-                  },
-                  "description": {
-                    "type": "string"
-                  },
-                  "weight": {
-                    "type": "number"
-                  },
-                  "rules": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "field": {
-                          "type": "string"
-                        },
-                        "optionPoints": {
-                          "type": "object",
-                          "additionalProperties": {
-                            "type": "number"
-                          }
-                        },
-                        "ranges": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "min": {
-                                "type": "number"
-                              },
-                              "max": {
-                                "type": "number"
-                              },
-                              "points": {
-                                "type": "number"
-                              }
-                            },
-                            "required": [
-                              "points"
-                            ],
-                            "additionalProperties": false
-                          }
-                        },
-                        "multiplier": {
-                          "type": "number"
-                        },
-                        "truePoints": {
-                          "type": "number"
-                        },
-                        "falsePoints": {
-                          "type": "number"
-                        }
-                      },
-                      "required": [
-                        "field"
-                      ],
-                      "additionalProperties": false
-                    }
-                  }
-                },
-                "required": [
-                  "id",
-                  "label",
-                  "rules"
-                ],
-                "additionalProperties": false
-              }
-            },
-            "bands": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "label": {
-                    "type": "string"
-                  },
-                  "min": {
-                    "type": "number"
-                  },
-                  "max": {
-                    "type": "number"
-                  }
-                },
-                "required": [
-                  "id",
-                  "label",
-                  "min"
-                ],
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": [
-            "dimensions"
-          ],
-          "additionalProperties": false
+          "$ref": "#/definitions/ScoringConfig"
         }
       },
       "required": [

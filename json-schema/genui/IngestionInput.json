@@ -53,12 +53,7 @@
           "description": "Optional description if creating new aesthetic"
         },
         "sourcePlatform": {
-          "type": "string",
-          "enum": [
-            "svelte",
-            "react",
-            "webcomponent"
-          ],
+          "$ref": "#/definitions/PlatformLanguage",
           "description": "Optional source platform - detected automatically if omitted"
         },
         "changelogNote": {
@@ -77,6 +72,14 @@
         "variantName"
       ],
       "additionalProperties": false
+    },
+    "PlatformLanguage": {
+      "type": "string",
+      "enum": [
+        "svelte",
+        "react",
+        "webcomponent"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

@@ -1,6 +1,26 @@
 {
   "$ref": "#/definitions/VideoModification",
   "definitions": {
+    "VideoAspectRatio": {
+      "type": "string",
+      "enum": [
+        "9:16",
+        "16:9"
+      ]
+    },
+    "VideoResolution": {
+      "type": "string",
+      "enum": [
+        "360p",
+        "720p",
+        "1080p",
+        "4k",
+        "360P",
+        "720P",
+        "1080P",
+        "4K"
+      ]
+    },
     "VideoModification": {
       "type": "object",
       "properties": {
@@ -11,27 +31,13 @@
           "type": "string"
         },
         "aspectRatio": {
-          "type": "string",
-          "enum": [
-            "9:16",
-            "16:9"
-          ]
+          "$ref": "#/definitions/VideoAspectRatio"
         },
         "durationSeconds": {
           "type": "number"
         },
         "resolution": {
-          "type": "string",
-          "enum": [
-            "360p",
-            "720p",
-            "1080p",
-            "4k",
-            "360P",
-            "720P",
-            "1080P",
-            "4K"
-          ]
+          "$ref": "#/definitions/VideoResolution"
         },
         "task": {
           "type": "string",

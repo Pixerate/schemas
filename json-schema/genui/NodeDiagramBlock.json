@@ -1,6 +1,98 @@
 {
-  "$ref": "#/definitions/NodeDiagramBlock",
+  "$ref": "#/definitions/TreeBlock",
   "definitions": {
+    "TreeBlock": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "tree",
+            "node-diagram",
+            "node_diagram",
+            "orgchart"
+          ],
+          "default": "tree"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "layout": {
+          "type": "string",
+          "enum": [
+            "hierarchical",
+            "radial",
+            "flow",
+            "horizontal",
+            "vertical"
+          ]
+        },
+        "root": {
+          "$ref": "#/definitions/TreeNode"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TreeNode"
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TreeEdge"
+          },
+          "default": []
+        },
+        "company": {
+          "type": "string"
+        },
+        "people": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TreeNode"
+          }
+        },
+        "reports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TreeEdge"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "TreeEdge": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "style": {
+          "type": "string",
+          "enum": [
+            "solid",
+            "dashed",
+            "dotted"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
     "TreeNode": {
       "type": "object",
       "properties": {
@@ -56,95 +148,6 @@
       "required": [
         "id"
       ],
-      "additionalProperties": false
-    },
-    "NodeDiagramBlock": {
-      "type": "object",
-      "properties": {
-        "kind": {
-          "type": "string",
-          "enum": [
-            "tree",
-            "node-diagram",
-            "node_diagram",
-            "orgchart"
-          ],
-          "default": "tree"
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "layout": {
-          "type": "string",
-          "enum": [
-            "hierarchical",
-            "radial",
-            "flow",
-            "horizontal",
-            "vertical"
-          ]
-        },
-        "root": {
-          "$ref": "#/definitions/TreeNode"
-        },
-        "nodes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TreeNode"
-          }
-        },
-        "edges": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "from": {
-                "type": "string"
-              },
-              "source": {
-                "type": "string"
-              },
-              "to": {
-                "type": "string"
-              },
-              "target": {
-                "type": "string"
-              },
-              "label": {
-                "type": "string"
-              },
-              "style": {
-                "type": "string",
-                "enum": [
-                  "solid",
-                  "dashed",
-                  "dotted"
-                ]
-              }
-            },
-            "additionalProperties": false
-          },
-          "default": []
-        },
-        "company": {
-          "type": "string"
-        },
-        "people": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TreeNode"
-          }
-        },
-        "reports": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/NodeDiagramBlock/properties/edges/items"
-          }
-        }
-      },
       "additionalProperties": false
     }
   },

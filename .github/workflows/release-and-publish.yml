@@ -73,12 +73,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Tag Swift package version
-        if: steps.changeset_check.outputs.count > 0 || github.event_name == 'workflow_dispatch'
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          git tag -a "swift-v${VERSION}" -m "Release swift-v${VERSION}" || echo "Tag swift-v${VERSION} already exists"
-
       # Fail loudly: a swallowed push failure would leave npm released but git without the
       # version bump or tag.
       - name: Push release commit & tags

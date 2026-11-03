@@ -14,74 +14,77 @@
           "type": "string"
         },
         "options": {
-          "type": "object",
-          "properties": {
-            "x": {
-              "type": [
-                "number",
-                "string"
-              ]
-            },
-            "y": {
-              "type": [
-                "number",
-                "string"
-              ]
-            },
-            "position": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "x": {
-                      "type": "number"
-                    },
-                    "y": {
-                      "type": "number"
-                    }
-                  },
-                  "additionalProperties": false
-                }
-              ]
-            },
-            "padding": {
-              "type": "number"
-            },
-            "scale": {
-              "type": "number"
-            },
-            "opacity": {
-              "type": "number"
-            },
-            "width": {
-              "type": "number"
-            },
-            "height": {
-              "type": "number"
-            },
-            "crf": {
-              "type": "number"
-            },
-            "preset": {
-              "type": "string"
-            },
-            "videoCodec": {
-              "type": "string"
-            },
-            "audioCodec": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
+          "$ref": "#/definitions/VideoOverlayOptions"
         }
       },
       "required": [
         "inputVideoPath",
         "overlayImagePath"
       ],
+      "additionalProperties": false
+    },
+    "VideoOverlayOptions": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "y": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "position": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "padding": {
+          "type": "number"
+        },
+        "scale": {
+          "type": "number"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        },
+        "crf": {
+          "type": "number"
+        },
+        "preset": {
+          "type": "string"
+        },
+        "videoCodec": {
+          "type": "string"
+        },
+        "audioCodec": {
+          "type": "string"
+        }
+      },
       "additionalProperties": false
     }
   },

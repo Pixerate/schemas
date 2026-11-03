@@ -8,23 +8,7 @@
           "type": "string"
         },
         "type": {
-          "type": "string",
-          "enum": [
-            "text",
-            "textarea",
-            "number",
-            "select",
-            "multiselect",
-            "radio",
-            "checkbox",
-            "date",
-            "file",
-            "company",
-            "user",
-            "slider",
-            "computed",
-            "repeater"
-          ]
+          "$ref": "#/definitions/FormControlType"
         },
         "label": {
           "type": "string"
@@ -54,76 +38,19 @@
           "type": "boolean"
         },
         "defaultValue": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            },
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          ]
+          "$ref": "#/definitions/FormDefaultValue"
         },
         "options": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "label": {
-                "type": "string"
-              },
-              "value": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "label",
-              "value"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/FormOption"
           }
         },
         "dataSource": {
-          "type": "string",
-          "enum": [
-            "companies",
-            "users"
-          ]
+          "$ref": "#/definitions/ReferenceDataSource"
         },
         "validation": {
-          "type": "object",
-          "properties": {
-            "min": {
-              "type": "number"
-            },
-            "max": {
-              "type": "number"
-            },
-            "minLength": {
-              "type": "number"
-            },
-            "maxLength": {
-              "type": "number"
-            },
-            "pattern": {
-              "type": "string"
-            },
-            "message": {
-              "type": "string"
-            },
-            "unit": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
+          "$ref": "#/definitions/ControlValidation"
         },
         "pattern": {
           "type": "string"
@@ -156,44 +83,10 @@
           "additionalProperties": false
         },
         "visibleWhen": {
-          "type": "object",
-          "properties": {
-            "field": {
-              "type": "string"
-            },
-            "fieldId": {
-              "type": "string"
-            },
-            "operator": {
-              "type": "string",
-              "enum": [
-                "equals",
-                "notEquals",
-                "not_equals",
-                "includes",
-                "contains",
-                "greaterThan",
-                "greater_than",
-                "lessThan",
-                "less_than",
-                "exists"
-              ]
-            },
-            "value": {
-              "type": [
-                "string",
-                "number",
-                "boolean"
-              ]
-            }
-          },
-          "required": [
-            "operator"
-          ],
-          "additionalProperties": false
+          "$ref": "#/definitions/Condition"
         },
         "condition": {
-          "$ref": "#/definitions/BaseFormControl/properties/visibleWhen"
+          "$ref": "#/definitions/Condition"
         }
       },
       "required": [
@@ -202,6 +95,134 @@
         "label"
       ],
       "additionalProperties": false
+    },
+    "Condition": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "fieldId": {
+          "type": "string"
+        },
+        "operator": {
+          "$ref": "#/definitions/ConditionOperator"
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        }
+      },
+      "required": [
+        "operator"
+      ],
+      "additionalProperties": false
+    },
+    "ConditionOperator": {
+      "type": "string",
+      "enum": [
+        "equals",
+        "notEquals",
+        "not_equals",
+        "includes",
+        "contains",
+        "greaterThan",
+        "greater_than",
+        "lessThan",
+        "less_than",
+        "exists"
+      ]
+    },
+    "ControlValidation": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "minLength": {
+          "type": "number"
+        },
+        "maxLength": {
+          "type": "number"
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "unit": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FormControlType": {
+      "type": "string",
+      "enum": [
+        "text",
+        "textarea",
+        "number",
+        "select",
+        "multiselect",
+        "radio",
+        "checkbox",
+        "date",
+        "file",
+        "company",
+        "user",
+        "slider",
+        "computed",
+        "repeater"
+      ]
+    },
+    "FormDefaultValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "FormOption": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "ReferenceDataSource": {
+      "type": "string",
+      "enum": [
+        "companies",
+        "users"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

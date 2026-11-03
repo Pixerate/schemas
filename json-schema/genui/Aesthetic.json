@@ -1,7 +1,7 @@
 {
-  "$ref": "#/definitions/Aesthetic",
+  "$ref": "#/definitions/ComponentVariant",
   "definitions": {
-    "Aesthetic": {
+    "ComponentVariant": {
       "type": "object",
       "properties": {
         "id": {

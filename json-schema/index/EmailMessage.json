@@ -1,6 +1,30 @@
 {
   "$ref": "#/definitions/EmailMessage",
   "definitions": {
+    "EmailAttachment": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "type": "string"
+        },
+        "content": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {}
+          ]
+        },
+        "contentType": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "filename",
+        "content"
+      ],
+      "additionalProperties": false
+    },
     "EmailMessage": {
       "type": "object",
       "properties": {
@@ -74,28 +98,7 @@
         "attachments": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "filename": {
-                "type": "string"
-              },
-              "content": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {}
-                ]
-              },
-              "contentType": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "filename",
-              "content"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/EmailAttachment"
           }
         }
       },

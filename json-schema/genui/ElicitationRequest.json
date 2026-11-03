@@ -1,6 +1,40 @@
 {
   "$ref": "#/definitions/ElicitationRequest",
   "definitions": {
+    "ElicitationOption": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "isRecommended": {
+          "type": "boolean"
+        },
+        "preview": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "ElicitationQuestionType": {
+      "type": "string",
+      "enum": [
+        "single_select",
+        "multi_select",
+        "free_form",
+        "rank_priorities"
+      ]
+    },
     "ElicitationRequest": {
       "type": "object",
       "properties": {
@@ -15,40 +49,12 @@
           "maxLength": 12
         },
         "type": {
-          "type": "string",
-          "enum": [
-            "single_select",
-            "multi_select",
-            "free_form",
-            "rank_priorities"
-          ]
+          "$ref": "#/definitions/ElicitationQuestionType"
         },
         "options": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "label": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              },
-              "isRecommended": {
-                "type": "boolean"
-              },
-              "preview": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "id",
-              "label"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/ElicitationOption"
           }
         },
         "contextRationale": {

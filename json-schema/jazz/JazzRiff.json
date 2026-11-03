@@ -29,6 +29,10 @@
         }
       ]
     },
+    "JazzOrigin": {
+      "type": "string",
+      "pattern": "^(user|agent:.+)$"
+    },
     "JazzRiff": {
       "type": "object",
       "properties": {
@@ -41,8 +45,7 @@
           "minLength": 1
         },
         "origin": {
-          "type": "string",
-          "pattern": "^(user|agent:.+)$"
+          "$ref": "#/definitions/JazzOrigin"
         },
         "surface": {
           "type": "string",
@@ -53,14 +56,7 @@
           "minLength": 1
         },
         "intent": {
-          "type": "string",
-          "enum": [
-            "add",
-            "annotate",
-            "connect",
-            "vary",
-            "suggest"
-          ]
+          "$ref": "#/definitions/JazzRiffIntent"
         },
         "title": {
           "type": "string",
@@ -91,24 +87,7 @@
         "toolCalls": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "minLength": 1
-              },
-              "arguments": {
-                "type": "object",
-                "additionalProperties": {
-                  "$ref": "#/definitions/JazzJsonValue"
-                },
-                "default": {}
-              }
-            },
-            "required": [
-              "name"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/JazzToolCall"
           },
           "maxItems": 20,
           "default": []
@@ -124,16 +103,7 @@
           "type": "string"
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "proposed",
-            "applied",
-            "accepted",
-            "rejected",
-            "edited",
-            "ignored",
-            "withdrawn"
-          ]
+          "$ref": "#/definitions/JazzRiffStatus"
         },
         "idempotencyKey": {
           "type": "string",
@@ -144,7 +114,8 @@
           "format": "date-time"
         },
         "updatedAt": {
-          "$ref": "#/definitions/JazzRiff/properties/createdAt"
+          "type": "string",
+          "format": "date-time"
         }
       },
       "required": [
@@ -159,6 +130,48 @@
         "mode",
         "status",
         "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "JazzRiffIntent": {
+      "type": "string",
+      "enum": [
+        "add",
+        "annotate",
+        "connect",
+        "vary",
+        "suggest"
+      ]
+    },
+    "JazzRiffStatus": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "applied",
+        "accepted",
+        "rejected",
+        "edited",
+        "ignored",
+        "withdrawn"
+      ]
+    },
+    "JazzToolCall": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arguments": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/JazzJsonValue"
+          },
+          "default": {}
+        }
+      },
+      "required": [
+        "name"
       ],
       "additionalProperties": false
     }

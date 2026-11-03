@@ -1,18 +1,41 @@
 {
   "$ref": "#/definitions/SocialProviderCapabilities",
   "definitions": {
+    "SocialMediaType": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ]
+    },
+    "SocialMetricField": {
+      "type": "string",
+      "enum": [
+        "views",
+        "impressions",
+        "likes",
+        "comments",
+        "shares",
+        "quotes",
+        "saves",
+        "clicks"
+      ]
+    },
+    "SocialPlatform": {
+      "type": "string",
+      "enum": [
+        "bluesky",
+        "twitter",
+        "linkedin",
+        "tiktok",
+        "instagram"
+      ]
+    },
     "SocialProviderCapabilities": {
       "type": "object",
       "properties": {
         "platform": {
-          "type": "string",
-          "enum": [
-            "bluesky",
-            "twitter",
-            "linkedin",
-            "tiktok",
-            "instagram"
-          ]
+          "$ref": "#/definitions/SocialPlatform"
         },
         "text": {
           "type": "object",
@@ -22,12 +45,7 @@
               "exclusiveMinimum": 0
             },
             "unit": {
-              "type": "string",
-              "enum": [
-                "characters",
-                "graphemes",
-                "weighted"
-              ]
+              "$ref": "#/definitions/SocialTextLengthUnit"
             }
           },
           "required": [
@@ -42,11 +60,7 @@
             "types": {
               "type": "array",
               "items": {
-                "type": "string",
-                "enum": [
-                  "image",
-                  "video"
-                ]
+                "$ref": "#/definitions/SocialMediaType"
               }
             },
             "required": {
@@ -101,17 +115,7 @@
         "metrics": {
           "type": "array",
           "items": {
-            "type": "string",
-            "enum": [
-              "views",
-              "impressions",
-              "likes",
-              "comments",
-              "shares",
-              "quotes",
-              "saves",
-              "clicks"
-            ]
+            "$ref": "#/definitions/SocialMetricField"
           }
         }
       },
@@ -124,6 +128,14 @@
         "returnsUrl"
       ],
       "additionalProperties": false
+    },
+    "SocialTextLengthUnit": {
+      "type": "string",
+      "enum": [
+        "characters",
+        "graphemes",
+        "weighted"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

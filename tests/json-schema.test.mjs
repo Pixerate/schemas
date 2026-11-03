@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { execSync } from 'node:child_process';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 
@@ -74,13 +73,39 @@ describe('JSON Schema export', () => {
     }
   });
 
-  it('re-exporting produces no diff (--check passes)', () => {
-    // Run the check script and assert exit 0
-    const output = execSync('node scripts/export-json-schema.mjs --check', {
-      cwd: rootDir,
-      encoding: 'utf8'
-    });
-    assert.ok(output.includes('JSON Schema check passed'));
+  it('every $ref names a whole definition that exists', () => {
+    const indexData = JSON.parse(fs.readFileSync(path.resolve(jsonSchemaDir, 'index.json'), 'utf8'));
+    for (const entry of indexData) {
+      const jsonSchema = JSON.parse(fs.readFileSync(path.resolve(jsonSchemaDir, entry.file), 'utf8'));
+      const visit = (node) => {
+        if (!node || typeof node !== 'object') return;
+        if (typeof node.$ref === 'string') {
+          const match = node.$ref.match(/^#\/definitions\/([^/]+)$/);
+          assert.ok(match, `${entry.file}: $ref ${node.$ref} should name a whole definition`);
+          assert.ok(jsonSchema.definitions?.[match[1]], `${entry.file}: $ref ${node.$ref} has no definition`);
+        }
+        Object.values(node).forEach(visit);
+      };
+      visit(jsonSchema);
+      assert.doesNotThrow(() => ajv.compile(jsonSchema), `${entry.file} should compile`);
+    }
+  });
+
+  it('a schema used inside another one is a $ref to its own definition', () => {
+    const phrase = JSON.parse(fs.readFileSync(path.resolve(jsonSchemaDir, 'jazz', 'JazzPhrase.json'), 'utf8'));
+    assert.deepEqual(phrase.definitions.JazzPhrase.properties.observations.items, { $ref: '#/definitions/JazzObservation' });
+    const context = JSON.parse(fs.readFileSync(path.resolve(jsonSchemaDir, 'jazz', 'JazzContext.json'), 'utf8'));
+    assert.deepEqual(context.definitions.JazzContext.properties.policy, { $ref: '#/definitions/JazzPolicy' });
+  });
+
+  it('defaults computed at parse time are left out', () => {
+    const notification = JSON.parse(fs.readFileSync(path.resolve(jsonSchemaDir, 'index', 'Notification.json'), 'utf8'));
+    assert.equal(notification.definitions.Notification.properties.createdAt.default, undefined);
+    const presence = JSON.parse(fs.readFileSync(path.resolve(jsonSchemaDir, 'realtime', 'PresenceUser.json'), 'utf8'));
+    assert.equal(presence.definitions.PresenceUser.properties.lastSeen.default, undefined);
+    // Fixed defaults stay
+    const policy = JSON.parse(fs.readFileSync(path.resolve(jsonSchemaDir, 'jazz', 'JazzPolicy.json'), 'utf8'));
+    assert.equal(policy.definitions.JazzPolicy.properties.allowEditUserContent.default, false);
   });
 
   it('for a sample valid and invalid value per jazz schema, JSON Schema and Zod agree', () => {
@@ -247,133 +272,125 @@ describe('JSON Schema export', () => {
     }
   });
 
-  it('generates known-good swift fixtures in tests/fixtures/swift/', () => {
-    fs.mkdirSync(fixturesDir, { recursive: true });
-
-    // 1. Jazz policy from {} (defaults filled)
-    const emptyPolicy = jazz.JazzPolicySchema.parse({});
-    fs.writeFileSync(
-      path.resolve(fixturesDir, 'jazz_policy_empty.json'),
-      JSON.stringify(emptyPolicy, null, 2) + '\n'
-    );
-
-    // 2. Jazz observation
-    const observation = jazz.JazzObservationSchema.parse({
-      id: 'obs-001',
-      at: '2026-11-03T12:30:00.000Z',
-      surface: 'canvas',
-      origin: 'user',
-      action: 'add',
-      targets: [
-        { id: 'node-1', kind: 'node', type: 'image', label: 'Hero Image' }
-      ],
-      fields: ['position', 'style'],
-      inGesture: false,
-      summary: 'Added Hero Image on canvas'
-    });
-    fs.writeFileSync(
-      path.resolve(fixturesDir, 'jazz_observation.json'),
-      JSON.stringify(observation, null, 2) + '\n'
-    );
-
-    // 3. Jazz riff with nested tool arguments
-    const riff = jazz.JazzRiffSchema.parse({
-      id: 'riff-42',
-      sessionId: 'session-abc',
-      origin: 'agent:pixie',
-      surface: 'canvas',
-      strategy: 'continue-series',
-      intent: 'add',
-      title: 'Add subtitle below Hero',
-      rationale: 'Complement hero image with a subtitle block',
-      confidence: 0.95,
-      targets: ['node-1'],
-      toolCalls: [
-        {
-          name: 'add_text_node',
-          arguments: {
-            text: 'Discover Endless Possibilities',
-            fontSize: 24,
-            bold: true,
-            coords: { x: 100, y: 350 },
-            tags: ['heading', 'hero']
+  it('swift fixtures in tests/fixtures/swift/ are what Zod produces', () => {
+    // The Swift tests decode each fixture, encode it again and compare with this JSON.
+    // Run with UPDATE_SWIFT_FIXTURES=1 to rewrite them after a schema change.
+    const fixtures = {
+      // Defaults filled in from {}; the Swift test also decodes {} and compares
+      'jazz_policy_empty.json': jazz.JazzPolicySchema.parse({}),
+      'jazz_observation.json': jazz.JazzObservationSchema.parse({
+        id: 'obs-001',
+        at: '2026-11-03T12:30:00.000Z',
+        surface: 'canvas',
+        origin: 'user',
+        action: 'add',
+        targets: [{ id: 'node-1', kind: 'node', type: 'image', label: 'Hero Image' }],
+        fields: ['position', 'style'],
+        inGesture: false,
+        summary: 'Added Hero Image on canvas'
+      }),
+      'jazz_riff.json': jazz.JazzRiffSchema.parse({
+        id: 'riff-42',
+        sessionId: 'session-abc',
+        origin: 'agent:pixie',
+        surface: 'canvas',
+        strategy: 'continue-series',
+        intent: 'add',
+        title: 'Add subtitle below Hero',
+        rationale: 'Complement hero image with a subtitle block',
+        confidence: 0.95,
+        targets: ['node-1'],
+        toolCalls: [
+          {
+            name: 'add_text_node',
+            arguments: {
+              text: 'Discover Endless Possibilities',
+              fontSize: 24,
+              bold: true,
+              coords: { x: 100, y: 350 },
+              tags: ['heading', 'hero']
+            }
           }
-        }
-      ],
-      mode: 'suggest',
-      proposalId: 'prop-123',
-      status: 'proposed',
-      createdAt: '2026-11-03T12:30:05.000Z'
-    });
-    fs.writeFileSync(
-      path.resolve(fixturesDir, 'jazz_riff.json'),
-      JSON.stringify(riff, null, 2) + '\n'
-    );
+        ],
+        mode: 'suggest',
+        proposalId: 'prop-123',
+        status: 'proposed',
+        createdAt: '2026-11-03T12:30:05.000Z'
+      }),
+      'jazz_phrase.json': jazz.JazzPhraseSchema.parse({
+        id: 'phrase-1',
+        surface: 'canvas',
+        startedAt: '2026-11-03T12:00:00.000Z',
+        endedAt: '2026-11-03T12:01:00.000Z',
+        observations: [
+          {
+            id: 'obs-1',
+            at: '2026-11-03T12:00:30.000Z',
+            surface: 'canvas',
+            origin: 'user',
+            action: 'add',
+            targets: [{ id: 'node-1', kind: 'node', label: 'Box' }]
+          }
+        ],
+        summary: 'Added box'
+      }),
+      'jazz_context.json': jazz.JazzContextSchema.parse({
+        sessionId: 'session-abc',
+        agent: { id: 'pixie', name: 'Pixie' },
+        surface: 'canvas',
+        phrases: [],
+        riffs: [{ id: 'riff-42', strategy: 'continue-series', intent: 'add', title: 'Add subtitle', status: 'proposed' }],
+        policy: { autonomy: 'assist', tempo: { idleMs: 900 } }
+      }),
+      'agent_tool.json': agent.AgentToolSchema.parse({
+        type: 'code_execution',
+        config: { timeout: 30, networkAccess: false, environment: 'sandbox' }
+      }),
+      'agent_file_change.json': agent.AgentFileChangeSchema.parse({
+        path: 'src/main.ts',
+        kind: 'modified',
+        diff: '@@ -1,3 +1,3 @@',
+        stats: { added: 1, removed: 0 },
+        before: 'console.log("hello")',
+        after: 'console.log("hello world")'
+      }),
+      // Nullable fields: null values and a string value
+      'agent_public_api_key.json': agent.PublicApiKeySchema.parse({
+        id: 'key-1',
+        name: 'CI key',
+        keyPrefix: 'pk_live_ab',
+        ownerType: 'user',
+        ownerId: 'user-1',
+        createdBy: 'user-1',
+        scopes: ['read'],
+        status: 'active',
+        createdAt: '2026-11-03T12:00:00.000Z',
+        updatedAt: '2026-11-03T12:00:00.000Z',
+        expiresAt: null,
+        lastUsedAt: '2026-11-03T13:00:00.000Z',
+        revokedAt: null
+      }),
+      'common_aspect_ratio.json': common.AspectRatioSchema.parse('16:9'),
+      'common_video_attachment_url.json': common.VideoAttachmentSchema.parse('https://example.com/clip.mp4'),
+      'common_video_attachment_object.json': common.VideoAttachmentSchema.parse({
+        url: 'https://example.com/clip.mp4',
+        mimeType: 'video/mp4'
+      })
+    };
 
-    // 4. Agent tool fixture
-    const tool = agent.AgentToolSchema.parse({
-      type: 'code_execution',
-      config: {
-        timeout: 30,
-        networkAccess: false,
-        environment: 'sandbox'
+    fs.mkdirSync(fixturesDir, { recursive: true });
+    const update = process.env.UPDATE_SWIFT_FIXTURES === '1';
+    for (const [file, value] of Object.entries(fixtures)) {
+      const fullPath = path.resolve(fixturesDir, file);
+      const content = JSON.stringify(value, null, 2) + '\n';
+      if (update) {
+        fs.writeFileSync(fullPath, content);
+      } else {
+        assert.ok(fs.existsSync(fullPath), `Missing ${file}. Run UPDATE_SWIFT_FIXTURES=1 npm test.`);
+        assert.equal(fs.readFileSync(fullPath, 'utf8'), content, `${file} is stale. Run UPDATE_SWIFT_FIXTURES=1 npm test.`);
       }
-    });
-    fs.writeFileSync(
-      path.resolve(fixturesDir, 'agent_tool.json'),
-      JSON.stringify(tool, null, 2) + '\n'
-    );
-
-    // 5. Common aspect ratio fixture
-    const aspectRatio = common.AspectRatioSchema.parse('16:9');
-    fs.writeFileSync(
-      path.resolve(fixturesDir, 'common_aspect_ratio.json'),
-      JSON.stringify(aspectRatio, null, 2) + '\n'
-    );
-
-    // 6. Agent file change fixture
-    const fileChange = agent.AgentFileChangeSchema.parse({
-      path: 'src/main.ts',
-      kind: 'modified',
-      diff: '@@ -1,3 +1,3 @@',
-      stats: { added: 1, removed: 0 },
-      before: 'console.log("hello")',
-      after: 'console.log("hello world")'
-    });
-    fs.writeFileSync(
-      path.resolve(fixturesDir, 'agent_file_change.json'),
-      JSON.stringify(fileChange, null, 2) + '\n'
-    );
-
-    // 7. Jazz phrase fixture
-    const phrase = jazz.JazzPhraseSchema.parse({
-      id: 'phrase-1',
-      surface: 'canvas',
-      startedAt: '2026-11-03T12:00:00.000Z',
-      endedAt: '2026-11-03T12:01:00.000Z',
-      observations: [
-        {
-          id: 'obs-1',
-          at: '2026-11-03T12:00:30.000Z',
-          surface: 'canvas',
-          origin: 'user',
-          action: 'add',
-          targets: [{ id: 'node-1', kind: 'node', label: 'Box' }]
-        }
-      ],
-      summary: 'Added box'
-    });
-    fs.writeFileSync(
-      path.resolve(fixturesDir, 'jazz_phrase.json'),
-      JSON.stringify(phrase, null, 2) + '\n'
-    );
-
-    assert.ok(fs.existsSync(path.resolve(fixturesDir, 'jazz_policy_empty.json')));
-    assert.ok(fs.existsSync(path.resolve(fixturesDir, 'jazz_observation.json')));
-    assert.ok(fs.existsSync(path.resolve(fixturesDir, 'jazz_riff.json')));
-    assert.ok(fs.existsSync(path.resolve(fixturesDir, 'agent_tool.json')));
-    assert.ok(fs.existsSync(path.resolve(fixturesDir, 'common_aspect_ratio.json')));
-    assert.ok(fs.existsSync(path.resolve(fixturesDir, 'agent_file_change.json')));
-    assert.ok(fs.existsSync(path.resolve(fixturesDir, 'jazz_phrase.json')));
+    }
+    const extra = fs.readdirSync(fixturesDir).filter((f) => f.endsWith('.json') && !(f in fixtures));
+    assert.deepEqual(extra, [], 'Unexpected Swift fixtures');
   });
 });

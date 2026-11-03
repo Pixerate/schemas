@@ -1,7 +1,7 @@
 {
-  "$ref": "#/definitions/OrgChartReport",
+  "$ref": "#/definitions/TreeEdge",
   "definitions": {
-    "OrgChartReport": {
+    "TreeEdge": {
       "type": "object",
       "properties": {
         "from": {

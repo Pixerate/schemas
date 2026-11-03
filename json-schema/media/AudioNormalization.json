@@ -11,34 +11,37 @@
           "type": "string"
         },
         "options": {
-          "type": "object",
-          "properties": {
-            "targetLufs": {
-              "type": "number",
-              "default": -14
-            },
-            "truePeak": {
-              "type": "number",
-              "default": -1.5
-            },
-            "loudnessRange": {
-              "type": "number",
-              "default": 11
-            },
-            "audioCodec": {
-              "type": "string",
-              "default": "aac"
-            },
-            "bitrate": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
+          "$ref": "#/definitions/AudioNormalizationOptions"
         }
       },
       "required": [
         "inputPath"
       ],
+      "additionalProperties": false
+    },
+    "AudioNormalizationOptions": {
+      "type": "object",
+      "properties": {
+        "targetLufs": {
+          "type": "number",
+          "default": -14
+        },
+        "truePeak": {
+          "type": "number",
+          "default": -1.5
+        },
+        "loudnessRange": {
+          "type": "number",
+          "default": 11
+        },
+        "audioCodec": {
+          "type": "string",
+          "default": "aac"
+        },
+        "bitrate": {
+          "type": "string"
+        }
+      },
       "additionalProperties": false
     }
   },

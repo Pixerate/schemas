@@ -5,14 +5,7 @@
       "type": "object",
       "properties": {
         "role": {
-          "type": "string",
-          "enum": [
-            "owner",
-            "admin",
-            "editor",
-            "viewer",
-            "member"
-          ],
+          "$ref": "#/definitions/TeamRole",
           "default": "member"
         },
         "status": {
@@ -47,6 +40,16 @@
         }
       },
       "additionalProperties": false
+    },
+    "TeamRole": {
+      "type": "string",
+      "enum": [
+        "owner",
+        "admin",
+        "editor",
+        "viewer",
+        "member"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

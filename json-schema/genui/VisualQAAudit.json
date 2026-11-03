@@ -1,6 +1,54 @@
 {
   "$ref": "#/definitions/VisualQAAudit",
   "definitions": {
+    "SvgValidationCheck": {
+      "type": "object",
+      "properties": {
+        "selfContained": {
+          "type": "boolean",
+          "description": "Whether the SVG contains no external url() or scripts"
+        },
+        "responsive": {
+          "type": "boolean",
+          "description": "Whether viewBox is defined with width/height 100%"
+        },
+        "stackingOrderValid": {
+          "type": "boolean",
+          "description": "Whether foreground and labels sit at the end of the DOM"
+        },
+        "transformIsolated": {
+          "type": "boolean",
+          "description": "Whether animated elements separate coordinate translate from keyframe motion"
+        },
+        "boundaryClamped": {
+          "type": "boolean",
+          "description": "Whether moving elements stay within canvas bounds"
+        },
+        "dualThemeVerified": {
+          "type": "boolean",
+          "description": "Whether dark mode media query and CSS custom properties are properly defined"
+        },
+        "accessible": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether the SVG includes role=\"img\" and title/aria-labelledby accessibility attributes"
+        },
+        "reducedMotion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether animated SVG provides @media (prefers-reduced-motion: reduce) rules"
+        }
+      },
+      "required": [
+        "selfContained",
+        "responsive",
+        "stackingOrderValid",
+        "transformIsolated",
+        "boundaryClamped",
+        "dualThemeVerified"
+      ],
+      "additionalProperties": false
+    },
     "VisualQAAudit": {
       "type": "object",
       "properties": {
@@ -9,52 +57,7 @@
           "description": "Whether visual QA passed all criteria"
         },
         "checks": {
-          "type": "object",
-          "properties": {
-            "selfContained": {
-              "type": "boolean",
-              "description": "Whether the SVG contains no external url() or scripts"
-            },
-            "responsive": {
-              "type": "boolean",
-              "description": "Whether viewBox is defined with width/height 100%"
-            },
-            "stackingOrderValid": {
-              "type": "boolean",
-              "description": "Whether foreground and labels sit at the end of the DOM"
-            },
-            "transformIsolated": {
-              "type": "boolean",
-              "description": "Whether animated elements separate coordinate translate from keyframe motion"
-            },
-            "boundaryClamped": {
-              "type": "boolean",
-              "description": "Whether moving elements stay within canvas bounds"
-            },
-            "dualThemeVerified": {
-              "type": "boolean",
-              "description": "Whether dark mode media query and CSS custom properties are properly defined"
-            },
-            "accessible": {
-              "type": "boolean",
-              "default": true,
-              "description": "Whether the SVG includes role=\"img\" and title/aria-labelledby accessibility attributes"
-            },
-            "reducedMotion": {
-              "type": "boolean",
-              "default": true,
-              "description": "Whether animated SVG provides @media (prefers-reduced-motion: reduce) rules"
-            }
-          },
-          "required": [
-            "selfContained",
-            "responsive",
-            "stackingOrderValid",
-            "transformIsolated",
-            "boundaryClamped",
-            "dualThemeVerified"
-          ],
-          "additionalProperties": false
+          "$ref": "#/definitions/SvgValidationCheck"
         },
         "frameSlicesCount": {
           "type": "integer",

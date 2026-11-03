@@ -1,6 +1,48 @@
 {
   "$ref": "#/definitions/WebsiteCacheSummary",
   "definitions": {
+    "CachedPageSummary": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "textLength": {
+          "type": "number",
+          "minimum": 0
+        },
+        "imageCount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fetchedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        }
+      },
+      "required": [
+        "url",
+        "path",
+        "title",
+        "textLength",
+        "imageCount",
+        "fetchedAt"
+      ],
+      "additionalProperties": false
+    },
     "WebsiteCacheSummary": {
       "type": "object",
       "properties": {
@@ -21,46 +63,7 @@
         "pages": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "url": {
-                "type": "string"
-              },
-              "path": {
-                "type": "string"
-              },
-              "title": {
-                "type": "string"
-              },
-              "textLength": {
-                "type": "number",
-                "minimum": 0
-              },
-              "imageCount": {
-                "type": "number",
-                "minimum": 0
-              },
-              "fetchedAt": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string",
-                    "format": "date-time"
-                  }
-                ]
-              }
-            },
-            "required": [
-              "url",
-              "path",
-              "title",
-              "textLength",
-              "imageCount",
-              "fetchedAt"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/CachedPageSummary"
           }
         },
         "isFromCache": {

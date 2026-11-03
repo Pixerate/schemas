@@ -1,7 +1,37 @@
 {
-  "$ref": "#/definitions/VideoGraphicOverlay",
+  "$ref": "#/definitions/VideoImageOverlay",
   "definitions": {
-    "VideoGraphicOverlay": {
+    "TextOverlayPosition": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "top",
+            "center",
+            "bottom"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "y": {
+              "type": [
+                "number",
+                "string"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "VideoImageOverlay": {
       "type": "object",
       "properties": {
         "imagePath": {
@@ -11,34 +41,7 @@
           "type": "boolean"
         },
         "position": {
-          "anyOf": [
-            {
-              "type": "string",
-              "enum": [
-                "top",
-                "center",
-                "bottom"
-              ]
-            },
-            {
-              "type": "object",
-              "properties": {
-                "x": {
-                  "type": [
-                    "number",
-                    "string"
-                  ]
-                },
-                "y": {
-                  "type": [
-                    "number",
-                    "string"
-                  ]
-                }
-              },
-              "additionalProperties": false
-            }
-          ]
+          "$ref": "#/definitions/TextOverlayPosition"
         },
         "x": {
           "type": [
@@ -64,68 +67,71 @@
           "maximum": 1
         },
         "options": {
-          "type": "object",
-          "properties": {
-            "x": {
-              "type": [
-                "number",
-                "string"
-              ]
+          "$ref": "#/definitions/VideoOverlayOptions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "VideoOverlayOptions": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "y": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "position": {
+          "anyOf": [
+            {
+              "type": "string"
             },
-            "y": {
-              "type": [
-                "number",
-                "string"
-              ]
-            },
-            "position": {
-              "anyOf": [
-                {
-                  "type": "string"
+            {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
                 },
-                {
-                  "type": "object",
-                  "properties": {
-                    "x": {
-                      "type": "number"
-                    },
-                    "y": {
-                      "type": "number"
-                    }
-                  },
-                  "additionalProperties": false
+                "y": {
+                  "type": "number"
                 }
-              ]
-            },
-            "padding": {
-              "type": "number"
-            },
-            "scale": {
-              "type": "number"
-            },
-            "opacity": {
-              "type": "number"
-            },
-            "width": {
-              "type": "number"
-            },
-            "height": {
-              "type": "number"
-            },
-            "crf": {
-              "type": "number"
-            },
-            "preset": {
-              "type": "string"
-            },
-            "videoCodec": {
-              "type": "string"
-            },
-            "audioCodec": {
-              "type": "string"
+              },
+              "additionalProperties": false
             }
-          },
-          "additionalProperties": false
+          ]
+        },
+        "padding": {
+          "type": "number"
+        },
+        "scale": {
+          "type": "number"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        },
+        "crf": {
+          "type": "number"
+        },
+        "preset": {
+          "type": "string"
+        },
+        "videoCodec": {
+          "type": "string"
+        },
+        "audioCodec": {
+          "type": "string"
         }
       },
       "additionalProperties": false

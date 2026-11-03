@@ -1,6 +1,34 @@
 {
   "$ref": "#/definitions/FormSubmissionPayload",
   "definitions": {
+    "DimensionScore": {
+      "type": "object",
+      "properties": {
+        "dimensionId": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "points": {
+          "type": "number"
+        },
+        "weight": {
+          "type": "number"
+        },
+        "weighted": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "dimensionId",
+        "label",
+        "points",
+        "weight",
+        "weighted"
+      ],
+      "additionalProperties": false
+    },
     "FormSubmissionPayload": {
       "type": "object",
       "properties": {
@@ -21,79 +49,57 @@
           "type": "string"
         },
         "score": {
-          "type": "object",
-          "properties": {
-            "total": {
-              "type": "number"
-            },
-            "dimensions": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "dimensionId": {
-                    "type": "string"
-                  },
-                  "label": {
-                    "type": "string"
-                  },
-                  "points": {
-                    "type": "number"
-                  },
-                  "weight": {
-                    "type": "number"
-                  },
-                  "weighted": {
-                    "type": "number"
-                  }
-                },
-                "required": [
-                  "dimensionId",
-                  "label",
-                  "points",
-                  "weight",
-                  "weighted"
-                ],
-                "additionalProperties": false
-              }
-            },
-            "band": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "label": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "id",
-                "label"
-              ],
-              "additionalProperties": false
-            },
-            "calculatedAt": {
-              "type": "string"
-            },
-            "schemaVersion": {
-              "type": [
-                "string",
-                "number"
-              ]
-            }
-          },
-          "required": [
-            "total",
-            "dimensions",
-            "calculatedAt",
-            "schemaVersion"
-          ],
-          "additionalProperties": false
+          "$ref": "#/definitions/SubmissionScore"
         }
       },
       "required": [
         "answers"
+      ],
+      "additionalProperties": false
+    },
+    "SubmissionScore": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "number"
+        },
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DimensionScore"
+          }
+        },
+        "band": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        "calculatedAt": {
+          "type": "string"
+        },
+        "schemaVersion": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "total",
+        "dimensions",
+        "calculatedAt",
+        "schemaVersion"
       ],
       "additionalProperties": false
     }

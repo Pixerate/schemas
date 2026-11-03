@@ -15,13 +15,7 @@
           "type": "string"
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "pending",
-            "approved",
-            "rejected",
-            "onboarded"
-          ],
+          "$ref": "#/definitions/WaitlistStatus",
           "default": "pending"
         },
         "referralCode": {
@@ -110,6 +104,15 @@
         "email"
       ],
       "additionalProperties": false
+    },
+    "WaitlistStatus": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "onboarded"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

@@ -1,7 +1,7 @@
 {
-  "$ref": "#/definitions/TextOverlayStyle",
+  "$ref": "#/definitions/VideoOverlayStyle",
   "definitions": {
-    "TextOverlayStyle": {
+    "VideoOverlayStyle": {
       "type": "string",
       "enum": [
         "neubrutalist",

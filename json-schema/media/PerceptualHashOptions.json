@@ -1,19 +1,22 @@
 {
   "$ref": "#/definitions/PerceptualHashOptions",
   "definitions": {
+    "PerceptualHashAlgorithm": {
+      "type": "string",
+      "enum": [
+        "ahash",
+        "dhash"
+      ]
+    },
     "PerceptualHashOptions": {
       "type": "object",
       "properties": {
         "algorithm": {
-          "type": "string",
-          "enum": [
-            "ahash",
-            "dhash"
-          ],
+          "$ref": "#/definitions/PerceptualHashAlgorithm",
           "default": "dhash"
         },
         "method": {
-          "$ref": "#/definitions/PerceptualHashOptions/properties/algorithm"
+          "$ref": "#/definitions/PerceptualHashAlgorithm"
         },
         "hashSize": {
           "type": "integer",

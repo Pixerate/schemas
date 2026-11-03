@@ -1,7 +1,7 @@
 {
-  "$ref": "#/definitions/VideoCompression",
+  "$ref": "#/definitions/VideoTranscode",
   "definitions": {
-    "VideoCompression": {
+    "VideoTranscode": {
       "type": "object",
       "properties": {
         "crf": {

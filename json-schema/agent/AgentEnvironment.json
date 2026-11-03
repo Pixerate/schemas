@@ -17,41 +17,47 @@
             "allowlist": {
               "type": "array",
               "items": {
-                "type": "object",
-                "properties": {
-                  "domain": {
-                    "type": "string"
-                  },
-                  "transform": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "key": {
-                          "type": "string"
-                        },
-                        "value": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "key",
-                        "value"
-                      ],
-                      "additionalProperties": false
-                    }
-                  }
-                },
-                "required": [
-                  "domain"
-                ],
-                "additionalProperties": false
+                "$ref": "#/definitions/AgentNetworkAllowlistRule"
               }
             }
           },
           "additionalProperties": false
         }
       },
+      "additionalProperties": false
+    },
+    "AgentNetworkAllowlistRule": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string"
+        },
+        "transform": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AgentNetworkTransformRule"
+          }
+        }
+      },
+      "required": [
+        "domain"
+      ],
+      "additionalProperties": false
+    },
+    "AgentNetworkTransformRule": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value"
+      ],
       "additionalProperties": false
     }
   },

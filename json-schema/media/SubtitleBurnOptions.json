@@ -11,12 +11,7 @@
           "type": "string"
         },
         "format": {
-          "type": "string",
-          "enum": [
-            "srt",
-            "vtt",
-            "ass"
-          ]
+          "$ref": "#/definitions/SubtitleFormat"
         },
         "fontSize": {
           "type": "number"
@@ -47,6 +42,14 @@
         }
       },
       "additionalProperties": false
+    },
+    "SubtitleFormat": {
+      "type": "string",
+      "enum": [
+        "srt",
+        "vtt",
+        "ass"
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

@@ -1,6 +1,68 @@
 {
   "$ref": "#/definitions/AgentInteractionRequest",
   "definitions": {
+    "AgentConfig": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "additionalProperties": false
+    },
+    "AgentDocumentAttachment": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "fileName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "mimeType"
+      ],
+      "additionalProperties": false
+    },
+    "AgentEnvironment": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "remote",
+            "local"
+          ]
+        },
+        "network": {
+          "type": "object",
+          "properties": {
+            "allowlist": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AgentNetworkAllowlistRule"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "AgentInteractionRequest": {
       "type": "object",
       "properties": {
@@ -21,113 +83,19 @@
         "tools": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string"
-              },
-              "config": {
-                "type": "object",
-                "additionalProperties": {}
-              }
-            },
-            "required": [
-              "type"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/AgentTool"
           }
         },
         "agentConfig": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string"
-            },
-            "model": {
-              "type": "string"
-            },
-            "options": {
-              "type": "object",
-              "additionalProperties": {}
-            }
-          },
-          "additionalProperties": false
+          "$ref": "#/definitions/AgentConfig"
         },
         "environment": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "enum": [
-                "remote",
-                "local"
-              ]
-            },
-            "network": {
-              "type": "object",
-              "properties": {
-                "allowlist": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "domain": {
-                        "type": "string"
-                      },
-                      "transform": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "key": {
-                              "type": "string"
-                            },
-                            "value": {
-                              "type": "string"
-                            }
-                          },
-                          "required": [
-                            "key",
-                            "value"
-                          ],
-                          "additionalProperties": false
-                        }
-                      }
-                    },
-                    "required": [
-                      "domain"
-                    ],
-                    "additionalProperties": false
-                  }
-                }
-              },
-              "additionalProperties": false
-            }
-          },
-          "additionalProperties": false
+          "$ref": "#/definitions/AgentEnvironment"
         },
         "documents": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "data": {
-                "type": "string"
-              },
-              "uri": {
-                "type": "string"
-              },
-              "mimeType": {
-                "type": "string"
-              },
-              "fileName": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "mimeType"
-            ],
-            "additionalProperties": false
+            "$ref": "#/definitions/AgentDocumentAttachment"
           }
         },
         "coachingRules": {
@@ -139,6 +107,56 @@
       },
       "required": [
         "input"
+      ],
+      "additionalProperties": false
+    },
+    "AgentNetworkAllowlistRule": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string"
+        },
+        "transform": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AgentNetworkTransformRule"
+          }
+        }
+      },
+      "required": [
+        "domain"
+      ],
+      "additionalProperties": false
+    },
+    "AgentNetworkTransformRule": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "AgentTool": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "config": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "required": [
+        "type"
       ],
       "additionalProperties": false
     }

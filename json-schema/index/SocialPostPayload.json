@@ -1,6 +1,13 @@
 {
   "$ref": "#/definitions/SocialPostPayload",
   "definitions": {
+    "SocialMediaType": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ]
+    },
     "SocialPostPayload": {
       "type": "object",
       "properties": {
@@ -11,11 +18,7 @@
           "type": "string"
         },
         "mediaType": {
-          "type": "string",
-          "enum": [
-            "image",
-            "video"
-          ]
+          "$ref": "#/definitions/SocialMediaType"
         },
         "tags": {
           "type": "array",

@@ -1,40 +1,33 @@
 {
   "$ref": "#/definitions/PerspectiveWarp",
   "definitions": {
+    "PerspectiveQuad": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": [
+        {
+          "$ref": "#/definitions/Point2D"
+        },
+        {
+          "$ref": "#/definitions/Point2D"
+        },
+        {
+          "$ref": "#/definitions/Point2D"
+        },
+        {
+          "$ref": "#/definitions/Point2D"
+        }
+      ]
+    },
     "PerspectiveWarp": {
       "type": "object",
       "properties": {
         "srcQuad": {
-          "type": "array",
-          "minItems": 4,
-          "maxItems": 4,
-          "items": [
-            {
-              "type": "array",
-              "minItems": 2,
-              "maxItems": 2,
-              "items": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "number"
-                }
-              ]
-            },
-            {
-              "$ref": "#/definitions/PerspectiveWarp/properties/srcQuad/items/0"
-            },
-            {
-              "$ref": "#/definitions/PerspectiveWarp/properties/srcQuad/items/0"
-            },
-            {
-              "$ref": "#/definitions/PerspectiveWarp/properties/srcQuad/items/0"
-            }
-          ]
+          "$ref": "#/definitions/PerspectiveQuad"
         },
         "dstQuad": {
-          "$ref": "#/definitions/PerspectiveWarp/properties/srcQuad"
+          "$ref": "#/definitions/PerspectiveQuad"
         },
         "resample": {
           "type": "string",
@@ -54,6 +47,19 @@
         "dstQuad"
       ],
       "additionalProperties": false
+    },
+    "Point2D": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ]
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"
