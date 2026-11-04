@@ -1,0 +1,121 @@
+{
+  "$ref": "#/definitions/JazzCapabilityIndex",
+  "definitions": {
+    "JazzCapability": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzEvidence"
+          },
+          "minItems": 1,
+          "maxItems": 10
+        },
+        "agentTools": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "name",
+        "refs"
+      ],
+      "additionalProperties": false
+    },
+    "JazzCapabilityIndex": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "builtAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "revision": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "built": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzCapability"
+          },
+          "maxItems": 500
+        },
+        "planned": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzCapability"
+          },
+          "maxItems": 500
+        }
+      },
+      "required": [
+        "domain",
+        "builtAt",
+        "built",
+        "planned"
+      ],
+      "additionalProperties": false
+    },
+    "JazzEvidence": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/JazzEvidenceKind"
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "quote": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "scope": {
+          "type": "string",
+          "maxLength": 300
+        }
+      },
+      "required": [
+        "kind",
+        "ref"
+      ],
+      "additionalProperties": false
+    },
+    "JazzEvidenceKind": {
+      "type": "string",
+      "enum": [
+        "repo",
+        "issue",
+        "plan",
+        "web",
+        "metric",
+        "absence"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

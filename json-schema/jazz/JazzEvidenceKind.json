@@ -1,0 +1,17 @@
+{
+  "$ref": "#/definitions/JazzEvidenceKind",
+  "definitions": {
+    "JazzEvidenceKind": {
+      "type": "string",
+      "enum": [
+        "repo",
+        "issue",
+        "plan",
+        "web",
+        "metric",
+        "absence"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

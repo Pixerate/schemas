@@ -1,0 +1,125 @@
+{
+  "$ref": "#/definitions/JazzProposalDraft",
+  "definitions": {
+    "JazzEvidence": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/JazzEvidenceKind"
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "quote": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "scope": {
+          "type": "string",
+          "maxLength": 300
+        }
+      },
+      "required": [
+        "kind",
+        "ref"
+      ],
+      "additionalProperties": false
+    },
+    "JazzEvidenceKind": {
+      "type": "string",
+      "enum": [
+        "repo",
+        "issue",
+        "plan",
+        "web",
+        "metric",
+        "absence"
+      ]
+    },
+    "JazzProposalDraft": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "kind": {
+          "$ref": "#/definitions/JazzProposalKind"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "why": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "today": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "problemSpace": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "proposal": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 6000
+        },
+        "effort": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "risk": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "doneWhen": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzEvidence"
+          },
+          "minItems": 1,
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "domain",
+        "kind",
+        "title",
+        "why",
+        "today",
+        "proposal",
+        "effort",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "JazzProposalKind": {
+      "type": "string",
+      "enum": [
+        "new-capability",
+        "follow-up",
+        "interop",
+        "agent-path"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

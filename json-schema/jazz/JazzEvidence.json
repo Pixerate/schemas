@@ -1,0 +1,47 @@
+{
+  "$ref": "#/definitions/JazzEvidence",
+  "definitions": {
+    "JazzEvidence": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/JazzEvidenceKind"
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "quote": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "scope": {
+          "type": "string",
+          "maxLength": 300
+        }
+      },
+      "required": [
+        "kind",
+        "ref"
+      ],
+      "additionalProperties": false
+    },
+    "JazzEvidenceKind": {
+      "type": "string",
+      "enum": [
+        "repo",
+        "issue",
+        "plan",
+        "web",
+        "metric",
+        "absence"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1156,8 +1156,33 @@
   },
   {
     "module": "jazz",
+    "name": "JazzCapability",
+    "file": "jazz/JazzCapability.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzCapabilityIndex",
+    "file": "jazz/JazzCapabilityIndex.json"
+  },
+  {
+    "module": "jazz",
     "name": "JazzContext",
     "file": "jazz/JazzContext.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzDomain",
+    "file": "jazz/JazzDomain.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzEvidence",
+    "file": "jazz/JazzEvidence.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzEvidenceKind",
+    "file": "jazz/JazzEvidenceKind.json"
   },
   {
     "module": "jazz",
@@ -1188,6 +1213,16 @@
     "module": "jazz",
     "name": "JazzPolicy",
     "file": "jazz/JazzPolicy.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzProposalDraft",
+    "file": "jazz/JazzProposalDraft.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzProposalKind",
+    "file": "jazz/JazzProposalKind.json"
   },
   {
     "module": "jazz",

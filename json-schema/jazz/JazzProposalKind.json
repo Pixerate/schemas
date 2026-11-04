@@ -1,0 +1,15 @@
+{
+  "$ref": "#/definitions/JazzProposalKind",
+  "definitions": {
+    "JazzProposalKind": {
+      "type": "string",
+      "enum": [
+        "new-capability",
+        "follow-up",
+        "interop",
+        "agent-path"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

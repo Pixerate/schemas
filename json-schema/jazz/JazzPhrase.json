@@ -144,6 +144,11 @@
         "layer",
         "text",
         "cell",
+        "domain",
+        "issue",
+        "pull-request",
+        "file",
+        "capability",
         "other"
       ]
     }
