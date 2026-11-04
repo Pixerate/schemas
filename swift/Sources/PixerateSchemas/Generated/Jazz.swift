@@ -17,6 +17,22 @@ public enum JazzAutonomy: String, Codable, Sendable, CaseIterable {
     case assist = "assist"
 }
 
+public enum JazzEvidenceKind: String, Codable, Sendable, CaseIterable {
+    case repo = "repo"
+    case issue = "issue"
+    case plan = "plan"
+    case web = "web"
+    case metric = "metric"
+    case absence = "absence"
+}
+
+public enum JazzProposalKind: String, Codable, Sendable, CaseIterable {
+    case newCapability = "new-capability"
+    case followUp = "follow-up"
+    case interop = "interop"
+    case agentPath = "agent-path"
+}
+
 public enum JazzRiffIntent: String, Codable, Sendable, CaseIterable {
     case add = "add"
     case annotate = "annotate"
@@ -41,6 +57,11 @@ public enum JazzTargetKind: String, Codable, Sendable, CaseIterable {
     case layer = "layer"
     case text = "text"
     case cell = "cell"
+    case domain = "domain"
+    case issue = "issue"
+    case pullRequest = "pull-request"
+    case file = "file"
+    case capability = "capability"
     case other = "other"
 }
 
@@ -50,6 +71,96 @@ public enum JazzVerdict: String, Codable, Sendable, CaseIterable {
     case edited = "edited"
     case ignored = "ignored"
     case withdrawn = "withdrawn"
+}
+
+public struct JazzCapability: Codable, Sendable, Equatable {
+    public var name: String
+    public var summary: String?
+    public var refs: [JazzEvidence]
+    public var agentTools: [String]?
+
+    enum CodingKeys: String, CodingKey {
+        case name = "name"
+        case summary = "summary"
+        case refs = "refs"
+        case agentTools = "agentTools"
+    }
+
+    public init(
+        name: String,
+        summary: String? = nil,
+        refs: [JazzEvidence],
+        agentTools: [String]? = nil
+    ) {
+        self.name = name
+        self.summary = summary
+        self.refs = refs
+        self.agentTools = agentTools
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.summary = try container.decodeIfPresent(String.self, forKey: .summary)
+        self.refs = try container.decode([JazzEvidence].self, forKey: .refs)
+        self.agentTools = try container.decodeIfPresent([String].self, forKey: .agentTools)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encodeIfPresent(summary, forKey: .summary)
+        try container.encode(refs, forKey: .refs)
+        try container.encodeIfPresent(agentTools, forKey: .agentTools)
+    }
+}
+
+public struct JazzCapabilityIndex: Codable, Sendable, Equatable {
+    public var domain: String
+    public var builtAt: String
+    public var revision: String?
+    public var built: [JazzCapability]
+    public var planned: [JazzCapability]
+
+    enum CodingKeys: String, CodingKey {
+        case domain = "domain"
+        case builtAt = "builtAt"
+        case revision = "revision"
+        case built = "built"
+        case planned = "planned"
+    }
+
+    public init(
+        domain: String,
+        builtAt: String,
+        revision: String? = nil,
+        built: [JazzCapability],
+        planned: [JazzCapability]
+    ) {
+        self.domain = domain
+        self.builtAt = builtAt
+        self.revision = revision
+        self.built = built
+        self.planned = planned
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.domain = try container.decode(String.self, forKey: .domain)
+        self.builtAt = try container.decode(String.self, forKey: .builtAt)
+        self.revision = try container.decodeIfPresent(String.self, forKey: .revision)
+        self.built = try container.decode([JazzCapability].self, forKey: .built)
+        self.planned = try container.decode([JazzCapability].self, forKey: .planned)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(domain, forKey: .domain)
+        try container.encode(builtAt, forKey: .builtAt)
+        try container.encodeIfPresent(revision, forKey: .revision)
+        try container.encode(built, forKey: .built)
+        try container.encode(planned, forKey: .planned)
+    }
 }
 
 public struct JazzContextAgent: Codable, Sendable, Equatable {
@@ -151,6 +262,108 @@ public struct JazzContext: Codable, Sendable, Equatable {
         try container.encode(riffs, forKey: .riffs)
         try container.encode(policy, forKey: .policy)
         try container.encode(skills, forKey: .skills)
+    }
+}
+
+public struct JazzDomain: Codable, Sendable, Equatable {
+    public var id: String
+    public var name: String
+    public var paths: [String]
+    public var docs: [String]
+    public var skills: [String]
+    public var labels: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case name = "name"
+        case paths = "paths"
+        case docs = "docs"
+        case skills = "skills"
+        case labels = "labels"
+    }
+
+    public init(
+        id: String,
+        name: String,
+        paths: [String],
+        docs: [String] = [],
+        skills: [String] = [],
+        labels: [String] = []
+    ) {
+        self.id = id
+        self.name = name
+        self.paths = paths
+        self.docs = docs
+        self.skills = skills
+        self.labels = labels
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.paths = try container.decode([String].self, forKey: .paths)
+        self.docs = try container.decodeIfPresent([String].self, forKey: .docs) ?? []
+        self.skills = try container.decodeIfPresent([String].self, forKey: .skills) ?? []
+        self.labels = try container.decodeIfPresent([String].self, forKey: .labels) ?? []
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(paths, forKey: .paths)
+        try container.encode(docs, forKey: .docs)
+        try container.encode(skills, forKey: .skills)
+        try container.encode(labels, forKey: .labels)
+    }
+}
+
+public struct JazzEvidence: Codable, Sendable, Equatable {
+    public var kind: JazzEvidenceKind
+    public var ref: String
+    public var url: String?
+    public var quote: String?
+    public var scope: String?
+
+    enum CodingKeys: String, CodingKey {
+        case kind = "kind"
+        case ref = "ref"
+        case url = "url"
+        case quote = "quote"
+        case scope = "scope"
+    }
+
+    public init(
+        kind: JazzEvidenceKind,
+        ref: String,
+        url: String? = nil,
+        quote: String? = nil,
+        scope: String? = nil
+    ) {
+        self.kind = kind
+        self.ref = ref
+        self.url = url
+        self.quote = quote
+        self.scope = scope
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.kind = try container.decode(JazzEvidenceKind.self, forKey: .kind)
+        self.ref = try container.decode(String.self, forKey: .ref)
+        self.url = try container.decodeIfPresent(String.self, forKey: .url)
+        self.quote = try container.decodeIfPresent(String.self, forKey: .quote)
+        self.scope = try container.decodeIfPresent(String.self, forKey: .scope)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(kind, forKey: .kind)
+        try container.encode(ref, forKey: .ref)
+        try container.encodeIfPresent(url, forKey: .url)
+        try container.encodeIfPresent(quote, forKey: .quote)
+        try container.encodeIfPresent(scope, forKey: .scope)
     }
 }
 
@@ -451,6 +664,90 @@ public struct JazzPolicy: Codable, Sendable, Equatable {
         try container.encode(budget, forKey: .budget)
         try container.encode(allowEditUserContent, forKey: .allowEditUserContent)
         try container.encodeIfPresent(strategies, forKey: .strategies)
+    }
+}
+
+public struct JazzProposalDraft: Codable, Sendable, Equatable {
+    public var domain: String
+    public var kind: JazzProposalKind
+    public var title: String
+    public var why: String
+    public var today: String
+    public var problemSpace: String?
+    public var proposal: String
+    public var effort: String
+    public var risk: String?
+    public var doneWhen: String?
+    public var evidence: [JazzEvidence]
+
+    enum CodingKeys: String, CodingKey {
+        case domain = "domain"
+        case kind = "kind"
+        case title = "title"
+        case why = "why"
+        case today = "today"
+        case problemSpace = "problemSpace"
+        case proposal = "proposal"
+        case effort = "effort"
+        case risk = "risk"
+        case doneWhen = "doneWhen"
+        case evidence = "evidence"
+    }
+
+    public init(
+        domain: String,
+        kind: JazzProposalKind,
+        title: String,
+        why: String,
+        today: String,
+        problemSpace: String? = nil,
+        proposal: String,
+        effort: String,
+        risk: String? = nil,
+        doneWhen: String? = nil,
+        evidence: [JazzEvidence]
+    ) {
+        self.domain = domain
+        self.kind = kind
+        self.title = title
+        self.why = why
+        self.today = today
+        self.problemSpace = problemSpace
+        self.proposal = proposal
+        self.effort = effort
+        self.risk = risk
+        self.doneWhen = doneWhen
+        self.evidence = evidence
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.domain = try container.decode(String.self, forKey: .domain)
+        self.kind = try container.decode(JazzProposalKind.self, forKey: .kind)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.why = try container.decode(String.self, forKey: .why)
+        self.today = try container.decode(String.self, forKey: .today)
+        self.problemSpace = try container.decodeIfPresent(String.self, forKey: .problemSpace)
+        self.proposal = try container.decode(String.self, forKey: .proposal)
+        self.effort = try container.decode(String.self, forKey: .effort)
+        self.risk = try container.decodeIfPresent(String.self, forKey: .risk)
+        self.doneWhen = try container.decodeIfPresent(String.self, forKey: .doneWhen)
+        self.evidence = try container.decode([JazzEvidence].self, forKey: .evidence)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(domain, forKey: .domain)
+        try container.encode(kind, forKey: .kind)
+        try container.encode(title, forKey: .title)
+        try container.encode(why, forKey: .why)
+        try container.encode(today, forKey: .today)
+        try container.encodeIfPresent(problemSpace, forKey: .problemSpace)
+        try container.encode(proposal, forKey: .proposal)
+        try container.encode(effort, forKey: .effort)
+        try container.encodeIfPresent(risk, forKey: .risk)
+        try container.encodeIfPresent(doneWhen, forKey: .doneWhen)
+        try container.encode(evidence, forKey: .evidence)
     }
 }
 
