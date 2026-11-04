@@ -67,8 +67,7 @@
       "type": "object",
       "properties": {
         "agent": {
-          "type": "string",
-          "default": "antigravity-preview-05-2026"
+          "type": "string"
         },
         "input": {
           "type": "string"
