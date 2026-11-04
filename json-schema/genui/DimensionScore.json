@@ -1,0 +1,34 @@
+{
+  "$ref": "#/definitions/DimensionScore",
+  "definitions": {
+    "DimensionScore": {
+      "type": "object",
+      "properties": {
+        "dimensionId": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "points": {
+          "type": "number"
+        },
+        "weight": {
+          "type": "number"
+        },
+        "weighted": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "dimensionId",
+        "label",
+        "points",
+        "weight",
+        "weighted"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

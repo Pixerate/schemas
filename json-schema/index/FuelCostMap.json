@@ -1,0 +1,13 @@
+{
+  "$ref": "#/definitions/FuelCostMap",
+  "definitions": {
+    "FuelCostMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0
+      }
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/PlatformLanguage",
+  "definitions": {
+    "PlatformLanguage": {
+      "type": "string",
+      "enum": [
+        "svelte",
+        "react",
+        "webcomponent"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

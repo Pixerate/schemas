@@ -1,0 +1,21 @@
+{
+  "$ref": "#/definitions/ConditionOperator",
+  "definitions": {
+    "ConditionOperator": {
+      "type": "string",
+      "enum": [
+        "equals",
+        "notEquals",
+        "not_equals",
+        "includes",
+        "contains",
+        "greaterThan",
+        "greater_than",
+        "lessThan",
+        "less_than",
+        "exists"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

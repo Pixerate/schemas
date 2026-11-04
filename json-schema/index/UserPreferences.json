@@ -1,0 +1,11 @@
+{
+  "$ref": "#/definitions/UserPreferences",
+  "definitions": {
+    "UserPreferences": {
+      "type": "object",
+      "additionalProperties": {},
+      "default": {}
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

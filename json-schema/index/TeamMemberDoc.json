@@ -1,0 +1,56 @@
+{
+  "$ref": "#/definitions/TeamMemberDoc",
+  "definitions": {
+    "TeamMemberDoc": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "$ref": "#/definitions/TeamRole",
+          "default": "member"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "invited",
+            "suspended"
+          ],
+          "default": "active"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "joinedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        },
+        "invitedBy": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "TeamRole": {
+      "type": "string",
+      "enum": [
+        "owner",
+        "admin",
+        "editor",
+        "viewer",
+        "member"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

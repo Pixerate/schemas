@@ -1,0 +1,222 @@
+{
+  "$ref": "#/definitions/ThemeTokens",
+  "definitions": {
+    "ThemeColors": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "type": "string"
+        },
+        "primaryForeground": {
+          "type": "string"
+        },
+        "secondary": {
+          "type": "string"
+        },
+        "secondaryForeground": {
+          "type": "string"
+        },
+        "accent": {
+          "type": "string"
+        },
+        "accentForeground": {
+          "type": "string"
+        },
+        "background": {
+          "type": "string"
+        },
+        "foreground": {
+          "type": "string"
+        },
+        "surface": {
+          "type": "string"
+        },
+        "surfaceForeground": {
+          "type": "string"
+        },
+        "muted": {
+          "type": "string"
+        },
+        "mutedForeground": {
+          "type": "string"
+        },
+        "destructive": {
+          "type": "string"
+        },
+        "destructiveForeground": {
+          "type": "string"
+        },
+        "border": {
+          "type": "string"
+        },
+        "ring": {
+          "type": "string"
+        },
+        "customProperties": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "primary",
+        "background",
+        "foreground"
+      ],
+      "additionalProperties": false
+    },
+    "ThemeTokens": {
+      "type": "object",
+      "properties": {
+        "colors": {
+          "type": "object",
+          "properties": {
+            "light": {
+              "$ref": "#/definitions/ThemeColors"
+            },
+            "dark": {
+              "type": "object",
+              "properties": {
+                "primary": {
+                  "type": "string"
+                },
+                "primaryForeground": {
+                  "type": "string"
+                },
+                "secondary": {
+                  "type": "string"
+                },
+                "secondaryForeground": {
+                  "type": "string"
+                },
+                "accent": {
+                  "type": "string"
+                },
+                "accentForeground": {
+                  "type": "string"
+                },
+                "background": {
+                  "type": "string"
+                },
+                "foreground": {
+                  "type": "string"
+                },
+                "surface": {
+                  "type": "string"
+                },
+                "surfaceForeground": {
+                  "type": "string"
+                },
+                "muted": {
+                  "type": "string"
+                },
+                "mutedForeground": {
+                  "type": "string"
+                },
+                "destructive": {
+                  "type": "string"
+                },
+                "destructiveForeground": {
+                  "type": "string"
+                },
+                "border": {
+                  "type": "string"
+                },
+                "ring": {
+                  "type": "string"
+                },
+                "customProperties": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "light"
+          ],
+          "additionalProperties": false
+        },
+        "typography": {
+          "$ref": "#/definitions/ThemeTypographyTokens"
+        },
+        "radii": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "not": {}
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "spacing": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "paddings": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "shadows": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "colors"
+      ],
+      "additionalProperties": false
+    },
+    "ThemeTypographyTokens": {
+      "type": "object",
+      "properties": {
+        "fontSans": {
+          "type": "string"
+        },
+        "fontMono": {
+          "type": "string"
+        },
+        "fontHeading": {
+          "type": "string"
+        },
+        "fontImports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fontCss": {
+          "type": "string"
+        },
+        "fontSize": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "fontWeight": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

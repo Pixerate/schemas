@@ -1,0 +1,80 @@
+{
+  "$ref": "#/definitions/SubmissionScore",
+  "definitions": {
+    "DimensionScore": {
+      "type": "object",
+      "properties": {
+        "dimensionId": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "points": {
+          "type": "number"
+        },
+        "weight": {
+          "type": "number"
+        },
+        "weighted": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "dimensionId",
+        "label",
+        "points",
+        "weight",
+        "weighted"
+      ],
+      "additionalProperties": false
+    },
+    "SubmissionScore": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "number"
+        },
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DimensionScore"
+          }
+        },
+        "band": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        "calculatedAt": {
+          "type": "string"
+        },
+        "schemaVersion": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "total",
+        "dimensions",
+        "calculatedAt",
+        "schemaVersion"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

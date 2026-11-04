@@ -1,0 +1,33 @@
+{
+  "$ref": "#/definitions/AnalyticsEcommerceItem",
+  "definitions": {
+    "AnalyticsEcommerceItem": {
+      "type": "object",
+      "properties": {
+        "item_id": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "item_name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "item_category": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "price": {
+          "type": "number"
+        },
+        "quantity": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "item_id"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

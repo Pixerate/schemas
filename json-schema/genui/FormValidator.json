@@ -1,0 +1,60 @@
+{
+  "$ref": "#/definitions/FormValidator",
+  "definitions": {
+    "FormConfig": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/FormConfigValue"
+      }
+    },
+    "FormConfigValue": {
+      "type": [
+        "string",
+        "number",
+        "boolean"
+      ]
+    },
+    "FormValidator": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "severity": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "error",
+                "warning"
+              ]
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "type": {
+          "type": "string"
+        },
+        "config": {
+          "$ref": "#/definitions/FormConfig"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

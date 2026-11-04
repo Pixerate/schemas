@@ -1,0 +1,52 @@
+{
+  "$ref": "#/definitions/GenerateEvent",
+  "definitions": {
+    "AnalyticsMediaType": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video",
+        "text"
+      ]
+    },
+    "GenerateEvent": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "generate"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "model": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "media_type": {
+              "$ref": "#/definitions/AnalyticsMediaType"
+            },
+            "success": {
+              "type": "boolean"
+            },
+            "is_first": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "model",
+            "media_type",
+            "success"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "name",
+        "params"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

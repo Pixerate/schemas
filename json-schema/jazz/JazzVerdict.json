@@ -1,0 +1,16 @@
+{
+  "$ref": "#/definitions/JazzVerdict",
+  "definitions": {
+    "JazzVerdict": {
+      "type": "string",
+      "enum": [
+        "accepted",
+        "rejected",
+        "edited",
+        "ignored",
+        "withdrawn"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,52 @@
+{
+  "$ref": "#/definitions/ActionsBlock",
+  "definitions": {
+    "ActionItem": {
+      "type": "object",
+      "properties": {
+        "icon": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "type": "string"
+        },
+        "due": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "ActionsBlock": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "actions"
+        },
+        "title": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ActionItem"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "kind",
+        "items"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

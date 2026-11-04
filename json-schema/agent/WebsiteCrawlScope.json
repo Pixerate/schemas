@@ -1,0 +1,86 @@
+{
+  "$ref": "#/definitions/WebsiteCrawlScope",
+  "definitions": {
+    "WebsiteCrawlScope": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "maxDepth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10,
+          "default": 1
+        },
+        "maxPages": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500,
+          "default": 25
+        },
+        "sameDomainOnly": {
+          "type": "boolean",
+          "default": true
+        },
+        "allowSubdomains": {
+          "type": "boolean",
+          "default": false
+        },
+        "pathPrefix": {
+          "type": "string"
+        },
+        "urlMatchPattern": {
+          "type": "string"
+        },
+        "urlExcludePattern": {
+          "type": "string"
+        },
+        "includeImages": {
+          "type": "boolean",
+          "default": true
+        },
+        "maxImagesPerPage": {
+          "type": "integer",
+          "default": 15
+        },
+        "maxImageBytes": {
+          "type": "integer",
+          "default": 5242880
+        },
+        "maxPageBytes": {
+          "type": "integer",
+          "default": 5242880
+        },
+        "allowedImageTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cacheId": {
+          "type": "string"
+        },
+        "ttlMs": {
+          "type": "number"
+        },
+        "forceRefresh": {
+          "type": "boolean",
+          "default": false
+        },
+        "requestTimeoutMs": {
+          "type": "number",
+          "default": 15000
+        },
+        "userAgent": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

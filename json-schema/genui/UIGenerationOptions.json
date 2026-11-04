@@ -1,0 +1,54 @@
+{
+  "$ref": "#/definitions/UIGenerationOptions",
+  "definitions": {
+    "PlatformLanguage": {
+      "type": "string",
+      "enum": [
+        "svelte",
+        "react",
+        "webcomponent"
+      ]
+    },
+    "UIGenerationOptions": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string",
+          "description": "User prompt or instruction for component generation/modification"
+        },
+        "currentCode": {
+          "type": "string",
+          "description": "Existing component code for iterative modification"
+        },
+        "platform": {
+          "$ref": "#/definitions/PlatformLanguage",
+          "default": "svelte",
+          "description": "Target component platform language"
+        },
+        "theme": {
+          "type": "string",
+          "description": "Theme identifier or token reference"
+        },
+        "systemPrompt": {
+          "type": "string",
+          "description": "Custom or override system prompt"
+        },
+        "maxRetries": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 3,
+          "description": "Maximum retry attempts for iterative auto-repair validation"
+        },
+        "temperature": {
+          "type": "number",
+          "description": "Model temperature"
+        }
+      },
+      "required": [
+        "prompt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

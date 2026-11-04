@@ -1,0 +1,34 @@
+{
+  "$ref": "#/definitions/ApiKeyLookup",
+  "definitions": {
+    "ApiKeyLookup": {
+      "type": "object",
+      "properties": {
+        "serviceAccountId": {
+          "type": "string"
+        },
+        "orgId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "revoked"
+          ]
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "serviceAccountId",
+        "orgId",
+        "status",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

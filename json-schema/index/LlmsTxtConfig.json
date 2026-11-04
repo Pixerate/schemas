@@ -1,0 +1,78 @@
+{
+  "$ref": "#/definitions/LlmsTxtConfig",
+  "definitions": {
+    "LlmsLink": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "LlmsSection": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LlmsLink"
+          }
+        }
+      },
+      "required": [
+        "title",
+        "links"
+      ],
+      "additionalProperties": false
+    },
+    "LlmsTxtConfig": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LlmsSection"
+          }
+        },
+        "optionalSections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LlmsSection"
+          }
+        }
+      },
+      "required": [
+        "title",
+        "summary"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

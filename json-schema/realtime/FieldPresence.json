@@ -1,0 +1,183 @@
+{
+  "$ref": "#/definitions/FieldPresence",
+  "definitions": {
+    "ActorType": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent",
+        "system"
+      ]
+    },
+    "AgentActorMetadata": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string"
+        },
+        "parentAgentId": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "string"
+        },
+        "currentTask": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FieldPresence": {
+      "type": "object",
+      "properties": {
+        "fieldId": {
+          "type": "string"
+        },
+        "focusedBy": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PresenceUser"
+          },
+          "default": []
+        },
+        "typingUsers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TypingIndicator"
+          },
+          "default": []
+        }
+      },
+      "required": [
+        "fieldId"
+      ],
+      "additionalProperties": false
+    },
+    "PresenceColor": {
+      "type": "string",
+      "enum": [
+        "slate",
+        "gray",
+        "zinc",
+        "neutral",
+        "stone",
+        "red",
+        "orange",
+        "amber",
+        "yellow",
+        "lime",
+        "green",
+        "emerald",
+        "teal",
+        "cyan",
+        "sky",
+        "blue",
+        "indigo",
+        "violet",
+        "purple",
+        "fuchsia",
+        "pink",
+        "rose"
+      ]
+    },
+    "PresenceStatus": {
+      "type": "string",
+      "enum": [
+        "online",
+        "idle",
+        "away",
+        "busy",
+        "offline",
+        "planning",
+        "thinking",
+        "executing_tool",
+        "waiting_for_input",
+        "waiting_for_agent",
+        "streaming",
+        "paused",
+        "error"
+      ]
+    },
+    "PresenceUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "actorType": {
+          "$ref": "#/definitions/ActorType"
+        },
+        "color": {
+          "$ref": "#/definitions/PresenceColor",
+          "default": "blue"
+        },
+        "status": {
+          "$ref": "#/definitions/PresenceStatus",
+          "default": "online"
+        },
+        "agent": {
+          "$ref": "#/definitions/AgentActorMetadata"
+        },
+        "lastSeen": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {},
+          "default": {}
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "TypingIndicator": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "resourceId": {
+          "type": "string"
+        },
+        "fieldName": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "color": {
+          "$ref": "#/definitions/PresenceColor"
+        },
+        "isTyping": {
+          "type": "boolean",
+          "default": true
+        },
+        "timestamp": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "userId",
+        "resourceId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,131 @@
+{
+  "$ref": "#/definitions/VideoGeneration",
+  "definitions": {
+    "VideoAspectRatio": {
+      "type": "string",
+      "enum": [
+        "9:16",
+        "16:9"
+      ]
+    },
+    "VideoAttachment": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "bytesBase64Encoded": {
+              "type": "string"
+            },
+            "data": {},
+            "mimeType": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "VideoFrameImage": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "bytesBase64Encoded": {
+              "type": "string"
+            },
+            "data": {
+              "type": "string"
+            },
+            "mimeType": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "VideoResolution": {
+      "type": "string",
+      "enum": [
+        "360p",
+        "720p",
+        "1080p",
+        "4k",
+        "360P",
+        "720P",
+        "1080P",
+        "4K"
+      ]
+    },
+    "VideoGeneration": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string"
+        },
+        "aspectRatio": {
+          "$ref": "#/definitions/VideoAspectRatio"
+        },
+        "durationSeconds": {
+          "type": "integer"
+        },
+        "generateAudio": {
+          "type": "boolean"
+        },
+        "modelName": {
+          "type": "string"
+        },
+        "lowCost": {
+          "type": "boolean"
+        },
+        "resolution": {
+          "$ref": "#/definitions/VideoResolution"
+        },
+        "fps": {
+          "type": "number"
+        },
+        "isMultimedia": {
+          "type": "boolean"
+        },
+        "multimedia": {
+          "type": "boolean"
+        },
+        "firstFrame": {
+          "$ref": "#/definitions/VideoFrameImage"
+        },
+        "lastFrame": {
+          "$ref": "#/definitions/VideoFrameImage"
+        },
+        "image": {
+          "$ref": "#/definitions/VideoAttachment"
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VideoAttachment"
+          }
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VideoAttachment"
+          }
+        }
+      },
+      "required": [
+        "prompt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

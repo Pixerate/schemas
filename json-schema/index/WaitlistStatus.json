@@ -1,0 +1,15 @@
+{
+  "$ref": "#/definitions/WaitlistStatus",
+  "definitions": {
+    "WaitlistStatus": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "onboarded"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

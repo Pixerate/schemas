@@ -1,0 +1,97 @@
+{
+  "$ref": "#/definitions/WebsiteCacheSummary",
+  "definitions": {
+    "CachedPageSummary": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "textLength": {
+          "type": "number",
+          "minimum": 0
+        },
+        "imageCount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fetchedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        }
+      },
+      "required": [
+        "url",
+        "path",
+        "title",
+        "textLength",
+        "imageCount",
+        "fetchedAt"
+      ],
+      "additionalProperties": false
+    },
+    "WebsiteCacheSummary": {
+      "type": "object",
+      "properties": {
+        "cacheId": {
+          "type": "string"
+        },
+        "seedUrl": {
+          "type": "string"
+        },
+        "pagesCount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "imagesCount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CachedPageSummary"
+          }
+        },
+        "isFromCache": {
+          "type": "boolean"
+        },
+        "cachedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        }
+      },
+      "required": [
+        "cacheId",
+        "seedUrl",
+        "pagesCount",
+        "imagesCount",
+        "pages",
+        "isFromCache",
+        "cachedAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

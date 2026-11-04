@@ -1,0 +1,129 @@
+{
+  "$ref": "#/definitions/ChartBlock",
+  "definitions": {
+    "ChartBlock": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "chart"
+        },
+        "chartType": {
+          "type": "string",
+          "enum": [
+            "bar",
+            "line",
+            "pie",
+            "radar",
+            "area"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "valueFormat": {
+          "$ref": "#/definitions/ChartValueFormat"
+        },
+        "yLabel": {
+          "type": "string"
+        },
+        "stacked": {
+          "type": "boolean"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "series": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ChartSeries"
+          }
+        },
+        "drilldown": {
+          "$ref": "#/definitions/ChartDrilldown"
+        },
+        "followUps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "chartType",
+        "series"
+      ],
+      "additionalProperties": false
+    },
+    "ChartDrilldown": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "followUps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "ChartSeries": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "color": {
+          "$ref": "#/definitions/ChartThemeToken"
+        }
+      },
+      "required": [
+        "name",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "ChartThemeToken": {
+      "type": "string",
+      "enum": [
+        "chart-1",
+        "chart-2",
+        "chart-3",
+        "chart-4",
+        "chart-5"
+      ]
+    },
+    "ChartValueFormat": {
+      "type": "string",
+      "enum": [
+        "number",
+        "percent",
+        "currency"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

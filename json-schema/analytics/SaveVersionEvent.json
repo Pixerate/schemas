@@ -1,0 +1,52 @@
+{
+  "$ref": "#/definitions/SaveVersionEvent",
+  "definitions": {
+    "AnalyticsItemType": {
+      "type": "string",
+      "enum": [
+        "silo",
+        "bucket",
+        "pipeline",
+        "template",
+        "exploration",
+        "composition",
+        "fusion",
+        "edit",
+        "board",
+        "pitch",
+        "deliverable",
+        "organization",
+        "project",
+        "task",
+        "agent",
+        "workflow"
+      ]
+    },
+    "SaveVersionEvent": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "save_version"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "item_type": {
+              "$ref": "#/definitions/AnalyticsItemType"
+            },
+            "version_number": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

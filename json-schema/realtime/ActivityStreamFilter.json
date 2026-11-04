@@ -1,0 +1,71 @@
+{
+  "$ref": "#/definitions/ActivityStreamFilter",
+  "definitions": {
+    "ActivityActionType": {
+      "type": "string",
+      "enum": [
+        "join",
+        "leave",
+        "create",
+        "update",
+        "delete",
+        "lock",
+        "unlock",
+        "claim",
+        "comment",
+        "generate",
+        "star",
+        "unstar",
+        "custom",
+        "agent:thought",
+        "agent:plan_updated",
+        "agent:tool_start",
+        "agent:tool_end",
+        "agent:approval_requested",
+        "agent:approval_resolved",
+        "agent:error"
+      ]
+    },
+    "ActivityStreamFilter": {
+      "type": "object",
+      "properties": {
+        "roomId": {
+          "type": "string"
+        },
+        "entityId": {
+          "type": "string"
+        },
+        "entityType": {
+          "type": "string"
+        },
+        "actorId": {
+          "type": "string"
+        },
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ActivityActionType"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ActivityActionType"
+              }
+            }
+          ]
+        },
+        "since": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 50
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

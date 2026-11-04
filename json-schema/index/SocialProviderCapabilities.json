@@ -1,0 +1,142 @@
+{
+  "$ref": "#/definitions/SocialProviderCapabilities",
+  "definitions": {
+    "SocialMediaType": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ]
+    },
+    "SocialMetricField": {
+      "type": "string",
+      "enum": [
+        "views",
+        "impressions",
+        "likes",
+        "comments",
+        "shares",
+        "quotes",
+        "saves",
+        "clicks"
+      ]
+    },
+    "SocialPlatform": {
+      "type": "string",
+      "enum": [
+        "bluesky",
+        "twitter",
+        "linkedin",
+        "tiktok",
+        "instagram"
+      ]
+    },
+    "SocialProviderCapabilities": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "$ref": "#/definitions/SocialPlatform"
+        },
+        "text": {
+          "type": "object",
+          "properties": {
+            "maxLength": {
+              "type": "integer",
+              "exclusiveMinimum": 0
+            },
+            "unit": {
+              "$ref": "#/definitions/SocialTextLengthUnit"
+            }
+          },
+          "required": [
+            "maxLength",
+            "unit"
+          ],
+          "additionalProperties": false
+        },
+        "media": {
+          "type": "object",
+          "properties": {
+            "types": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SocialMediaType"
+              }
+            },
+            "required": {
+              "type": "boolean"
+            },
+            "maxItems": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "maxImageBytes": {
+              "type": "integer",
+              "exclusiveMinimum": 0
+            },
+            "maxVideoBytes": {
+              "type": "integer",
+              "exclusiveMinimum": 0
+            },
+            "altText": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "types",
+            "required",
+            "maxItems",
+            "altText"
+          ],
+          "additionalProperties": false
+        },
+        "tags": {
+          "type": "object",
+          "properties": {
+            "supported": {
+              "type": "boolean"
+            },
+            "maxCount": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "supported"
+          ],
+          "additionalProperties": false
+        },
+        "replies": {
+          "type": "boolean"
+        },
+        "returnsUrl": {
+          "type": "boolean"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SocialMetricField"
+          }
+        }
+      },
+      "required": [
+        "platform",
+        "text",
+        "media",
+        "tags",
+        "replies",
+        "returnsUrl"
+      ],
+      "additionalProperties": false
+    },
+    "SocialTextLengthUnit": {
+      "type": "string",
+      "enum": [
+        "characters",
+        "graphemes",
+        "weighted"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

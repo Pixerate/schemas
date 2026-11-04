@@ -1,0 +1,64 @@
+{
+  "$ref": "#/definitions/AutoFitCaption",
+  "definitions": {
+    "AutoFitCaption": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "font": {
+          "type": "string"
+        },
+        "textColor": {
+          "type": "string"
+        },
+        "backgroundColor": {
+          "type": "string"
+        },
+        "gravity": {
+          "type": "string",
+          "enum": [
+            "NorthWest",
+            "North",
+            "NorthEast",
+            "West",
+            "Center",
+            "East",
+            "SouthWest",
+            "South",
+            "SouthEast"
+          ],
+          "default": "Center"
+        },
+        "position": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "text",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

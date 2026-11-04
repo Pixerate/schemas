@@ -1,0 +1,119 @@
+{
+  "$ref": "#/definitions/WaitlistEntry",
+  "definitions": {
+    "WaitlistEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/WaitlistStatus",
+          "default": "pending"
+        },
+        "referralCode": {
+          "type": "string"
+        },
+        "referredBy": {
+          "type": "string"
+        },
+        "referralCount": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "position": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "priorityScore": {
+          "type": "number",
+          "default": 0
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {},
+          "default": {}
+        },
+        "approvedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        },
+        "onboardedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        },
+        "createdAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        },
+        "updatedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "email"
+      ],
+      "additionalProperties": false
+    },
+    "WaitlistStatus": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "onboarded"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,80 @@
+{
+  "$ref": "#/definitions/JazzPolicy",
+  "definitions": {
+    "JazzAutonomy": {
+      "type": "string",
+      "enum": [
+        "off",
+        "suggest",
+        "assist"
+      ]
+    },
+    "JazzPolicy": {
+      "type": "object",
+      "properties": {
+        "autonomy": {
+          "$ref": "#/definitions/JazzAutonomy",
+          "default": "suggest"
+        },
+        "tempo": {
+          "type": "object",
+          "properties": {
+            "idleMs": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 60000,
+              "default": 1500
+            },
+            "minGapMs": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 600000,
+              "default": 8000
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "budget": {
+          "type": "object",
+          "properties": {
+            "maxRiffsPerMinute": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 60,
+              "default": 3
+            },
+            "maxPending": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20,
+              "default": 3
+            },
+            "cooldownAfterRejectMs": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600000,
+              "default": 30000
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "allowEditUserContent": {
+          "type": "boolean",
+          "default": false
+        },
+        "strategies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 50
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

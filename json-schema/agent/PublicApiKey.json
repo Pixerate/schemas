@@ -1,0 +1,110 @@
+{
+  "$ref": "#/definitions/PublicApiKey",
+  "definitions": {
+    "ApiKeyOwnerType": {
+      "type": "string",
+      "enum": [
+        "user",
+        "service_account",
+        "team",
+        "organization"
+      ]
+    },
+    "ApiKeyStatus": {
+      "type": "string",
+      "enum": [
+        "active",
+        "revoked"
+      ]
+    },
+    "PublicApiKey": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "keyPrefix": {
+          "type": "string"
+        },
+        "ownerType": {
+          "$ref": "#/definitions/ApiKeyOwnerType"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "orgId": {
+          "type": "string"
+        },
+        "teamId": {
+          "type": "string"
+        },
+        "serviceAccountId": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "$ref": "#/definitions/ApiKeyStatus"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lastUsedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "revokedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "keyPrefix",
+        "ownerType",
+        "ownerId",
+        "createdBy",
+        "scopes",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

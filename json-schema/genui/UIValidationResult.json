@@ -1,0 +1,34 @@
+{
+  "$ref": "#/definitions/UIValidationResult",
+  "definitions": {
+    "UIValidationResult": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean",
+          "description": "Whether the component passed syntax and linter validation"
+        },
+        "error": {
+          "type": "string",
+          "description": "Error output from validation if failed"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of parsed validation errors"
+        },
+        "formattedCode": {
+          "type": "string",
+          "description": "Prettier-formatted component code if available"
+        }
+      },
+      "required": [
+        "valid"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,20 @@
+{
+  "$ref": "#/definitions/FuelTransactionType",
+  "definitions": {
+    "FuelTransactionType": {
+      "type": "string",
+      "enum": [
+        "usage",
+        "consumption",
+        "top_up",
+        "topup",
+        "proration",
+        "adjustment",
+        "allocation",
+        "bonus",
+        "refund"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,33 @@
+{
+  "$ref": "#/definitions/CreateIdeas",
+  "definitions": {
+    "CreateIdeas": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "imageUrl": {
+          "type": "string"
+        },
+        "maxIdeas": {
+          "type": "number"
+        },
+        "sourcenodeId": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "fidelity": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

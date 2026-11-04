@@ -1,0 +1,49 @@
+{
+  "$ref": "#/definitions/AudioNormalization",
+  "definitions": {
+    "AudioNormalization": {
+      "type": "object",
+      "properties": {
+        "inputPath": {
+          "type": "string"
+        },
+        "outputPath": {
+          "type": "string"
+        },
+        "options": {
+          "$ref": "#/definitions/AudioNormalizationOptions"
+        }
+      },
+      "required": [
+        "inputPath"
+      ],
+      "additionalProperties": false
+    },
+    "AudioNormalizationOptions": {
+      "type": "object",
+      "properties": {
+        "targetLufs": {
+          "type": "number",
+          "default": -14
+        },
+        "truePeak": {
+          "type": "number",
+          "default": -1.5
+        },
+        "loudnessRange": {
+          "type": "number",
+          "default": 11
+        },
+        "audioCodec": {
+          "type": "string",
+          "default": "aac"
+        },
+        "bitrate": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

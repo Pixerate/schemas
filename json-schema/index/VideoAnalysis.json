@@ -1,0 +1,53 @@
+{
+  "$ref": "#/definitions/VideoAnalysis",
+  "definitions": {
+    "Fidelity": {
+      "type": "string",
+      "enum": [
+        "outline",
+        "blocked",
+        "shaded",
+        "polished"
+      ]
+    },
+    "VideoAnalysis": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "category": {
+          "$ref": "#/definitions/VideoAnalysisCategory"
+        },
+        "fidelity": {
+          "$ref": "#/definitions/Fidelity"
+        }
+      },
+      "required": [
+        "title",
+        "prompt",
+        "category",
+        "fidelity"
+      ],
+      "additionalProperties": false
+    },
+    "VideoAnalysisCategory": {
+      "type": "string",
+      "enum": [
+        "Scenes",
+        "Environments",
+        "Things",
+        "Creatures",
+        "People",
+        "Clothes",
+        "Shapes",
+        "Effects",
+        "Uploads"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

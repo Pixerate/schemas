@@ -1,0 +1,44 @@
+{
+  "$ref": "#/definitions/SocialPostPayload",
+  "definitions": {
+    "SocialMediaType": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ]
+    },
+    "SocialPostPayload": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "mediaPath": {
+          "type": "string"
+        },
+        "mediaType": {
+          "$ref": "#/definitions/SocialMediaType"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "altText": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

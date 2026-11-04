@@ -63,3 +63,39 @@ A living document of known issues, pitfalls, quirks, and their solutions or work
 - **Issue / Pitfall**: `generateStructured` with `TechnicalFormSchema` and `structuredOutputs: true` timed out (45s on gemini-3.8-flash, 90s on gemini-3.5-flash-lite) for `FormHandoffActionSchema`, and usually for `FormValidatorSchema`. Vertex accepted those schemas on their own. With the whole `TechnicalFormSchema`, Vertex rejects the request with HTTP 400 `INVALID_ARGUMENT` on both models, before and after the `config` fix (live test, 23 October 2026).
 - **Context / Cause**: `z.any()` / `z.unknown()` convert to an empty JSON Schema (`{}`). The AI SDK passes it to Gemini as `responseJsonSchema`, leaving that slot unconstrained during constrained decoding.
 - **Solution / Workaround**: Give every field in a schema used for generation a concrete type, such as `FormConfigSchema` (a record of string, number or boolean values) for free-form settings. To keep stored data parsing, coerce older shapes with `z.preprocess` (as `normalizeFormConfig` does). JSON Schema conversion still emits the inner type. `BaseFormControlSchema.defaultValue` uses `FormDefaultValueSchema` (string, number, boolean or string[]) with `normalizeFormDefaultValue`. `tests/form-default-value.test.mjs` fails if any `{}` subschema reappears in `TechnicalFormSchema`. If Vertex still returns 400, the remaining suspects are schema depth (17 levels), size (about 11.6 KB) and `type: [...]` arrays; the isolation test in the PR that added `FormDefaultValueSchema` separates them.
+
+### `zod-to-json-schema` Copies Shared Schemas Inline Unless They Are Definitions
+
+- **Issue / Pitfall**: Each exported JSON Schema carried its own inline copy of every schema it used, so generated Swift had one type per use: `JazzPhrase.observations` was `[JazzPhraseObservationsItem]` instead of `[JazzObservation]`, with 20 duplicate enums. Passing `name` together with a `definitions` map that contains the same schema also produced a definition that pointed only at itself (and a `RangeError` in Ajv for recursive schemas).
+- **Context / Cause**: `zod-to-json-schema` only emits a `$ref` for schema objects listed in `definitions`, matched by object identity. With `name`, the root is added as a definition again and matches its own entry.
+- **Solution / Workaround**: `scripts/export-json-schema.mjs` passes every exported schema as a definition and no `name`. The root then becomes `$ref: #/definitions/<Name>`, and every shared schema is a `$ref` to its own definition. Unreachable definitions are pruned per file. Where two names export the same schema object, the first name is the definition.
+
+### `zod-to-json-schema` Points a Second Use at the First One's Location
+
+- **Issue / Pitfall**: Code generation met refs like `#/definitions/JazzFeedback/properties/at` inside `JazzPhrase`, pointing into an unrelated definition (and pruning that definition would leave the ref dangling).
+- **Context / Cause**: A schema object that is not exported (e.g. an internal `IsoDateTimeSchema`) but is used twice is written out at its first use; later uses point at that path.
+- **Solution / Workaround**: The export replaces every `$ref` that points inside a definition with a copy of its target, so every `$ref` in `json-schema/` names a whole definition. `tests/json-schema.test.mjs` checks this.
+
+### Dynamic Date / Timestamp Defaults Cause Non-Deterministic JSON Schema Exports
+
+- **Issue / Pitfall**: Zod defaults such as `.default(() => new Date())` or `.default(() => Date.now())` are evaluated by `zod-to-json-schema`, so every export wrote a different timestamp. Replacing them with a fixed value published wrong defaults (a `createdAt` that defaults to 1970, a `positive()` field that defaults to 0).
+- **Context / Cause**: Zod stores every default as a function, so a fixed default and a computed one look the same.
+- **Solution / Workaround**: The export runs twice with `Date` frozen at two different times and removes every `default` that differs. Those fields have no default in JSON Schema and are optional in Swift.
+
+### `npm run build` Rewrites `json-schema/`, So `--check` After a Build Proves Nothing
+
+- **Issue / Pitfall**: CI ran `export:json-schema -- --check` after `npm run build` (and `npm ci` runs `prepare`, which builds). The check compared freshly written files with themselves and always passed.
+- **Context / Cause**: The build ends with `export:json-schema` in write mode.
+- **Solution / Workaround**: CI checks `git status --porcelain -- json-schema` after the build instead. Locally, run `npm run build` and commit any change under `json-schema/`, `swift/` and `tests/fixtures/swift/`.
+
+### SwiftPM Ignores Prefixed Version Tags
+
+- **Issue / Pitfall**: A `swift-v1.45.0` tag cannot be used with `.package(url:from:)`.
+- **Context / Cause**: SwiftPM only treats `1.2.3` and `v1.2.3` tags as versions.
+- **Solution / Workaround**: Swift consumers use the npm release tags (`v1.45.0`) with `from: "1.45.0"`. Do not add Swift-only tags.
+
+### Swift Optionals Cannot Tell `null` From a Missing Key
+
+- **Issue / Pitfall**: A field that is both `.nullable()` and `.optional()` decodes `null` and a missing key to the same `nil`.
+- **Context / Cause**: `String?` has one empty state.
+- **Solution / Workaround**: Generated `encode(to:)` writes a nullable field's `nil` as `null` (matching records written by TypeScript) and leaves other `nil` fields out. Where an API gives `null` and a missing key different meanings, make that explicit in the schema rather than relying on the difference.

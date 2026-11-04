@@ -5,6 +5,8 @@ node_modules/
 dist/
 lib/
 *.tsbuildinfo
+.build/
+.swiftpm/
 
 # OS files
 .DS_Store

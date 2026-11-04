@@ -1,0 +1,186 @@
+{
+  "$ref": "#/definitions/Notification",
+  "definitions": {
+    "Notification": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "recipientId": {
+          "type": "string"
+        },
+        "recipientEmail": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        },
+        "richContent": {
+          "type": "string"
+        },
+        "category": {
+          "$ref": "#/definitions/NotificationCategory",
+          "default": "system"
+        },
+        "priority": {
+          "$ref": "#/definitions/NotificationPriority",
+          "default": "normal"
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NotificationChannel"
+          },
+          "default": [
+            "in_app"
+          ]
+        },
+        "status": {
+          "$ref": "#/definitions/NotificationStatus",
+          "default": "unread"
+        },
+        "actor": {
+          "$ref": "#/definitions/NotificationActor"
+        },
+        "targetType": {
+          "type": "string"
+        },
+        "targetId": {
+          "type": "string"
+        },
+        "actionUrl": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {},
+          "default": {}
+        },
+        "createdAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        },
+        "readAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        },
+        "archivedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "recipientId",
+        "title",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "NotificationActor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "user",
+            "agent",
+            "system"
+          ],
+          "default": "user"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "NotificationCategory": {
+      "type": "string",
+      "enum": [
+        "mention",
+        "reply",
+        "team_invite",
+        "fuel_alert",
+        "system",
+        "job_completed",
+        "job_failed",
+        "custom"
+      ]
+    },
+    "NotificationChannel": {
+      "type": "string",
+      "enum": [
+        "in_app",
+        "email",
+        "web_push",
+        "webhook",
+        "sms"
+      ]
+    },
+    "NotificationPriority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "urgent"
+      ]
+    },
+    "NotificationStatus": {
+      "type": "string",
+      "enum": [
+        "unread",
+        "read",
+        "archived"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

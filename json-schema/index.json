@@ -1,0 +1,1707 @@
+[
+  {
+    "module": "agent",
+    "name": "ActiveAgentTask",
+    "file": "agent/ActiveAgentTask.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentApprovalRequest",
+    "file": "agent/AgentApprovalRequest.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentApprovalResponse",
+    "file": "agent/AgentApprovalResponse.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentConfig",
+    "file": "agent/AgentConfig.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentDiffStats",
+    "file": "agent/AgentDiffStats.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentDirectoryEntry",
+    "file": "agent/AgentDirectoryEntry.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentDocumentAttachment",
+    "file": "agent/AgentDocumentAttachment.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentEnvironment",
+    "file": "agent/AgentEnvironment.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentFileChange",
+    "file": "agent/AgentFileChange.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentFileChangeKind",
+    "file": "agent/AgentFileChangeKind.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentInteractionRequest",
+    "file": "agent/AgentInteractionRequest.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentInteractionResult",
+    "file": "agent/AgentInteractionResult.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentInteractionStatus",
+    "file": "agent/AgentInteractionStatus.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentNetworkAllowlistRule",
+    "file": "agent/AgentNetworkAllowlistRule.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentNetworkTransformRule",
+    "file": "agent/AgentNetworkTransformRule.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentRiskLevel",
+    "file": "agent/AgentRiskLevel.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentTool",
+    "file": "agent/AgentTool.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentToolType",
+    "file": "agent/AgentToolType.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentWorkspaceEntry",
+    "file": "agent/AgentWorkspaceEntry.json"
+  },
+  {
+    "module": "agent",
+    "name": "AgentWorkspaceEntryType",
+    "file": "agent/AgentWorkspaceEntryType.json"
+  },
+  {
+    "module": "agent",
+    "name": "ApiKey",
+    "file": "agent/ApiKey.json"
+  },
+  {
+    "module": "agent",
+    "name": "ApiKeyLookup",
+    "file": "agent/ApiKeyLookup.json"
+  },
+  {
+    "module": "agent",
+    "name": "ApiKeyOwnerType",
+    "file": "agent/ApiKeyOwnerType.json"
+  },
+  {
+    "module": "agent",
+    "name": "ApiKeyStatus",
+    "file": "agent/ApiKeyStatus.json"
+  },
+  {
+    "module": "agent",
+    "name": "CachedPage",
+    "file": "agent/CachedPage.json"
+  },
+  {
+    "module": "agent",
+    "name": "CachedPageSearchResult",
+    "file": "agent/CachedPageSearchResult.json"
+  },
+  {
+    "module": "agent",
+    "name": "CachedPageSummary",
+    "file": "agent/CachedPageSummary.json"
+  },
+  {
+    "module": "agent",
+    "name": "CreateApiKeyInput",
+    "file": "agent/CreateApiKeyInput.json"
+  },
+  {
+    "module": "agent",
+    "name": "CreateServiceAccountInput",
+    "file": "agent/CreateServiceAccountInput.json"
+  },
+  {
+    "module": "agent",
+    "name": "PublicApiKey",
+    "file": "agent/PublicApiKey.json"
+  },
+  {
+    "module": "agent",
+    "name": "ServiceAccount",
+    "file": "agent/ServiceAccount.json"
+  },
+  {
+    "module": "agent",
+    "name": "WebsiteCacheSummary",
+    "file": "agent/WebsiteCacheSummary.json"
+  },
+  {
+    "module": "agent",
+    "name": "WebsiteCrawlScope",
+    "file": "agent/WebsiteCrawlScope.json"
+  },
+  {
+    "module": "analytics",
+    "name": "AnalyticsEcommerceItem",
+    "file": "analytics/AnalyticsEcommerceItem.json"
+  },
+  {
+    "module": "analytics",
+    "name": "AnalyticsEvent",
+    "file": "analytics/AnalyticsEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "AnalyticsEventName",
+    "file": "analytics/AnalyticsEventName.json"
+  },
+  {
+    "module": "analytics",
+    "name": "AnalyticsItemType",
+    "file": "analytics/AnalyticsItemType.json"
+  },
+  {
+    "module": "analytics",
+    "name": "AnalyticsMediaType",
+    "file": "analytics/AnalyticsMediaType.json"
+  },
+  {
+    "module": "analytics",
+    "name": "AnalyticsUserProperties",
+    "file": "analytics/AnalyticsUserProperties.json"
+  },
+  {
+    "module": "analytics",
+    "name": "BaseAnalyticsEvent",
+    "file": "analytics/BaseAnalyticsEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "BaseAnalyticsUserProperties",
+    "file": "analytics/BaseAnalyticsUserProperties.json"
+  },
+  {
+    "module": "analytics",
+    "name": "BeginCheckoutEvent",
+    "file": "analytics/BeginCheckoutEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "CreateItemEvent",
+    "file": "analytics/CreateItemEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "GenerateEvent",
+    "file": "analytics/GenerateEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "InviteMemberEvent",
+    "file": "analytics/InviteMemberEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "JoinTeamEvent",
+    "file": "analytics/JoinTeamEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "JoinWaitlistEvent",
+    "file": "analytics/JoinWaitlistEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "LoginEvent",
+    "file": "analytics/LoginEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "OnboardedEvent",
+    "file": "analytics/OnboardedEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "OnboardingMilestoneEvent",
+    "file": "analytics/OnboardingMilestoneEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "OnboardingStepEvent",
+    "file": "analytics/OnboardingStepEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "PageViewEvent",
+    "file": "analytics/PageViewEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "PublishEvent",
+    "file": "analytics/PublishEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "PurchaseEvent",
+    "file": "analytics/PurchaseEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "RunAgentEvent",
+    "file": "analytics/RunAgentEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "SaveVersionEvent",
+    "file": "analytics/SaveVersionEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "ShareEvent",
+    "file": "analytics/ShareEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "SignUpEvent",
+    "file": "analytics/SignUpEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "SubmitFeedbackEvent",
+    "file": "analytics/SubmitFeedbackEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "TutorialBeginEvent",
+    "file": "analytics/TutorialBeginEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "TutorialCompleteEvent",
+    "file": "analytics/TutorialCompleteEvent.json"
+  },
+  {
+    "module": "analytics",
+    "name": "WaitlistApprovedEvent",
+    "file": "analytics/WaitlistApprovedEvent.json"
+  },
+  {
+    "module": "common",
+    "name": "AspectRatio",
+    "file": "common/AspectRatio.json"
+  },
+  {
+    "module": "common",
+    "name": "ServiceClient",
+    "file": "common/ServiceClient.json"
+  },
+  {
+    "module": "common",
+    "name": "VideoAspectRatio",
+    "file": "common/VideoAspectRatio.json"
+  },
+  {
+    "module": "common",
+    "name": "VideoAttachment",
+    "file": "common/VideoAttachment.json"
+  },
+  {
+    "module": "common",
+    "name": "VideoFrameImage",
+    "file": "common/VideoFrameImage.json"
+  },
+  {
+    "module": "common",
+    "name": "VideoResolution",
+    "file": "common/VideoResolution.json"
+  },
+  {
+    "module": "genui",
+    "name": "ActionItem",
+    "file": "genui/ActionItem.json"
+  },
+  {
+    "module": "genui",
+    "name": "ActionsBlock",
+    "file": "genui/ActionsBlock.json"
+  },
+  {
+    "module": "genui",
+    "name": "ActivityAction",
+    "file": "genui/ActivityAction.json"
+  },
+  {
+    "module": "genui",
+    "name": "ActivityLog",
+    "file": "genui/ActivityLog.json"
+  },
+  {
+    "module": "genui",
+    "name": "Aesthetic",
+    "file": "genui/Aesthetic.json"
+  },
+  {
+    "module": "genui",
+    "name": "BaseFormControl",
+    "file": "genui/BaseFormControl.json"
+  },
+  {
+    "module": "genui",
+    "name": "CalloutBlock",
+    "file": "genui/CalloutBlock.json"
+  },
+  {
+    "module": "genui",
+    "name": "ChartBlock",
+    "file": "genui/ChartBlock.json"
+  },
+  {
+    "module": "genui",
+    "name": "ChartDrilldown",
+    "file": "genui/ChartDrilldown.json"
+  },
+  {
+    "module": "genui",
+    "name": "ChartSeries",
+    "file": "genui/ChartSeries.json"
+  },
+  {
+    "module": "genui",
+    "name": "ChartThemeToken",
+    "file": "genui/ChartThemeToken.json"
+  },
+  {
+    "module": "genui",
+    "name": "ChartValueFormat",
+    "file": "genui/ChartValueFormat.json"
+  },
+  {
+    "module": "genui",
+    "name": "ComponentDependency",
+    "file": "genui/ComponentDependency.json"
+  },
+  {
+    "module": "genui",
+    "name": "ComponentDocs",
+    "file": "genui/ComponentDocs.json"
+  },
+  {
+    "module": "genui",
+    "name": "ComponentPackage",
+    "file": "genui/ComponentPackage.json"
+  },
+  {
+    "module": "genui",
+    "name": "ComponentPropDefinition",
+    "file": "genui/ComponentPropDefinition.json"
+  },
+  {
+    "module": "genui",
+    "name": "ComponentPropDoc",
+    "file": "genui/ComponentPropDoc.json"
+  },
+  {
+    "module": "genui",
+    "name": "ComponentSynthesis",
+    "file": "genui/ComponentSynthesis.json"
+  },
+  {
+    "module": "genui",
+    "name": "ComponentTransformationResult",
+    "file": "genui/ComponentTransformationResult.json"
+  },
+  {
+    "module": "genui",
+    "name": "ComponentVariant",
+    "file": "genui/ComponentVariant.json"
+  },
+  {
+    "module": "genui",
+    "name": "ComponentVersion",
+    "file": "genui/ComponentVersion.json"
+  },
+  {
+    "module": "genui",
+    "name": "Condition",
+    "file": "genui/Condition.json"
+  },
+  {
+    "module": "genui",
+    "name": "ConditionOperator",
+    "file": "genui/ConditionOperator.json"
+  },
+  {
+    "module": "genui",
+    "name": "ControlValidation",
+    "file": "genui/ControlValidation.json"
+  },
+  {
+    "module": "genui",
+    "name": "DecisionGate",
+    "file": "genui/DecisionGate.json"
+  },
+  {
+    "module": "genui",
+    "name": "DecisionGateKind",
+    "file": "genui/DecisionGateKind.json"
+  },
+  {
+    "module": "genui",
+    "name": "DimensionScore",
+    "file": "genui/DimensionScore.json"
+  },
+  {
+    "module": "genui",
+    "name": "ElicitationBatch",
+    "file": "genui/ElicitationBatch.json"
+  },
+  {
+    "module": "genui",
+    "name": "ElicitationBatchResponse",
+    "file": "genui/ElicitationBatchResponse.json"
+  },
+  {
+    "module": "genui",
+    "name": "ElicitationOption",
+    "file": "genui/ElicitationOption.json"
+  },
+  {
+    "module": "genui",
+    "name": "ElicitationQuestionType",
+    "file": "genui/ElicitationQuestionType.json"
+  },
+  {
+    "module": "genui",
+    "name": "ElicitationRequest",
+    "file": "genui/ElicitationRequest.json"
+  },
+  {
+    "module": "genui",
+    "name": "ElicitationResponse",
+    "file": "genui/ElicitationResponse.json"
+  },
+  {
+    "module": "genui",
+    "name": "ExternalPackageDependency",
+    "file": "genui/ExternalPackageDependency.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormBlock",
+    "file": "genui/FormBlock.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormChoice",
+    "file": "genui/FormChoice.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormConfig",
+    "file": "genui/FormConfig.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormConfigValue",
+    "file": "genui/FormConfigValue.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormControl",
+    "file": "genui/FormControl.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormControlType",
+    "file": "genui/FormControlType.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormDefaultValue",
+    "file": "genui/FormDefaultValue.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormHandoffAction",
+    "file": "genui/FormHandoffAction.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormOption",
+    "file": "genui/FormOption.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormQuestion",
+    "file": "genui/FormQuestion.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormReviewMeta",
+    "file": "genui/FormReviewMeta.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormSection",
+    "file": "genui/FormSection.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormStage",
+    "file": "genui/FormStage.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormSubmissionPayload",
+    "file": "genui/FormSubmissionPayload.json"
+  },
+  {
+    "module": "genui",
+    "name": "FormValidator",
+    "file": "genui/FormValidator.json"
+  },
+  {
+    "module": "genui",
+    "name": "GenerateHarnessOptions",
+    "file": "genui/GenerateHarnessOptions.json"
+  },
+  {
+    "module": "genui",
+    "name": "IngestionInput",
+    "file": "genui/IngestionInput.json"
+  },
+  {
+    "module": "genui",
+    "name": "InternalComponentDependency",
+    "file": "genui/InternalComponentDependency.json"
+  },
+  {
+    "module": "genui",
+    "name": "KineticBlueprint",
+    "file": "genui/KineticBlueprint.json"
+  },
+  {
+    "module": "genui",
+    "name": "NodeDiagramBlock",
+    "file": "genui/NodeDiagramBlock.json"
+  },
+  {
+    "module": "genui",
+    "name": "OrgChartBlock",
+    "file": "genui/OrgChartBlock.json"
+  },
+  {
+    "module": "genui",
+    "name": "OrgChartPerson",
+    "file": "genui/OrgChartPerson.json"
+  },
+  {
+    "module": "genui",
+    "name": "OrgChartReport",
+    "file": "genui/OrgChartReport.json"
+  },
+  {
+    "module": "genui",
+    "name": "PlatformLanguage",
+    "file": "genui/PlatformLanguage.json"
+  },
+  {
+    "module": "genui",
+    "name": "PreviewHarness",
+    "file": "genui/PreviewHarness.json"
+  },
+  {
+    "module": "genui",
+    "name": "ProposalItem",
+    "file": "genui/ProposalItem.json"
+  },
+  {
+    "module": "genui",
+    "name": "ProposalsBlock",
+    "file": "genui/ProposalsBlock.json"
+  },
+  {
+    "module": "genui",
+    "name": "ReferenceDataSource",
+    "file": "genui/ReferenceDataSource.json"
+  },
+  {
+    "module": "genui",
+    "name": "ScoreBand",
+    "file": "genui/ScoreBand.json"
+  },
+  {
+    "module": "genui",
+    "name": "ScoringConfig",
+    "file": "genui/ScoringConfig.json"
+  },
+  {
+    "module": "genui",
+    "name": "ScoringDimension",
+    "file": "genui/ScoringDimension.json"
+  },
+  {
+    "module": "genui",
+    "name": "ScoringRule",
+    "file": "genui/ScoringRule.json"
+  },
+  {
+    "module": "genui",
+    "name": "SemanticReviewIssue",
+    "file": "genui/SemanticReviewIssue.json"
+  },
+  {
+    "module": "genui",
+    "name": "SemanticReviewResult",
+    "file": "genui/SemanticReviewResult.json"
+  },
+  {
+    "module": "genui",
+    "name": "SemanticReviewStatus",
+    "file": "genui/SemanticReviewStatus.json"
+  },
+  {
+    "module": "genui",
+    "name": "StatItem",
+    "file": "genui/StatItem.json"
+  },
+  {
+    "module": "genui",
+    "name": "StatsBlock",
+    "file": "genui/StatsBlock.json"
+  },
+  {
+    "module": "genui",
+    "name": "SubmissionScore",
+    "file": "genui/SubmissionScore.json"
+  },
+  {
+    "module": "genui",
+    "name": "SvgGenerationOptions",
+    "file": "genui/SvgGenerationOptions.json"
+  },
+  {
+    "module": "genui",
+    "name": "SvgGenerationResult",
+    "file": "genui/SvgGenerationResult.json"
+  },
+  {
+    "module": "genui",
+    "name": "SvgPaletteTokens",
+    "file": "genui/SvgPaletteTokens.json"
+  },
+  {
+    "module": "genui",
+    "name": "SvgReferenceArtifact",
+    "file": "genui/SvgReferenceArtifact.json"
+  },
+  {
+    "module": "genui",
+    "name": "SvgStyleArchetype",
+    "file": "genui/SvgStyleArchetype.json"
+  },
+  {
+    "module": "genui",
+    "name": "SvgValidationCheck",
+    "file": "genui/SvgValidationCheck.json"
+  },
+  {
+    "module": "genui",
+    "name": "TechnicalForm",
+    "file": "genui/TechnicalForm.json"
+  },
+  {
+    "module": "genui",
+    "name": "Theme",
+    "file": "genui/Theme.json"
+  },
+  {
+    "module": "genui",
+    "name": "ThemeColors",
+    "file": "genui/ThemeColors.json"
+  },
+  {
+    "module": "genui",
+    "name": "ThemeIngestionInput",
+    "file": "genui/ThemeIngestionInput.json"
+  },
+  {
+    "module": "genui",
+    "name": "ThemeSupport",
+    "file": "genui/ThemeSupport.json"
+  },
+  {
+    "module": "genui",
+    "name": "ThemeTokens",
+    "file": "genui/ThemeTokens.json"
+  },
+  {
+    "module": "genui",
+    "name": "ThemeTypographyTokens",
+    "file": "genui/ThemeTypographyTokens.json"
+  },
+  {
+    "module": "genui",
+    "name": "TreeBlock",
+    "file": "genui/TreeBlock.json"
+  },
+  {
+    "module": "genui",
+    "name": "TreeEdge",
+    "file": "genui/TreeEdge.json"
+  },
+  {
+    "module": "genui",
+    "name": "TreeNode",
+    "file": "genui/TreeNode.json"
+  },
+  {
+    "module": "genui",
+    "name": "UIComponentType",
+    "file": "genui/UIComponentType.json"
+  },
+  {
+    "module": "genui",
+    "name": "UIExtractionResult",
+    "file": "genui/UIExtractionResult.json"
+  },
+  {
+    "module": "genui",
+    "name": "UIGenerationOptions",
+    "file": "genui/UIGenerationOptions.json"
+  },
+  {
+    "module": "genui",
+    "name": "UIGenerationResult",
+    "file": "genui/UIGenerationResult.json"
+  },
+  {
+    "module": "genui",
+    "name": "UIValidationResult",
+    "file": "genui/UIValidationResult.json"
+  },
+  {
+    "module": "genui",
+    "name": "VisualQAAudit",
+    "file": "genui/VisualQAAudit.json"
+  },
+  {
+    "module": "index",
+    "name": "AudioDiarization",
+    "file": "index/AudioDiarization.json"
+  },
+  {
+    "module": "index",
+    "name": "AudioDiarizationSegment",
+    "file": "index/AudioDiarizationSegment.json"
+  },
+  {
+    "module": "index",
+    "name": "AudioDiarizationWord",
+    "file": "index/AudioDiarizationWord.json"
+  },
+  {
+    "module": "index",
+    "name": "AuthUser",
+    "file": "index/AuthUser.json"
+  },
+  {
+    "module": "index",
+    "name": "ChannelPreferences",
+    "file": "index/ChannelPreferences.json"
+  },
+  {
+    "module": "index",
+    "name": "CodeGeneration",
+    "file": "index/CodeGeneration.json"
+  },
+  {
+    "module": "index",
+    "name": "EmailAttachment",
+    "file": "index/EmailAttachment.json"
+  },
+  {
+    "module": "index",
+    "name": "EmailMessage",
+    "file": "index/EmailMessage.json"
+  },
+  {
+    "module": "index",
+    "name": "Fidelity",
+    "file": "index/Fidelity.json"
+  },
+  {
+    "module": "index",
+    "name": "FuelCostMap",
+    "file": "index/FuelCostMap.json"
+  },
+  {
+    "module": "index",
+    "name": "FuelPlan",
+    "file": "index/FuelPlan.json"
+  },
+  {
+    "module": "index",
+    "name": "FuelTransaction",
+    "file": "index/FuelTransaction.json"
+  },
+  {
+    "module": "index",
+    "name": "FuelTransactionType",
+    "file": "index/FuelTransactionType.json"
+  },
+  {
+    "module": "index",
+    "name": "ImageGeneration",
+    "file": "index/ImageGeneration.json"
+  },
+  {
+    "module": "index",
+    "name": "ImageTransformation",
+    "file": "index/ImageTransformation.json"
+  },
+  {
+    "module": "index",
+    "name": "Invite",
+    "file": "index/Invite.json"
+  },
+  {
+    "module": "index",
+    "name": "InviteStatus",
+    "file": "index/InviteStatus.json"
+  },
+  {
+    "module": "index",
+    "name": "InviteTargetType",
+    "file": "index/InviteTargetType.json"
+  },
+  {
+    "module": "index",
+    "name": "JsonGeneration",
+    "file": "index/JsonGeneration.json"
+  },
+  {
+    "module": "index",
+    "name": "LlmsDocumentContent",
+    "file": "index/LlmsDocumentContent.json"
+  },
+  {
+    "module": "index",
+    "name": "LlmsFullTxtConfig",
+    "file": "index/LlmsFullTxtConfig.json"
+  },
+  {
+    "module": "index",
+    "name": "LlmsLink",
+    "file": "index/LlmsLink.json"
+  },
+  {
+    "module": "index",
+    "name": "LlmsSection",
+    "file": "index/LlmsSection.json"
+  },
+  {
+    "module": "index",
+    "name": "LlmsTxtConfig",
+    "file": "index/LlmsTxtConfig.json"
+  },
+  {
+    "module": "index",
+    "name": "MetaConfig",
+    "file": "index/MetaConfig.json"
+  },
+  {
+    "module": "index",
+    "name": "Notification",
+    "file": "index/Notification.json"
+  },
+  {
+    "module": "index",
+    "name": "NotificationActor",
+    "file": "index/NotificationActor.json"
+  },
+  {
+    "module": "index",
+    "name": "NotificationCategory",
+    "file": "index/NotificationCategory.json"
+  },
+  {
+    "module": "index",
+    "name": "NotificationChannel",
+    "file": "index/NotificationChannel.json"
+  },
+  {
+    "module": "index",
+    "name": "NotificationDeferredReason",
+    "file": "index/NotificationDeferredReason.json"
+  },
+  {
+    "module": "index",
+    "name": "NotificationDeliveryRecord",
+    "file": "index/NotificationDeliveryRecord.json"
+  },
+  {
+    "module": "index",
+    "name": "NotificationDeliveryState",
+    "file": "index/NotificationDeliveryState.json"
+  },
+  {
+    "module": "index",
+    "name": "NotificationPreferences",
+    "file": "index/NotificationPreferences.json"
+  },
+  {
+    "module": "index",
+    "name": "NotificationPriority",
+    "file": "index/NotificationPriority.json"
+  },
+  {
+    "module": "index",
+    "name": "NotificationStatus",
+    "file": "index/NotificationStatus.json"
+  },
+  {
+    "module": "index",
+    "name": "Organization",
+    "file": "index/Organization.json"
+  },
+  {
+    "module": "index",
+    "name": "OrgMember",
+    "file": "index/OrgMember.json"
+  },
+  {
+    "module": "index",
+    "name": "PublishResult",
+    "file": "index/PublishResult.json"
+  },
+  {
+    "module": "index",
+    "name": "QueueJobStatus",
+    "file": "index/QueueJobStatus.json"
+  },
+  {
+    "module": "index",
+    "name": "QueueJobType",
+    "file": "index/QueueJobType.json"
+  },
+  {
+    "module": "index",
+    "name": "SessionStatus",
+    "file": "index/SessionStatus.json"
+  },
+  {
+    "module": "index",
+    "name": "SocialMediaType",
+    "file": "index/SocialMediaType.json"
+  },
+  {
+    "module": "index",
+    "name": "SocialMetricField",
+    "file": "index/SocialMetricField.json"
+  },
+  {
+    "module": "index",
+    "name": "SocialPlatform",
+    "file": "index/SocialPlatform.json"
+  },
+  {
+    "module": "index",
+    "name": "SocialPostMetrics",
+    "file": "index/SocialPostMetrics.json"
+  },
+  {
+    "module": "index",
+    "name": "SocialPostPayload",
+    "file": "index/SocialPostPayload.json"
+  },
+  {
+    "module": "index",
+    "name": "SocialPostVisibility",
+    "file": "index/SocialPostVisibility.json"
+  },
+  {
+    "module": "index",
+    "name": "SocialProviderCapabilities",
+    "file": "index/SocialProviderCapabilities.json"
+  },
+  {
+    "module": "index",
+    "name": "SocialPublishResult",
+    "file": "index/SocialPublishResult.json"
+  },
+  {
+    "module": "index",
+    "name": "SocialSessionStatus",
+    "file": "index/SocialSessionStatus.json"
+  },
+  {
+    "module": "index",
+    "name": "SocialTextLengthUnit",
+    "file": "index/SocialTextLengthUnit.json"
+  },
+  {
+    "module": "index",
+    "name": "SocialVideoGeneration",
+    "file": "index/SocialVideoGeneration.json"
+  },
+  {
+    "module": "index",
+    "name": "TaskUnreadSummary",
+    "file": "index/TaskUnreadSummary.json"
+  },
+  {
+    "module": "index",
+    "name": "Team",
+    "file": "index/Team.json"
+  },
+  {
+    "module": "index",
+    "name": "TeamMember",
+    "file": "index/TeamMember.json"
+  },
+  {
+    "module": "index",
+    "name": "TeamMemberDoc",
+    "file": "index/TeamMemberDoc.json"
+  },
+  {
+    "module": "index",
+    "name": "TeamRole",
+    "file": "index/TeamRole.json"
+  },
+  {
+    "module": "index",
+    "name": "UserPreferences",
+    "file": "index/UserPreferences.json"
+  },
+  {
+    "module": "index",
+    "name": "UserProfile",
+    "file": "index/UserProfile.json"
+  },
+  {
+    "module": "index",
+    "name": "UtmParams",
+    "file": "index/UtmParams.json"
+  },
+  {
+    "module": "index",
+    "name": "VideoAnalysis",
+    "file": "index/VideoAnalysis.json"
+  },
+  {
+    "module": "index",
+    "name": "VideoAnalysisCategory",
+    "file": "index/VideoAnalysisCategory.json"
+  },
+  {
+    "module": "index",
+    "name": "VideoGeneration",
+    "file": "index/VideoGeneration.json"
+  },
+  {
+    "module": "index",
+    "name": "VideoModification",
+    "file": "index/VideoModification.json"
+  },
+  {
+    "module": "index",
+    "name": "VideoUpscale",
+    "file": "index/VideoUpscale.json"
+  },
+  {
+    "module": "index",
+    "name": "WaitlistEntry",
+    "file": "index/WaitlistEntry.json"
+  },
+  {
+    "module": "index",
+    "name": "WaitlistStatus",
+    "file": "index/WaitlistStatus.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzAction",
+    "file": "jazz/JazzAction.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzAutonomy",
+    "file": "jazz/JazzAutonomy.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzContext",
+    "file": "jazz/JazzContext.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzFeedback",
+    "file": "jazz/JazzFeedback.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzJsonValue",
+    "file": "jazz/JazzJsonValue.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzObservation",
+    "file": "jazz/JazzObservation.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzOrigin",
+    "file": "jazz/JazzOrigin.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzPhrase",
+    "file": "jazz/JazzPhrase.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzPolicy",
+    "file": "jazz/JazzPolicy.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzRiff",
+    "file": "jazz/JazzRiff.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzRiffIntent",
+    "file": "jazz/JazzRiffIntent.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzRiffStatus",
+    "file": "jazz/JazzRiffStatus.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzRiffSummary",
+    "file": "jazz/JazzRiffSummary.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTarget",
+    "file": "jazz/JazzTarget.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTargetKind",
+    "file": "jazz/JazzTargetKind.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzToolCall",
+    "file": "jazz/JazzToolCall.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzVerdict",
+    "file": "jazz/JazzVerdict.json"
+  },
+  {
+    "module": "jobs",
+    "name": "ApplyEdits",
+    "file": "jobs/ApplyEdits.json"
+  },
+  {
+    "module": "jobs",
+    "name": "BasicImage",
+    "file": "jobs/BasicImage.json"
+  },
+  {
+    "module": "jobs",
+    "name": "BasicIteration",
+    "file": "jobs/BasicIteration.json"
+  },
+  {
+    "module": "jobs",
+    "name": "BasicVariant",
+    "file": "jobs/BasicVariant.json"
+  },
+  {
+    "module": "jobs",
+    "name": "CombineImagePrompts",
+    "file": "jobs/CombineImagePrompts.json"
+  },
+  {
+    "module": "jobs",
+    "name": "CreateIdeas",
+    "file": "jobs/CreateIdeas.json"
+  },
+  {
+    "module": "jobs",
+    "name": "CreateLayers",
+    "file": "jobs/CreateLayers.json"
+  },
+  {
+    "module": "jobs",
+    "name": "CreateProperties",
+    "file": "jobs/CreateProperties.json"
+  },
+  {
+    "module": "jobs",
+    "name": "EmptyParams",
+    "file": "jobs/EmptyParams.json"
+  },
+  {
+    "module": "jobs",
+    "name": "GenerateElement",
+    "file": "jobs/GenerateElement.json"
+  },
+  {
+    "module": "jobs",
+    "name": "ImageToGeneration",
+    "file": "jobs/ImageToGeneration.json"
+  },
+  {
+    "module": "jobs",
+    "name": "PromptToImage",
+    "file": "jobs/PromptToImage.json"
+  },
+  {
+    "module": "jobs",
+    "name": "PromptToVideo",
+    "file": "jobs/PromptToVideo.json"
+  },
+  {
+    "module": "jobs",
+    "name": "QueueJob",
+    "file": "jobs/QueueJob.json"
+  },
+  {
+    "module": "jobs",
+    "name": "VideoToGeneration",
+    "file": "jobs/VideoToGeneration.json"
+  },
+  {
+    "module": "media",
+    "name": "AnimatedGifComposite",
+    "file": "media/AnimatedGifComposite.json"
+  },
+  {
+    "module": "media",
+    "name": "ArcDistort",
+    "file": "media/ArcDistort.json"
+  },
+  {
+    "module": "media",
+    "name": "AudioDucking",
+    "file": "media/AudioDucking.json"
+  },
+  {
+    "module": "media",
+    "name": "AudioDuckingOptions",
+    "file": "media/AudioDuckingOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "AudioMix",
+    "file": "media/AudioMix.json"
+  },
+  {
+    "module": "media",
+    "name": "AudioMixOptions",
+    "file": "media/AudioMixOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "AudioMixTrack",
+    "file": "media/AudioMixTrack.json"
+  },
+  {
+    "module": "media",
+    "name": "AudioNormalization",
+    "file": "media/AudioNormalization.json"
+  },
+  {
+    "module": "media",
+    "name": "AudioNormalizationOptions",
+    "file": "media/AudioNormalizationOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "AudioSilenceTrimOptions",
+    "file": "media/AudioSilenceTrimOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "AudioVisualizer",
+    "file": "media/AudioVisualizer.json"
+  },
+  {
+    "module": "media",
+    "name": "AudioVisualizerOptions",
+    "file": "media/AudioVisualizerOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "AudioVisualizerType",
+    "file": "media/AudioVisualizerType.json"
+  },
+  {
+    "module": "media",
+    "name": "AutoFitCaption",
+    "file": "media/AutoFitCaption.json"
+  },
+  {
+    "module": "media",
+    "name": "DisplacementMap",
+    "file": "media/DisplacementMap.json"
+  },
+  {
+    "module": "media",
+    "name": "DocumentGenerationOptions",
+    "file": "media/DocumentGenerationOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "DropShadow",
+    "file": "media/DropShadow.json"
+  },
+  {
+    "module": "media",
+    "name": "ImageCompositing",
+    "file": "media/ImageCompositing.json"
+  },
+  {
+    "module": "media",
+    "name": "ImageOverlayOptions",
+    "file": "media/ImageOverlayOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "ImagePipeline",
+    "file": "media/ImagePipeline.json"
+  },
+  {
+    "module": "media",
+    "name": "ImageTextOverlay",
+    "file": "media/ImageTextOverlay.json"
+  },
+  {
+    "module": "media",
+    "name": "ImageWatermark",
+    "file": "media/ImageWatermark.json"
+  },
+  {
+    "module": "media",
+    "name": "KenBurnsOptions",
+    "file": "media/KenBurnsOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "MediaProbeResult",
+    "file": "media/MediaProbeResult.json"
+  },
+  {
+    "module": "media",
+    "name": "PerceptualHashAlgorithm",
+    "file": "media/PerceptualHashAlgorithm.json"
+  },
+  {
+    "module": "media",
+    "name": "PerceptualHashOptions",
+    "file": "media/PerceptualHashOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "PerspectiveQuad",
+    "file": "media/PerspectiveQuad.json"
+  },
+  {
+    "module": "media",
+    "name": "PerspectiveWarp",
+    "file": "media/PerspectiveWarp.json"
+  },
+  {
+    "module": "media",
+    "name": "Point2D",
+    "file": "media/Point2D.json"
+  },
+  {
+    "module": "media",
+    "name": "SubtitleBurnOptions",
+    "file": "media/SubtitleBurnOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "SubtitleFormat",
+    "file": "media/SubtitleFormat.json"
+  },
+  {
+    "module": "media",
+    "name": "TextAlignment",
+    "file": "media/TextAlignment.json"
+  },
+  {
+    "module": "media",
+    "name": "TextOverlay",
+    "file": "media/TextOverlay.json"
+  },
+  {
+    "module": "media",
+    "name": "TextOverlayPosition",
+    "file": "media/TextOverlayPosition.json"
+  },
+  {
+    "module": "media",
+    "name": "TextOverlayStyle",
+    "file": "media/TextOverlayStyle.json"
+  },
+  {
+    "module": "media",
+    "name": "VectorTraceOptions",
+    "file": "media/VectorTraceOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoCompositing",
+    "file": "media/VideoCompositing.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoCompositingLayerType",
+    "file": "media/VideoCompositingLayerType.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoCompression",
+    "file": "media/VideoCompression.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoGraphicOverlay",
+    "file": "media/VideoGraphicOverlay.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoImageComposite",
+    "file": "media/VideoImageComposite.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoImageOverlay",
+    "file": "media/VideoImageOverlay.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoOverlayOptions",
+    "file": "media/VideoOverlayOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoOverlayStyle",
+    "file": "media/VideoOverlayStyle.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoPipeline",
+    "file": "media/VideoPipeline.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoScaleAndPad",
+    "file": "media/VideoScaleAndPad.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoTextComposite",
+    "file": "media/VideoTextComposite.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoTextOverlay",
+    "file": "media/VideoTextOverlay.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoTranscode",
+    "file": "media/VideoTranscode.json"
+  },
+  {
+    "module": "media",
+    "name": "VideoWatermark",
+    "file": "media/VideoWatermark.json"
+  },
+  {
+    "module": "media",
+    "name": "Watermark",
+    "file": "media/Watermark.json"
+  },
+  {
+    "module": "media",
+    "name": "WatermarkPosition",
+    "file": "media/WatermarkPosition.json"
+  },
+  {
+    "module": "realtime",
+    "name": "ActivityActionType",
+    "file": "realtime/ActivityActionType.json"
+  },
+  {
+    "module": "realtime",
+    "name": "ActivityActor",
+    "file": "realtime/ActivityActor.json"
+  },
+  {
+    "module": "realtime",
+    "name": "ActivityEvent",
+    "file": "realtime/ActivityEvent.json"
+  },
+  {
+    "module": "realtime",
+    "name": "ActivityStreamFilter",
+    "file": "realtime/ActivityStreamFilter.json"
+  },
+  {
+    "module": "realtime",
+    "name": "ActorType",
+    "file": "realtime/ActorType.json"
+  },
+  {
+    "module": "realtime",
+    "name": "AgentActorMetadata",
+    "file": "realtime/AgentActorMetadata.json"
+  },
+  {
+    "module": "realtime",
+    "name": "CRDTSnapshot",
+    "file": "realtime/CRDTSnapshot.json"
+  },
+  {
+    "module": "realtime",
+    "name": "CursorPosition",
+    "file": "realtime/CursorPosition.json"
+  },
+  {
+    "module": "realtime",
+    "name": "FieldPresence",
+    "file": "realtime/FieldPresence.json"
+  },
+  {
+    "module": "realtime",
+    "name": "LockClaimRequest",
+    "file": "realtime/LockClaimRequest.json"
+  },
+  {
+    "module": "realtime",
+    "name": "LockHeartbeatRequest",
+    "file": "realtime/LockHeartbeatRequest.json"
+  },
+  {
+    "module": "realtime",
+    "name": "LockReleaseRequest",
+    "file": "realtime/LockReleaseRequest.json"
+  },
+  {
+    "module": "realtime",
+    "name": "LockStatus",
+    "file": "realtime/LockStatus.json"
+  },
+  {
+    "module": "realtime",
+    "name": "OTJsonOp",
+    "file": "realtime/OTJsonOp.json"
+  },
+  {
+    "module": "realtime",
+    "name": "OTJsonOpType",
+    "file": "realtime/OTJsonOpType.json"
+  },
+  {
+    "module": "realtime",
+    "name": "OTOperation",
+    "file": "realtime/OTOperation.json"
+  },
+  {
+    "module": "realtime",
+    "name": "OTRevision",
+    "file": "realtime/OTRevision.json"
+  },
+  {
+    "module": "realtime",
+    "name": "OTTextOp",
+    "file": "realtime/OTTextOp.json"
+  },
+  {
+    "module": "realtime",
+    "name": "OTTextOpType",
+    "file": "realtime/OTTextOpType.json"
+  },
+  {
+    "module": "realtime",
+    "name": "PresenceColor",
+    "file": "realtime/PresenceColor.json"
+  },
+  {
+    "module": "realtime",
+    "name": "PresenceState",
+    "file": "realtime/PresenceState.json"
+  },
+  {
+    "module": "realtime",
+    "name": "PresenceStatus",
+    "file": "realtime/PresenceStatus.json"
+  },
+  {
+    "module": "realtime",
+    "name": "PresenceUser",
+    "file": "realtime/PresenceUser.json"
+  },
+  {
+    "module": "realtime",
+    "name": "RecordLock",
+    "file": "realtime/RecordLock.json"
+  },
+  {
+    "module": "realtime",
+    "name": "RecordLockInfo",
+    "file": "realtime/RecordLockInfo.json"
+  },
+  {
+    "module": "realtime",
+    "name": "TypingIndicator",
+    "file": "realtime/TypingIndicator.json"
+  },
+  {
+    "module": "realtime",
+    "name": "ViewingIndicator",
+    "file": "realtime/ViewingIndicator.json"
+  },
+  {
+    "module": "realtime",
+    "name": "ViewportTransform",
+    "file": "realtime/ViewportTransform.json"
+  }
+]

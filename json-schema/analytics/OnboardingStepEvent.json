@@ -1,0 +1,36 @@
+{
+  "$ref": "#/definitions/OnboardingStepEvent",
+  "definitions": {
+    "OnboardingStepEvent": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "onboarding_step"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "step": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "skipped": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "step"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "name",
+        "params"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

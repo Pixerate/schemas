@@ -1,0 +1,69 @@
+{
+  "$ref": "#/definitions/TypingIndicator",
+  "definitions": {
+    "PresenceColor": {
+      "type": "string",
+      "enum": [
+        "slate",
+        "gray",
+        "zinc",
+        "neutral",
+        "stone",
+        "red",
+        "orange",
+        "amber",
+        "yellow",
+        "lime",
+        "green",
+        "emerald",
+        "teal",
+        "cyan",
+        "sky",
+        "blue",
+        "indigo",
+        "violet",
+        "purple",
+        "fuchsia",
+        "pink",
+        "rose"
+      ]
+    },
+    "TypingIndicator": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "resourceId": {
+          "type": "string"
+        },
+        "fieldName": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "color": {
+          "$ref": "#/definitions/PresenceColor"
+        },
+        "isTyping": {
+          "type": "boolean",
+          "default": true
+        },
+        "timestamp": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "userId",
+        "resourceId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

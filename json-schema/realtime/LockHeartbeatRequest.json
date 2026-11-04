@@ -1,0 +1,34 @@
+{
+  "$ref": "#/definitions/LockHeartbeatRequest",
+  "definitions": {
+    "LockHeartbeatRequest": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string"
+        },
+        "resourceType": {
+          "type": "string",
+          "default": "record"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": "string"
+        },
+        "leaseDurationSeconds": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 60
+        }
+      },
+      "required": [
+        "resourceId",
+        "userId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

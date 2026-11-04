@@ -1,0 +1,13 @@
+{
+  "autonomy": "suggest",
+  "tempo": {
+    "idleMs": 1500,
+    "minGapMs": 8000
+  },
+  "budget": {
+    "maxRiffsPerMinute": 3,
+    "maxPending": 3,
+    "cooldownAfterRejectMs": 30000
+  },
+  "allowEditUserContent": false
+}

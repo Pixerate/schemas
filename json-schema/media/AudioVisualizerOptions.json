@@ -1,0 +1,69 @@
+{
+  "$ref": "#/definitions/AudioVisualizerOptions",
+  "definitions": {
+    "AudioVisualizerOptions": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/AudioVisualizerType",
+          "default": "waves"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 1280
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 720
+        },
+        "fps": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 30
+        },
+        "colors": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "point",
+            "line",
+            "p2p",
+            "cline"
+          ]
+        },
+        "scale": {
+          "type": "string",
+          "enum": [
+            "lin",
+            "sqrt",
+            "cbrt",
+            "log"
+          ]
+        },
+        "background": {
+          "type": "string"
+        },
+        "crf": {
+          "type": "number"
+        },
+        "preset": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AudioVisualizerType": {
+      "type": "string",
+      "enum": [
+        "waves",
+        "spectrum",
+        "bars"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,40 @@
+{
+  "$ref": "#/definitions/AgentNetworkAllowlistRule",
+  "definitions": {
+    "AgentNetworkAllowlistRule": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string"
+        },
+        "transform": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AgentNetworkTransformRule"
+          }
+        }
+      },
+      "required": [
+        "domain"
+      ],
+      "additionalProperties": false
+    },
+    "AgentNetworkTransformRule": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

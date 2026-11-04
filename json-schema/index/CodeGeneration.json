@@ -1,0 +1,22 @@
+{
+  "$ref": "#/definitions/CodeGeneration",
+  "definitions": {
+    "CodeGeneration": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "prompt",
+        "language"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

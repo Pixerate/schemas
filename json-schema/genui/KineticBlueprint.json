@@ -1,0 +1,109 @@
+{
+  "$ref": "#/definitions/KineticBlueprint",
+  "definitions": {
+    "KineticBlueprint": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Title of the kinetic illustration"
+        },
+        "loopDurationMs": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Harmonic time base loop duration in milliseconds (e.g. 2400, 3600, 4800)"
+        },
+        "motionPersonality": {
+          "type": "string",
+          "description": "Motion personality (e.g. bouncy, snappy, smooth, mechanical, organic)"
+        },
+        "styleArchetype": {
+          "$ref": "#/definitions/SvgStyleArchetype",
+          "description": "Visual style archetype derived from references or prompt"
+        },
+        "palette": {
+          "type": "object",
+          "properties": {
+            "canvasBg": {
+              "type": "string",
+              "description": "Canvas background color (default transparent)"
+            },
+            "chassis": {
+              "type": "string",
+              "description": "Main body / subject color"
+            },
+            "stroke": {
+              "type": "string",
+              "description": "Primary stroke color"
+            },
+            "accent1": {
+              "type": "string",
+              "description": "Primary accent color"
+            },
+            "accent2": {
+              "type": "string",
+              "description": "Secondary accent color"
+            },
+            "shadow": {
+              "type": "string",
+              "description": "Shadow color with opacity"
+            },
+            "custom": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Additional custom CSS color variables"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Palette color tokens for adaptive theming"
+        },
+        "primaryAnchor": {
+          "type": "string",
+          "description": "Primary anchor animation cycle (e.g. idle breathing, floating, or rotating cycle)"
+        },
+        "secondaryMechanics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Secondary mechanics (e.g. conveyors, gears, fluid flow)"
+        },
+        "eventActions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Event actions (e.g. droplets, sparks, pulses with delays)"
+        },
+        "ambientParticles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Ambient particles drifting with staggered offsets"
+        }
+      },
+      "required": [
+        "loopDurationMs",
+        "motionPersonality",
+        "palette",
+        "primaryAnchor"
+      ],
+      "additionalProperties": false
+    },
+    "SvgStyleArchetype": {
+      "type": "string",
+      "enum": [
+        "minimalist",
+        "neubrutalist",
+        "skeuomorphic",
+        "flat",
+        "custom",
+        "prompt-driven"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

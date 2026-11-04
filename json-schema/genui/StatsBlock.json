@@ -1,0 +1,59 @@
+{
+  "$ref": "#/definitions/StatsBlock",
+  "definitions": {
+    "StatItem": {
+      "type": "object",
+      "properties": {
+        "icon": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        },
+        "delta": {
+          "type": "string"
+        },
+        "tone": {
+          "type": "string",
+          "enum": [
+            "up",
+            "down",
+            "neutral"
+          ]
+        }
+      },
+      "required": [
+        "label",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "StatsBlock": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "stats"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StatItem"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "kind",
+        "items"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

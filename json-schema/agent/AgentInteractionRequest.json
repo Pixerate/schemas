@@ -1,0 +1,165 @@
+{
+  "$ref": "#/definitions/AgentInteractionRequest",
+  "definitions": {
+    "AgentConfig": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "additionalProperties": false
+    },
+    "AgentDocumentAttachment": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "fileName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "mimeType"
+      ],
+      "additionalProperties": false
+    },
+    "AgentEnvironment": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "remote",
+            "local"
+          ]
+        },
+        "network": {
+          "type": "object",
+          "properties": {
+            "allowlist": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AgentNetworkAllowlistRule"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "AgentInteractionRequest": {
+      "type": "object",
+      "properties": {
+        "agent": {
+          "type": "string",
+          "default": "antigravity-preview-05-2026"
+        },
+        "input": {
+          "type": "string"
+        },
+        "systemInstruction": {
+          "type": "string"
+        },
+        "background": {
+          "type": "boolean",
+          "default": true
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AgentTool"
+          }
+        },
+        "agentConfig": {
+          "$ref": "#/definitions/AgentConfig"
+        },
+        "environment": {
+          "$ref": "#/definitions/AgentEnvironment"
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AgentDocumentAttachment"
+          }
+        },
+        "coachingRules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "AgentNetworkAllowlistRule": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string"
+        },
+        "transform": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AgentNetworkTransformRule"
+          }
+        }
+      },
+      "required": [
+        "domain"
+      ],
+      "additionalProperties": false
+    },
+    "AgentNetworkTransformRule": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "AgentTool": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "config": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

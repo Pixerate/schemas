@@ -1,0 +1,32 @@
+{
+  "$ref": "#/definitions/PerceptualHashOptions",
+  "definitions": {
+    "PerceptualHashAlgorithm": {
+      "type": "string",
+      "enum": [
+        "ahash",
+        "dhash"
+      ]
+    },
+    "PerceptualHashOptions": {
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "$ref": "#/definitions/PerceptualHashAlgorithm",
+          "default": "dhash"
+        },
+        "method": {
+          "$ref": "#/definitions/PerceptualHashAlgorithm"
+        },
+        "hashSize": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 64,
+          "default": 8
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

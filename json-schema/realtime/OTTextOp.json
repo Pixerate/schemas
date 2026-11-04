@@ -1,0 +1,37 @@
+{
+  "$ref": "#/definitions/OTTextOp",
+  "definitions": {
+    "OTTextOp": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/OTTextOpType"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "text": {
+          "type": "string"
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "OTTextOpType": {
+      "type": "string",
+      "enum": [
+        "retain",
+        "insert",
+        "delete"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

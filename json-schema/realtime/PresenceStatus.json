@@ -1,0 +1,24 @@
+{
+  "$ref": "#/definitions/PresenceStatus",
+  "definitions": {
+    "PresenceStatus": {
+      "type": "string",
+      "enum": [
+        "online",
+        "idle",
+        "away",
+        "busy",
+        "offline",
+        "planning",
+        "thinking",
+        "executing_tool",
+        "waiting_for_input",
+        "waiting_for_agent",
+        "streaming",
+        "paused",
+        "error"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

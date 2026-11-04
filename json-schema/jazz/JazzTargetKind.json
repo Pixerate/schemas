@@ -1,0 +1,17 @@
+{
+  "$ref": "#/definitions/JazzTargetKind",
+  "definitions": {
+    "JazzTargetKind": {
+      "type": "string",
+      "enum": [
+        "node",
+        "edge",
+        "layer",
+        "text",
+        "cell",
+        "other"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

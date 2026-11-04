@@ -1,0 +1,43 @@
+{
+  "$ref": "#/definitions/AgentApprovalRequest",
+  "definitions": {
+    "AgentApprovalRequest": {
+      "type": "object",
+      "properties": {
+        "toolCallId": {
+          "type": "string"
+        },
+        "toolName": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "riskLevel": {
+          "$ref": "#/definitions/AgentRiskLevel"
+        },
+        "riskReason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "toolCallId",
+        "toolName",
+        "parameters",
+        "riskLevel"
+      ],
+      "additionalProperties": false
+    },
+    "AgentRiskLevel": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

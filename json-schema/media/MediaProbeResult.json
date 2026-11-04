@@ -1,0 +1,61 @@
+{
+  "$ref": "#/definitions/MediaProbeResult",
+  "definitions": {
+    "MediaProbeResult": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string"
+        },
+        "durationSeconds": {
+          "type": "number"
+        },
+        "width": {
+          "type": "integer"
+        },
+        "height": {
+          "type": "integer"
+        },
+        "fps": {
+          "type": "number"
+        },
+        "framerate": {
+          "type": "number"
+        },
+        "bitrate": {
+          "type": "number"
+        },
+        "aspectRatio": {
+          "type": "string"
+        },
+        "videoCodec": {
+          "type": "string"
+        },
+        "audioCodec": {
+          "type": "string"
+        },
+        "audioChannels": {
+          "type": "integer"
+        },
+        "sampleRate": {
+          "type": "integer"
+        },
+        "audioSampleRate": {
+          "type": "integer"
+        },
+        "sizeBytes": {
+          "type": "integer"
+        },
+        "streams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

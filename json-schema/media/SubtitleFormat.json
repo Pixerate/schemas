@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/SubtitleFormat",
+  "definitions": {
+    "SubtitleFormat": {
+      "type": "string",
+      "enum": [
+        "srt",
+        "vtt",
+        "ass"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

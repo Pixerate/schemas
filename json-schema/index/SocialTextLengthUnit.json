@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/SocialTextLengthUnit",
+  "definitions": {
+    "SocialTextLengthUnit": {
+      "type": "string",
+      "enum": [
+        "characters",
+        "graphemes",
+        "weighted"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

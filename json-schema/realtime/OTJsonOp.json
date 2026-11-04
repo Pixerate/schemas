@@ -1,0 +1,40 @@
+{
+  "$ref": "#/definitions/OTJsonOp",
+  "definitions": {
+    "OTJsonOp": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "type": {
+          "$ref": "#/definitions/OTJsonOpType"
+        },
+        "value": {},
+        "prevValue": {}
+      },
+      "required": [
+        "path",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "OTJsonOpType": {
+      "type": "string",
+      "enum": [
+        "set",
+        "delete",
+        "insert",
+        "move",
+        "replace"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

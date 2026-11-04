@@ -1,0 +1,42 @@
+{
+  "$ref": "#/definitions/ThemeTypographyTokens",
+  "definitions": {
+    "ThemeTypographyTokens": {
+      "type": "object",
+      "properties": {
+        "fontSans": {
+          "type": "string"
+        },
+        "fontMono": {
+          "type": "string"
+        },
+        "fontHeading": {
+          "type": "string"
+        },
+        "fontImports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fontCss": {
+          "type": "string"
+        },
+        "fontSize": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "fontWeight": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

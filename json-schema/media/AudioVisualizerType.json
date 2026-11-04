@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/AudioVisualizerType",
+  "definitions": {
+    "AudioVisualizerType": {
+      "type": "string",
+      "enum": [
+        "waves",
+        "spectrum",
+        "bars"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

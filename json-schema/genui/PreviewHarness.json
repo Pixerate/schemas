@@ -1,0 +1,29 @@
+{
+  "$ref": "#/definitions/PreviewHarness",
+  "definitions": {
+    "PreviewHarness": {
+      "type": "object",
+      "properties": {
+        "driverCode": {
+          "type": "string",
+          "description": "Complete, runnable preview driver code harness demonstrating usage of the component with snippets/children or mock props"
+        },
+        "mockProps": {
+          "type": "object",
+          "additionalProperties": {},
+          "description": "JSON map of realistic mock prop values passed to the component"
+        },
+        "wrapperClass": {
+          "type": "string",
+          "description": "Tailwind CSS class string for wrapping the preview container"
+        }
+      },
+      "required": [
+        "driverCode",
+        "mockProps"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

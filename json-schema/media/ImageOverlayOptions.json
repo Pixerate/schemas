@@ -1,0 +1,87 @@
+{
+  "$ref": "#/definitions/ImageOverlayOptions",
+  "definitions": {
+    "ImageOverlayOptions": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "y": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "position": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "padding": {
+          "type": "number"
+        },
+        "scale": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        },
+        "gravity": {
+          "type": "string",
+          "enum": [
+            "northwest",
+            "north",
+            "northeast",
+            "west",
+            "center",
+            "east",
+            "southwest",
+            "south",
+            "southeast"
+          ]
+        },
+        "blend": {
+          "type": "string",
+          "enum": [
+            "over",
+            "in",
+            "out",
+            "atop",
+            "xor",
+            "multiply",
+            "screen",
+            "overlay",
+            "darken",
+            "lighten"
+          ]
+        },
+        "opacity": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

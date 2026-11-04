@@ -1,0 +1,34 @@
+{
+  "$ref": "#/definitions/CachedPageSearchResult",
+  "definitions": {
+    "CachedPageSearchResult": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "snippet": {
+          "type": "string"
+        },
+        "matchScore": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "url",
+        "path",
+        "title",
+        "snippet",
+        "matchScore"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

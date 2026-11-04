@@ -1,0 +1,21 @@
+{
+  "id": "obs-001",
+  "at": "2026-11-03T12:30:00.000Z",
+  "surface": "canvas",
+  "origin": "user",
+  "action": "add",
+  "targets": [
+    {
+      "id": "node-1",
+      "kind": "node",
+      "type": "image",
+      "label": "Hero Image"
+    }
+  ],
+  "fields": [
+    "position",
+    "style"
+  ],
+  "inGesture": false,
+  "summary": "Added Hero Image on canvas"
+}

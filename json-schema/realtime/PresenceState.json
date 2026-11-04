@@ -1,0 +1,201 @@
+{
+  "$ref": "#/definitions/PresenceState",
+  "definitions": {
+    "ActorType": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent",
+        "system"
+      ]
+    },
+    "AgentActorMetadata": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string"
+        },
+        "parentAgentId": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "string"
+        },
+        "currentTask": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "CursorPosition": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "lastUpdate": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "username": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "color": {
+          "$ref": "#/definitions/PresenceColor"
+        },
+        "viewport": {
+          "$ref": "#/definitions/ViewportTransform"
+        }
+      },
+      "required": [
+        "userId",
+        "x",
+        "y"
+      ],
+      "additionalProperties": false
+    },
+    "PresenceColor": {
+      "type": "string",
+      "enum": [
+        "slate",
+        "gray",
+        "zinc",
+        "neutral",
+        "stone",
+        "red",
+        "orange",
+        "amber",
+        "yellow",
+        "lime",
+        "green",
+        "emerald",
+        "teal",
+        "cyan",
+        "sky",
+        "blue",
+        "indigo",
+        "violet",
+        "purple",
+        "fuchsia",
+        "pink",
+        "rose"
+      ]
+    },
+    "PresenceState": {
+      "type": "object",
+      "properties": {
+        "roomId": {
+          "type": "string"
+        },
+        "presences": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/PresenceUser"
+          },
+          "default": {}
+        },
+        "cursors": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/CursorPosition"
+          },
+          "default": {}
+        }
+      },
+      "required": [
+        "roomId"
+      ],
+      "additionalProperties": false
+    },
+    "PresenceStatus": {
+      "type": "string",
+      "enum": [
+        "online",
+        "idle",
+        "away",
+        "busy",
+        "offline",
+        "planning",
+        "thinking",
+        "executing_tool",
+        "waiting_for_input",
+        "waiting_for_agent",
+        "streaming",
+        "paused",
+        "error"
+      ]
+    },
+    "PresenceUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "actorType": {
+          "$ref": "#/definitions/ActorType"
+        },
+        "color": {
+          "$ref": "#/definitions/PresenceColor",
+          "default": "blue"
+        },
+        "status": {
+          "$ref": "#/definitions/PresenceStatus",
+          "default": "online"
+        },
+        "agent": {
+          "$ref": "#/definitions/AgentActorMetadata"
+        },
+        "lastSeen": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {},
+          "default": {}
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "ViewportTransform": {
+      "type": "object",
+      "properties": {
+        "zoom": {
+          "type": "number",
+          "default": 1
+        },
+        "panX": {
+          "type": "number",
+          "default": 0
+        },
+        "panY": {
+          "type": "number",
+          "default": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

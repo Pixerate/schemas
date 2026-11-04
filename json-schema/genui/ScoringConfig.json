@@ -1,0 +1,130 @@
+{
+  "$ref": "#/definitions/ScoringConfig",
+  "definitions": {
+    "ScoreBand": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "min"
+      ],
+      "additionalProperties": false
+    },
+    "ScoringConfig": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ScoringDimension"
+          }
+        },
+        "bands": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ScoreBand"
+          }
+        }
+      },
+      "required": [
+        "dimensions"
+      ],
+      "additionalProperties": false
+    },
+    "ScoringDimension": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "number"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ScoringRule"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "rules"
+      ],
+      "additionalProperties": false
+    },
+    "ScoringRule": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "optionPoints": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "ranges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              },
+              "points": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "points"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "multiplier": {
+          "type": "number"
+        },
+        "truePoints": {
+          "type": "number"
+        },
+        "falsePoints": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,98 @@
+{
+  "$ref": "#/definitions/ElicitationBatch",
+  "definitions": {
+    "ElicitationBatch": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ElicitationRequest"
+          },
+          "minItems": 1,
+          "maxItems": 4
+        }
+      },
+      "required": [
+        "id",
+        "questions"
+      ],
+      "additionalProperties": false
+    },
+    "ElicitationOption": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "isRecommended": {
+          "type": "boolean"
+        },
+        "preview": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "ElicitationQuestionType": {
+      "type": "string",
+      "enum": [
+        "single_select",
+        "multi_select",
+        "free_form",
+        "rank_priorities"
+      ]
+    },
+    "ElicitationRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "header": {
+          "type": "string",
+          "maxLength": 12
+        },
+        "type": {
+          "$ref": "#/definitions/ElicitationQuestionType"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ElicitationOption"
+          }
+        },
+        "contextRationale": {
+          "type": "string"
+        },
+        "allowCustomResponse": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "question",
+        "type",
+        "options"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

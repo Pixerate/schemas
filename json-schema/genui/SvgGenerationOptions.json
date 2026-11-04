@@ -1,0 +1,109 @@
+{
+  "$ref": "#/definitions/SvgGenerationOptions",
+  "definitions": {
+    "SvgGenerationOptions": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string",
+          "description": "User prompt describing the SVG subject, style, and motion"
+        },
+        "animated": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to generate an animated SVG or static SVG"
+        },
+        "currentSvg": {
+          "type": "string",
+          "description": "Existing SVG for iterative modification"
+        },
+        "archetype": {
+          "$ref": "#/definitions/SvgStyleArchetype",
+          "description": "Preferred stylistic archetype"
+        },
+        "viewBox": {
+          "type": "string",
+          "default": "0 0 512 512",
+          "description": "SVG viewBox dimensions"
+        },
+        "loopDurationMs": {
+          "type": "number",
+          "description": "Target loop duration in ms (default 3600ms)"
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SvgReferenceArtifact"
+          },
+          "description": "Reference artifacts (video/image/document)"
+        },
+        "visualQA": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to run the visual QA audit loop"
+        },
+        "maxRetries": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 2,
+          "description": "Maximum retries for visual/code refinement"
+        },
+        "systemPrompt": {
+          "type": "string",
+          "description": "Custom system prompt override"
+        },
+        "temperature": {
+          "type": "number",
+          "description": "Model temperature"
+        }
+      },
+      "required": [
+        "prompt"
+      ],
+      "additionalProperties": false
+    },
+    "SvgReferenceArtifact": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "image",
+            "video",
+            "document"
+          ],
+          "description": "Reference artifact type"
+        },
+        "url": {
+          "type": "string",
+          "description": "Asset URL or data URL"
+        },
+        "mimeType": {
+          "type": "string",
+          "description": "MIME type if known"
+        },
+        "description": {
+          "type": "string",
+          "description": "Contextual description or role of this reference"
+        }
+      },
+      "required": [
+        "type",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "SvgStyleArchetype": {
+      "type": "string",
+      "enum": [
+        "minimalist",
+        "neubrutalist",
+        "skeuomorphic",
+        "flat",
+        "custom",
+        "prompt-driven"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

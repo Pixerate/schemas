@@ -1,0 +1,27 @@
+{
+  "$ref": "#/definitions/TaskUnreadSummary",
+  "definitions": {
+    "TaskUnreadSummary": {
+      "type": "object",
+      "properties": {
+        "mentions": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0
+        },
+        "replies": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0
+        },
+        "total": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

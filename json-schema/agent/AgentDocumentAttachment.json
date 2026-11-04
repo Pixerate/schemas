@@ -1,0 +1,27 @@
+{
+  "$ref": "#/definitions/AgentDocumentAttachment",
+  "definitions": {
+    "AgentDocumentAttachment": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "fileName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "mimeType"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

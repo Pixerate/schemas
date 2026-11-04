@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/JazzAutonomy",
+  "definitions": {
+    "JazzAutonomy": {
+      "type": "string",
+      "enum": [
+        "off",
+        "suggest",
+        "assist"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

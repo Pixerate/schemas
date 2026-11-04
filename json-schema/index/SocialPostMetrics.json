@@ -1,0 +1,96 @@
+{
+  "$ref": "#/definitions/SocialPostMetrics",
+  "definitions": {
+    "SocialPlatform": {
+      "type": "string",
+      "enum": [
+        "bluesky",
+        "twitter",
+        "linkedin",
+        "tiktok",
+        "instagram"
+      ]
+    },
+    "SocialPostMetrics": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "$ref": "#/definitions/SocialPlatform"
+        },
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "publishedAt": {
+          "type": "string"
+        },
+        "visibility": {
+          "$ref": "#/definitions/SocialPostVisibility"
+        },
+        "statusLabel": {
+          "type": "string"
+        },
+        "views": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "impressions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "likes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "comments": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "shares": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quotes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "saves": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "clicks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fetchedAt": {
+          "type": "string"
+        },
+        "rawResponse": {}
+      },
+      "required": [
+        "platform",
+        "id",
+        "fetchedAt"
+      ],
+      "additionalProperties": false
+    },
+    "SocialPostVisibility": {
+      "type": "string",
+      "enum": [
+        "public",
+        "friends",
+        "private",
+        "under_review",
+        "restricted",
+        "removed",
+        "unknown"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

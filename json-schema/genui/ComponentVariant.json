@@ -1,0 +1,62 @@
+{
+  "$ref": "#/definitions/ComponentVariant",
+  "definitions": {
+    "ComponentVariant": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Slug, e.g., 'glass-card' or 'glassmorphism'"
+        },
+        "componentTypeId": {
+          "type": "string",
+          "description": "References UIComponentType.id"
+        },
+        "name": {
+          "type": "string",
+          "description": "e.g. 'Glass Action Button'"
+        },
+        "aestheticId": {
+          "type": "string",
+          "description": "Style aesthetic, e.g. 'glassmorphism', 'neubrutalism', 'minimalist', 'modern', 'shadcn'"
+        },
+        "recommendedThemeId": {
+          "type": "string",
+          "description": "Optional recommended theme ID (e.g., 'shadcn-zinc', 'tokyo-night')"
+        },
+        "description": {
+          "type": "string",
+          "description": "Style & business logic description"
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Optional image URL"
+        },
+        "image": {
+          "type": "string"
+        },
+        "screenshot": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "componentTypeId",
+        "name",
+        "aestheticId",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

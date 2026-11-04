@@ -1,0 +1,50 @@
+{
+  "$ref": "#/definitions/GenerateElement",
+  "definitions": {
+    "GenerateElement": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sourceGenerationId": {
+          "type": "number"
+        },
+        "fidelity": {
+          "type": "string"
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "sourceElementId": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "sourceGenerationId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

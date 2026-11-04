@@ -1,0 +1,16 @@
+{
+  "$ref": "#/definitions/TeamRole",
+  "definitions": {
+    "TeamRole": {
+      "type": "string",
+      "enum": [
+        "owner",
+        "admin",
+        "editor",
+        "viewer",
+        "member"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

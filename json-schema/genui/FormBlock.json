@@ -1,0 +1,112 @@
+{
+  "$ref": "#/definitions/FormBlock",
+  "definitions": {
+    "FormBlock": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "form",
+            "clarification",
+            "question"
+          ],
+          "default": "form"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FormQuestion"
+          }
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FormQuestion"
+          }
+        },
+        "submitLabel": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FormChoice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "isRecommended": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "FormQuestion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "text",
+            "textarea",
+            "radio",
+            "select",
+            "checkbox",
+            "rank"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FormChoice"
+          }
+        },
+        "allowCustom": {
+          "type": "boolean"
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "defaultValue": {}
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

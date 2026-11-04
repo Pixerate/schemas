@@ -1,0 +1,68 @@
+{
+  "$ref": "#/definitions/ActivityActor",
+  "definitions": {
+    "ActivityActor": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "actorType": {
+          "$ref": "#/definitions/ActorType"
+        },
+        "role": {
+          "type": "string"
+        },
+        "color": {
+          "$ref": "#/definitions/PresenceColor"
+        }
+      },
+      "required": [
+        "userId"
+      ],
+      "additionalProperties": false
+    },
+    "ActorType": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent",
+        "system"
+      ]
+    },
+    "PresenceColor": {
+      "type": "string",
+      "enum": [
+        "slate",
+        "gray",
+        "zinc",
+        "neutral",
+        "stone",
+        "red",
+        "orange",
+        "amber",
+        "yellow",
+        "lime",
+        "green",
+        "emerald",
+        "teal",
+        "cyan",
+        "sky",
+        "blue",
+        "indigo",
+        "violet",
+        "purple",
+        "fuchsia",
+        "pink",
+        "rose"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

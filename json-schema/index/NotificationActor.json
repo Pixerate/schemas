@@ -1,0 +1,36 @@
+{
+  "$ref": "#/definitions/NotificationActor",
+  "definitions": {
+    "NotificationActor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "user",
+            "agent",
+            "system"
+          ],
+          "default": "user"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

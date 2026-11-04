@@ -1,0 +1,87 @@
+{
+  "$ref": "#/definitions/CursorPosition",
+  "definitions": {
+    "CursorPosition": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "lastUpdate": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "username": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "color": {
+          "$ref": "#/definitions/PresenceColor"
+        },
+        "viewport": {
+          "$ref": "#/definitions/ViewportTransform"
+        }
+      },
+      "required": [
+        "userId",
+        "x",
+        "y"
+      ],
+      "additionalProperties": false
+    },
+    "PresenceColor": {
+      "type": "string",
+      "enum": [
+        "slate",
+        "gray",
+        "zinc",
+        "neutral",
+        "stone",
+        "red",
+        "orange",
+        "amber",
+        "yellow",
+        "lime",
+        "green",
+        "emerald",
+        "teal",
+        "cyan",
+        "sky",
+        "blue",
+        "indigo",
+        "violet",
+        "purple",
+        "fuchsia",
+        "pink",
+        "rose"
+      ]
+    },
+    "ViewportTransform": {
+      "type": "object",
+      "properties": {
+        "zoom": {
+          "type": "number",
+          "default": 1
+        },
+        "panX": {
+          "type": "number",
+          "default": 0
+        },
+        "panY": {
+          "type": "number",
+          "default": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

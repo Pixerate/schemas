@@ -1,0 +1,104 @@
+{
+  "$ref": "#/definitions/AgentDirectoryEntry",
+  "definitions": {
+    "ActiveAgentTask": {
+      "type": "object",
+      "properties": {
+        "taskId": {
+          "type": "string"
+        },
+        "taskTitle": {
+          "type": "string"
+        },
+        "statusText": {
+          "type": "string"
+        },
+        "startedAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "taskId",
+        "taskTitle",
+        "startedAt"
+      ],
+      "additionalProperties": false
+    },
+    "AgentDirectoryEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "orgId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "handle": {
+          "type": "string"
+        },
+        "colorName": {
+          "type": "string"
+        },
+        "hexColor": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "currentStatus": {
+          "type": "string"
+        },
+        "currentTaskId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "currentTaskTitle": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "isEngaged": {
+          "type": "boolean"
+        },
+        "activeTasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ActiveAgentTask"
+          }
+        },
+        "lastSeen": {
+          "type": "number"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "orgId",
+        "name",
+        "colorName",
+        "hexColor",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

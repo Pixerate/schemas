@@ -1,0 +1,79 @@
+{
+  "$ref": "#/definitions/KenBurnsOptions",
+  "definitions": {
+    "KenBurnsOptions": {
+      "type": "object",
+      "properties": {
+        "durationSeconds": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 5
+        },
+        "fps": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 30
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 1920
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 1080
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "in",
+            "out"
+          ]
+        },
+        "zoomDirection": {
+          "type": "string",
+          "enum": [
+            "in",
+            "out",
+            "none"
+          ],
+          "default": "in"
+        },
+        "zoomSpeed": {
+          "type": "number"
+        },
+        "pan": {
+          "type": "string",
+          "enum": [
+            "center",
+            "left-to-right",
+            "right-to-left",
+            "top-to-bottom",
+            "bottom-to-top"
+          ]
+        },
+        "panDirection": {
+          "type": "string",
+          "enum": [
+            "top-to-bottom",
+            "bottom-to-top",
+            "left-to-right",
+            "right-to-left",
+            "center",
+            "none"
+          ],
+          "default": "center"
+        },
+        "maxZoom": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 3,
+          "default": 1.2
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

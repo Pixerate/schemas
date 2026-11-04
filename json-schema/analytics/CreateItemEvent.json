@@ -1,0 +1,53 @@
+{
+  "$ref": "#/definitions/CreateItemEvent",
+  "definitions": {
+    "AnalyticsItemType": {
+      "type": "string",
+      "enum": [
+        "silo",
+        "bucket",
+        "pipeline",
+        "template",
+        "exploration",
+        "composition",
+        "fusion",
+        "edit",
+        "board",
+        "pitch",
+        "deliverable",
+        "organization",
+        "project",
+        "task",
+        "agent",
+        "workflow"
+      ]
+    },
+    "CreateItemEvent": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "create_item"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "item_type": {
+              "$ref": "#/definitions/AnalyticsItemType"
+            }
+          },
+          "required": [
+            "item_type"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "name",
+        "params"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

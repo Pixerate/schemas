@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/ActorType",
+  "definitions": {
+    "ActorType": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent",
+        "system"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

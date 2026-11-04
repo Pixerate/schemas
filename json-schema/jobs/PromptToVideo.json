@@ -1,0 +1,33 @@
+{
+  "$ref": "#/definitions/PromptToVideo",
+  "definitions": {
+    "PromptToVideo": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string"
+        },
+        "aspectRatio": {
+          "type": "string",
+          "enum": [
+            "16:9",
+            "9:16"
+          ]
+        },
+        "durationSeconds": {
+          "type": "number",
+          "enum": [
+            4,
+            6,
+            8
+          ]
+        }
+      },
+      "required": [
+        "prompt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
