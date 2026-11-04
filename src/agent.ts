@@ -63,7 +63,8 @@ export const AgentInteractionStatusSchema = z.enum([
 export type AgentInteractionStatus = z.infer<typeof AgentInteractionStatusSchema>;
 
 export const AgentInteractionRequestSchema = z.object({
-  agent: z.string().default("antigravity-preview-05-2026"),
+  /** The agent to run. Left out, the runtime picks its default. */
+  agent: z.string().optional(),
   input: z.string(),
   systemInstruction: z.string().optional(),
   background: z.boolean().default(true),

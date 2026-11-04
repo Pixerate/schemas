@@ -527,7 +527,7 @@ public struct AgentFileChange: Codable, Sendable, Equatable {
 }
 
 public struct AgentInteractionRequest: Codable, Sendable, Equatable {
-    public var agent: String
+    public var agent: String?
     public var input: String
     public var systemInstruction: String?
     public var background: Bool
@@ -550,7 +550,7 @@ public struct AgentInteractionRequest: Codable, Sendable, Equatable {
     }
 
     public init(
-        agent: String = "antigravity-preview-05-2026",
+        agent: String? = nil,
         input: String,
         systemInstruction: String? = nil,
         background: Bool = true,
@@ -573,7 +573,7 @@ public struct AgentInteractionRequest: Codable, Sendable, Equatable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.agent = try container.decodeIfPresent(String.self, forKey: .agent) ?? "antigravity-preview-05-2026"
+        self.agent = try container.decodeIfPresent(String.self, forKey: .agent)
         self.input = try container.decode(String.self, forKey: .input)
         self.systemInstruction = try container.decodeIfPresent(String.self, forKey: .systemInstruction)
         self.background = try container.decodeIfPresent(Bool.self, forKey: .background) ?? true
@@ -586,7 +586,7 @@ public struct AgentInteractionRequest: Codable, Sendable, Equatable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(agent, forKey: .agent)
+        try container.encodeIfPresent(agent, forKey: .agent)
         try container.encode(input, forKey: .input)
         try container.encodeIfPresent(systemInstruction, forKey: .systemInstruction)
         try container.encode(background, forKey: .background)
