@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.49.0
+
+### Minor Changes
+
+- 8ce7732: feat: add optional `ampHtml` (AMP for Email body) and `impersonateUser` (per-message Workspace sender) to `EmailMessageSchema`
+
 ## 1.48.0
 
 ### Minor Changes
