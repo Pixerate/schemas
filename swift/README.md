@@ -39,7 +39,7 @@ let package = Package(
 `scripts/gen-swift.mjs` generates these modules from `json-schema/` (see `MODULES` in the script):
 
 - **`Common`** (`Generated/Common.swift`): aspect ratios (`AspectRatio`, `VideoAspectRatio`), `VideoResolution`, `ServiceClient`, and media attachments (`VideoFrameImage`, `VideoAttachment`).
-- **`Jazz`** (`Generated/Jazz.swift`): the canvas collaboration protocol: policies (`JazzPolicy`), observations (`JazzObservation`), phrases (`JazzPhrase`), riff proposals (`JazzRiff`), feedback and context (`JazzContext`).
+- **`Jazz`** (`Generated/Jazz.swift`): the canvas and writing-partner collaboration protocols: policies (`JazzPolicy`), observations (`JazzObservation`), phrases (`JazzPhrase`), riff proposals (`JazzRiff`), feedback and context (`JazzContext`), and Swash writing-partner text-lead turns (`JazzTextLeadRequest`, `JazzTextLeadResponse`, `JazzTextSuggestion`, `JazzTextRange` in UTF-16 `NSString` / AppKit offsets; requests never carry code, math, tables or text outside the context window).
 - **`Agent`** (`Generated/Agent.swift`): agent tools (`AgentTool`), tasks (`ActiveAgentTask`), interactions and approvals, API keys and service accounts, and workspace file changes (`AgentFileChange`).
 
 A schema used inside another one is the same Swift type in both places: `JazzContext.policy` is a `JazzPolicy` and `JazzPhrase.observations` is `[JazzObservation]`.

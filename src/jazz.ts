@@ -307,3 +307,145 @@ export const JazzProposalDraftSchema = z.object({
   evidence: z.array(JazzEvidenceSchema).min(1).max(50)
 });
 export type JazzProposalDraft = z.infer<typeof JazzProposalDraftSchema>;
+
+// --- Text lead (Swash writing partner) ---
+// A bandleader turn on pause for the Markdown writing partner (`POST /api/agent/text-lead`),
+// the text counterpart of `PaintLeadResponse`.
+//
+// Privacy rule: requests carry only the current paragraph and a small surrounding window
+// (`before` / `after`), never the whole document, and never raw code, math or tables
+// (the client replaces those spans with placeholders before calling the server).
+
+/** Maximum UTF-16 code units allowed in `JazzTextLeadRequest.paragraph`. */
+export const JAZZ_TEXT_LEAD_MAX_PARAGRAPH_CHARS = 4000;
+
+/** Maximum UTF-16 code units allowed in `JazzTextLeadRequest.before` or `after`. */
+export const JAZZ_TEXT_LEAD_MAX_CONTEXT_CHARS = 2000;
+
+/** Markdown dialect of the document being written. */
+export const JazzTextFlavorSchema = z.enum(["commonmark", "gfm", "slack"]);
+export type JazzTextFlavor = z.infer<typeof JazzTextFlavorSchema>;
+
+/**
+ * A local writing-partner voice:
+ * - `punctuate`: sentence case, `.?!`, contractions, `i` → `I`, clause commas, proper nouns;
+ * - `smart-typography`: curly quotes and dashes in prose;
+ * - `chat`: a light touch for conversational / Slack messages.
+ */
+export const JazzTextVoiceIdSchema = z.enum(["punctuate", "smart-typography", "chat"]);
+export type JazzTextVoiceId = z.infer<typeof JazzTextVoiceIdSchema>;
+
+/** Kept and undone edit counts for a writing-partner voice or rule (like `PaintDuetVoiceStats`). */
+export const JazzTextVoiceStatsSchema = z.object({
+  /** Edits made by this voice or rule that the writer kept. */
+  kept: z.number().int().min(0).default(0),
+  /** Edits made by this voice or rule that the writer undid or typed over. */
+  undone: z.number().int().min(0).default(0)
+});
+export type JazzTextVoiceStats = z.infer<typeof JazzTextVoiceStatsSchema>;
+
+/** A voice currently playing in the local text duet, with its kept/undone counts per voice and per rule. */
+export const JazzTextVoiceStateSchema = z.object({
+  voice: JazzTextVoiceIdSchema,
+  /** Current strength (0 = off, 1 = full) before this bandleader turn. */
+  strength: z.number().min(0).max(1).default(1),
+  /** Edits made by this voice that the writer kept. */
+  kept: z.number().int().min(0).default(0),
+  /** Edits made by this voice that the writer undid or typed over. */
+  undone: z.number().int().min(0).default(0),
+  /** Kept and undone counts keyed by rule id (e.g. `sentence-case`, `end-stop`, `clause-comma`, `smart-quotes`). */
+  rules: z.record(JazzTextVoiceStatsSchema).default({})
+});
+export type JazzTextVoiceState = z.infer<typeof JazzTextVoiceStateSchema>;
+export type JazzTextVoiceStateInput = z.input<typeof JazzTextVoiceStateSchema>;
+
+/**
+ * Request body for `POST /api/agent/text-lead`.
+ *
+ * Privacy rule: carries only the paragraph at the caret and a small `before` / `after` window,
+ * never text outside the context window, and never raw code, math or tables (all replaced with placeholders).
+ */
+export const JazzTextLeadRequestSchema = z.object({
+  /** The paragraph being written, as raw Markdown, with code, math and tables replaced by placeholders. */
+  paragraph: z.string().min(1).max(JAZZ_TEXT_LEAD_MAX_PARAGRAPH_CHARS),
+  /** A little surrounding context before `paragraph` (e.g. the previous heading and paragraph), with the same exclusions. */
+  before: z.string().max(JAZZ_TEXT_LEAD_MAX_CONTEXT_CHARS).optional(),
+  /** A little surrounding context after `paragraph`, with the same exclusions. */
+  after: z.string().max(JAZZ_TEXT_LEAD_MAX_CONTEXT_CHARS).optional(),
+  /** Markdown flavour (`commonmark`, `gfm` or `slack`). */
+  flavor: JazzTextFlavorSchema.default("gfm"),
+  /** The voices currently playing, with kept/undone counts per voice and per rule. */
+  voices: z.array(JazzTextVoiceStateSchema).max(10).default([]),
+  /** Optional team id to bill fuel against when the caller belongs to the team. */
+  teamId: z.string().min(1).max(128).optional()
+});
+export type JazzTextLeadRequest = z.infer<typeof JazzTextLeadRequestSchema>;
+export type JazzTextLeadRequestInput = z.input<typeof JazzTextLeadRequestSchema>;
+
+/** Genre of the paragraph as read by the bandleader. */
+export const JazzTextGenreSchema = z.enum(["prose", "notes", "chat", "poem", "list", "technical", "heading"]);
+export type JazzTextGenre = z.infer<typeof JazzTextGenreSchema>;
+
+/** A voice in the bandleader's palette and how strongly it should play next. */
+export const JazzTextVoiceSchema = z.object({
+  voice: JazzTextVoiceIdSchema,
+  /** How strongly this voice should play next: 0 turns it off (e.g. no auto-punctuation for a poem), 0.3 is a light touch, 1 is full. */
+  strength: z.number().min(0).max(1).default(1),
+  /** Specific rules within this voice to hold back for this genre or writer (e.g. `end-stop`, `clause-comma`). */
+  disabledRules: z.array(z.string().min(1).max(64)).max(20).optional()
+});
+export type JazzTextVoice = z.infer<typeof JazzTextVoiceSchema>;
+
+/**
+ * A half-open range `[start, end)` in UTF-16 code-unit offsets into `paragraph`,
+ * the unit `NSString`, AppKit and JavaScript strings use.
+ */
+export const JazzTextRangeSchema = z.object({
+  /** Start offset in UTF-16 code units from the beginning of `paragraph` (0-based, inclusive). */
+  start: z.number().int().min(0),
+  /** End offset in UTF-16 code units from the beginning of `paragraph` (`end >= start`, exclusive). */
+  end: z.number().int().min(0)
+});
+export type JazzTextRange = z.infer<typeof JazzTextRangeSchema>;
+
+/** Kind of structural Markdown suggestion offered on pause. */
+export const JazzTextSuggestionKindSchema = z.enum(["list", "heading", "math", "title", "alert", "quote"]);
+export type JazzTextSuggestionKind = z.infer<typeof JazzTextSuggestionKindSchema>;
+
+/**
+ * A structural Markdown suggestion anchored to a UTF-16 range in the request's `paragraph`
+ * (turn lines into a list, make a line a heading, wrap an expression in `$…$`, add a title, etc.).
+ * Shown as an inline prompt to accept or dismiss, never applied silently.
+ */
+export const JazzTextSuggestionSchema = z.object({
+  kind: JazzTextSuggestionKindSchema,
+  /** Range in UTF-16 code-unit offsets into `paragraph` that `replacement` replaces (`0..0` to insert a title at the start). */
+  range: JazzTextRangeSchema,
+  /** Replacement Markdown for `paragraph.slice(range.start, range.end)`. */
+  replacement: z.string().min(1).max(JAZZ_TEXT_LEAD_MAX_PARAGRAPH_CHARS),
+  /** Short rationale shown in the inline prompt. */
+  why: z.string().min(1).max(200)
+});
+export type JazzTextSuggestion = z.infer<typeof JazzTextSuggestionSchema>;
+
+/** Response from `POST /api/agent/text-lead` (the text equivalent of `PaintLeadResponse`). */
+export const JazzTextLeadResponseSchema = z.object({
+  /** Detected genre of the paragraph (`prose`, `notes`, `chat`, `poem`, `list`, `technical`, `heading`). */
+  genre: JazzTextGenreSchema,
+  /** Which voices should play next and how strongly. */
+  palette: z.array(JazzTextVoiceSchema).max(6),
+  /** At most a few structural suggestions anchored to UTF-16 ranges in `paragraph`. */
+  suggestions: z.array(JazzTextSuggestionSchema).max(4).default([]),
+  /** One-line rationale from the bandleader, as in `PaintLeadResponse`. */
+  why: z.string().max(280),
+  /** Remaining fuel balance after the bandleader turn, when metered. */
+  fuelBalance: z.number().int().optional()
+});
+export type JazzTextLeadResponse = z.infer<typeof JazzTextLeadResponseSchema>;
+export type JazzTextLeadResponseInput = z.input<typeof JazzTextLeadResponseSchema>;
+
+export const TextLeadRequestSchema = JazzTextLeadRequestSchema;
+export type TextLeadRequest = JazzTextLeadRequest;
+export const TextLeadResponseSchema = JazzTextLeadResponseSchema;
+export type TextLeadResponse = JazzTextLeadResponse;
+

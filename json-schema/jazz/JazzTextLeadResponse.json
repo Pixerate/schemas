@@ -1,0 +1,146 @@
+{
+  "$ref": "#/definitions/TextLeadResponse",
+  "definitions": {
+    "JazzTextGenre": {
+      "type": "string",
+      "enum": [
+        "prose",
+        "notes",
+        "chat",
+        "poem",
+        "list",
+        "technical",
+        "heading"
+      ]
+    },
+    "JazzTextRange": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextSuggestion": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/JazzTextSuggestionKind"
+        },
+        "range": {
+          "$ref": "#/definitions/JazzTextRange"
+        },
+        "replacement": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "why": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "kind",
+        "range",
+        "replacement",
+        "why"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextSuggestionKind": {
+      "type": "string",
+      "enum": [
+        "list",
+        "heading",
+        "math",
+        "title",
+        "alert",
+        "quote"
+      ]
+    },
+    "JazzTextVoice": {
+      "type": "object",
+      "properties": {
+        "voice": {
+          "$ref": "#/definitions/JazzTextVoiceId"
+        },
+        "strength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        },
+        "disabledRules": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "voice"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextVoiceId": {
+      "type": "string",
+      "enum": [
+        "punctuate",
+        "smart-typography",
+        "chat"
+      ]
+    },
+    "TextLeadResponse": {
+      "type": "object",
+      "properties": {
+        "genre": {
+          "$ref": "#/definitions/JazzTextGenre"
+        },
+        "palette": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzTextVoice"
+          },
+          "maxItems": 6
+        },
+        "suggestions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzTextSuggestion"
+          },
+          "maxItems": 4,
+          "default": []
+        },
+        "why": {
+          "type": "string",
+          "maxLength": 280
+        },
+        "fuelBalance": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "genre",
+        "palette",
+        "why"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

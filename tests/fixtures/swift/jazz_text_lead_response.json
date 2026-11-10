@@ -1,0 +1,29 @@
+{
+  "genre": "list",
+  "palette": [
+    {
+      "voice": "punctuate",
+      "strength": 0.3,
+      "disabledRules": [
+        "end-stop"
+      ]
+    },
+    {
+      "voice": "smart-typography",
+      "strength": 0
+    }
+  ],
+  "suggestions": [
+    {
+      "kind": "list",
+      "range": {
+        "start": 0,
+        "end": 18
+      },
+      "replacement": "- apples\n- pears\n- plums",
+      "why": "Three short lines read cleaner as a bulleted list."
+    }
+  ],
+  "why": "Short shopping items: easing off full stops and offering a list.",
+  "fuelBalance": 249
+}

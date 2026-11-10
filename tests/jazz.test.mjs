@@ -16,7 +16,22 @@ import {
   JazzDomainSchema,
   JazzCapabilitySchema,
   JazzCapabilityIndexSchema,
-  JazzProposalDraftSchema
+  JazzProposalDraftSchema,
+  JAZZ_TEXT_LEAD_MAX_PARAGRAPH_CHARS,
+  JAZZ_TEXT_LEAD_MAX_CONTEXT_CHARS,
+  JazzTextFlavorSchema,
+  JazzTextVoiceIdSchema,
+  JazzTextVoiceStatsSchema,
+  JazzTextVoiceStateSchema,
+  JazzTextLeadRequestSchema,
+  JazzTextGenreSchema,
+  JazzTextVoiceSchema,
+  JazzTextRangeSchema,
+  JazzTextSuggestionKindSchema,
+  JazzTextSuggestionSchema,
+  JazzTextLeadResponseSchema,
+  TextLeadRequestSchema,
+  TextLeadResponseSchema
 } from "../dist/jazz.js";
 import * as rootExports from "../dist/index.js";
 
@@ -185,6 +200,119 @@ describe("jazz product-proposal contracts", () => {
   it("is re-exported from the root", () => {
     for (const name of ["JazzEvidenceSchema", "JazzDomainSchema", "JazzCapabilityIndexSchema", "JazzProposalDraftSchema", "JazzProposalKindSchema"]) {
       assert.ok(rootExports[name], name);
+    }
+  });
+});
+
+describe("jazz text-lead contracts (Swash writing partner)", () => {
+  it("parses a text-lead request with defaults and enforces context window bounds", () => {
+    const parsed = JazzTextLeadRequestSchema.parse({
+      paragraph: "we shipped the release yesterday and i think the notes need a tidy up"
+    });
+    assert.deepEqual(parsed, {
+      paragraph: "we shipped the release yesterday and i think the notes need a tidy up",
+      flavor: "gfm",
+      voices: []
+    });
+
+    const full = JazzTextLeadRequestSchema.parse({
+      paragraph: "first item\nsecond item\nthird item",
+      before: "# Release Notes",
+      after: "See `[code]` and `[math]` for details.",
+      flavor: "slack",
+      voices: [
+        {
+          voice: "punctuate",
+          strength: 0.8,
+          kept: 12,
+          undone: 2,
+          rules: {
+            "sentence-case": { kept: 8, undone: 0 },
+            "clause-comma": { kept: 4, undone: 2 }
+          }
+        },
+        {
+          voice: "chat"
+        }
+      ],
+      teamId: "team_swash"
+    });
+    assert.equal(full.voices[0].rules["clause-comma"].undone, 2);
+    assert.equal(full.voices[1].strength, 1);
+    assert.equal(full.voices[1].kept, 0);
+    assert.deepEqual(full.voices[1].rules, {});
+
+    assert.equal(JazzTextLeadRequestSchema.safeParse({ paragraph: "" }).success, false);
+    assert.equal(JazzTextLeadRequestSchema.safeParse({ paragraph: "x".repeat(JAZZ_TEXT_LEAD_MAX_PARAGRAPH_CHARS + 1) }).success, false);
+    assert.equal(JazzTextLeadRequestSchema.safeParse({ paragraph: "ok", before: "x".repeat(JAZZ_TEXT_LEAD_MAX_CONTEXT_CHARS + 1) }).success, false);
+    assert.equal(JazzTextLeadRequestSchema.safeParse({ paragraph: "ok", after: "x".repeat(JAZZ_TEXT_LEAD_MAX_CONTEXT_CHARS + 1) }).success, false);
+    assert.equal(JazzTextLeadRequestSchema.safeParse({ paragraph: "ok", flavor: "asciidoc" }).success, false);
+    assert.equal(JazzTextVoiceStateSchema.safeParse({ voice: "punctuate", strength: 1.5 }).success, false);
+    assert.equal(JazzTextVoiceStatsSchema.safeParse({ kept: -1, undone: 0 }).success, false);
+  });
+
+  it("parses a text-lead response with UTF-16 ranges, palette and suggestions", () => {
+    const paragraph = "Note: emojis like 🎨 take 2 UTF-16 units before x^2 + y^2.";
+    const mathExpr = "x^2 + y^2";
+    const start = paragraph.indexOf(mathExpr);
+    const end = start + mathExpr.length;
+    // 🎨 is a surrogate pair (2 UTF-16 code units), so UTF-16 offset into `paragraph` matches JS indexOf/slice and NSString.
+    assert.equal(paragraph.slice(start, end), mathExpr);
+
+    const response = JazzTextLeadResponseSchema.parse({
+      genre: "technical",
+      palette: [
+        { voice: "punctuate", strength: 1, disabledRules: ["clause-comma"] },
+        { voice: "smart-typography", strength: 0 }
+      ],
+      suggestions: [
+        {
+          kind: "math",
+          range: { start, end },
+          replacement: "$x^2 + y^2$",
+          why: "Wrap the equation in inline math."
+        }
+      ],
+      why: "Technical note: keeping punctuation crisp and suggesting inline math.",
+      fuelBalance: 199
+    });
+    assert.equal(response.genre, "technical");
+    assert.equal(response.suggestions[0].range.start, start);
+    assert.equal(response.suggestions[0].range.end, end);
+    assert.equal(response.fuelBalance, 199);
+
+    // Defaults suggestions to []
+    const minimal = JazzTextLeadResponseSchema.parse({
+      genre: "poem",
+      palette: [{ voice: "punctuate", strength: 0 }],
+      why: "Poem: holding back auto-punctuation so line breaks and casing stay yours."
+    });
+    assert.deepEqual(minimal.suggestions, []);
+
+    assert.equal(JazzTextLeadResponseSchema.safeParse({ ...response, genre: "novel" }).success, false);
+    assert.equal(JazzTextSuggestionSchema.safeParse({ kind: "math", range: { start: -1, end: 5 }, replacement: "$x$", why: "math" }).success, false);
+    assert.equal(JazzTextSuggestionSchema.safeParse({ kind: "unknown", range: { start: 0, end: 1 }, replacement: "x", why: "y" }).success, false);
+  });
+
+  it("re-exports text-lead schemas and aliases from the root", () => {
+    assert.equal(TextLeadRequestSchema, JazzTextLeadRequestSchema);
+    assert.equal(TextLeadResponseSchema, JazzTextLeadResponseSchema);
+    for (const schema of [
+      JazzTextFlavorSchema,
+      JazzTextVoiceIdSchema,
+      JazzTextVoiceStatsSchema,
+      JazzTextVoiceStateSchema,
+      JazzTextLeadRequestSchema,
+      JazzTextGenreSchema,
+      JazzTextVoiceSchema,
+      JazzTextRangeSchema,
+      JazzTextSuggestionKindSchema,
+      JazzTextSuggestionSchema,
+      JazzTextLeadResponseSchema,
+      TextLeadRequestSchema,
+      TextLeadResponseSchema
+    ]) {
+      assert.ok(Object.values(rootExports).includes(schema));
     }
   });
 });

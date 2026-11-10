@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/JazzTextVoiceId",
+  "definitions": {
+    "JazzTextVoiceId": {
+      "type": "string",
+      "enum": [
+        "punctuate",
+        "smart-typography",
+        "chat"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

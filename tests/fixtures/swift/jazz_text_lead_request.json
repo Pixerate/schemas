@@ -1,0 +1,25 @@
+{
+  "paragraph": "apples\npears\nplums",
+  "before": "# Shopping",
+  "after": "See `[table]` below.",
+  "flavor": "gfm",
+  "voices": [
+    {
+      "voice": "punctuate",
+      "strength": 0.75,
+      "kept": 6,
+      "undone": 1,
+      "rules": {
+        "end-stop": {
+          "kept": 1,
+          "undone": 1
+        },
+        "sentence-case": {
+          "kept": 5,
+          "undone": 0
+        }
+      }
+    }
+  ],
+  "teamId": "team-swash"
+}

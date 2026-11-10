@@ -1,0 +1,41 @@
+{
+  "$ref": "#/definitions/JazzTextVoice",
+  "definitions": {
+    "JazzTextVoice": {
+      "type": "object",
+      "properties": {
+        "voice": {
+          "$ref": "#/definitions/JazzTextVoiceId"
+        },
+        "strength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        },
+        "disabledRules": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "voice"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextVoiceId": {
+      "type": "string",
+      "enum": [
+        "punctuate",
+        "smart-typography",
+        "chat"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

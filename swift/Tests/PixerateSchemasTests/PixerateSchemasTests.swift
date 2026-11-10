@@ -62,6 +62,35 @@ final class PixerateSchemasTests: XCTestCase {
         XCTAssertEqual(updated.phrases.last?.observations.first, phrase.observations.first)
     }
 
+    func testJazzTextLeadRequestAndResponse() throws {
+        let req = try roundTrip(JazzTextLeadRequest.self, fixtureName: "jazz_text_lead_request.json")
+        XCTAssertEqual(req.flavor, .gfm)
+        XCTAssertEqual(req.voices.first?.voice, .punctuate)
+        XCTAssertEqual(req.voices.first?.rules["end-stop"]?.undone, 1)
+
+        // Minimal request fills in defaults (flavor = .gfm, voices = [])
+        let minimalReq = try JSONDecoder().decode(
+            TextLeadRequest.self,
+            from: Data(#"{"paragraph":"hello world"}"#.utf8)
+        )
+        XCTAssertEqual(minimalReq.flavor, .gfm)
+        XCTAssertEqual(minimalReq.voices, [])
+
+        let res = try roundTrip(JazzTextLeadResponse.self, fixtureName: "jazz_text_lead_response.json")
+        XCTAssertEqual(res.genre, .list)
+        XCTAssertEqual(res.palette.first?.voice, .punctuate)
+        XCTAssertEqual(res.palette.first?.disabledRules, ["end-stop"])
+        XCTAssertEqual(res.suggestions.first?.kind, .list)
+        XCTAssertEqual(res.suggestions.first?.range, JazzTextRange(start: 0, end: 18))
+        XCTAssertEqual(res.fuelBalance, 249)
+
+        // Verify UTF-16 NSString range semantics match JavaScript string offsets
+        let nsParagraph = req.paragraph as NSString
+        let suggestion = try XCTUnwrap(res.suggestions.first)
+        let nsRange = NSRange(location: suggestion.range.start, length: suggestion.range.end - suggestion.range.start)
+        XCTAssertEqual(nsParagraph.substring(with: nsRange), "apples\npears\nplums")
+    }
+
     func testAgentTool() throws {
         try roundTrip(AgentTool.self, fixtureName: "agent_tool.json")
     }

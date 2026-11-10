@@ -238,6 +238,67 @@ describe('JSON Schema export', () => {
           policy: {}
         },
         invalid: { sessionId: '' }
+      },
+      {
+        name: 'JazzTextFlavor',
+        valid: 'gfm',
+        invalid: 'rst'
+      },
+      {
+        name: 'JazzTextVoiceId',
+        valid: 'punctuate',
+        invalid: 'shout'
+      },
+      {
+        name: 'JazzTextVoiceStats',
+        valid: { kept: 3, undone: 1 },
+        invalid: { kept: -1, undone: 0 }
+      },
+      {
+        name: 'JazzTextVoiceState',
+        valid: { voice: 'punctuate', strength: 0.8, kept: 5, undone: 1, rules: { 'sentence-case': { kept: 4, undone: 0 } } },
+        invalid: { voice: 'punctuate', strength: 2 }
+      },
+      {
+        name: 'JazzTextLeadRequest',
+        valid: { paragraph: 'first item\nsecond item', before: '# Notes', flavor: 'gfm', voices: [{ voice: 'punctuate', kept: 2, undone: 0 }] },
+        invalid: { paragraph: '' }
+      },
+      {
+        name: 'JazzTextGenre',
+        valid: 'prose',
+        invalid: 'screenplay'
+      },
+      {
+        name: 'JazzTextVoice',
+        valid: { voice: 'smart-typography', strength: 0.5, disabledRules: ['em-dash'] },
+        invalid: { voice: 'smart-typography', strength: -0.1 }
+      },
+      {
+        name: 'JazzTextRange',
+        valid: { start: 0, end: 12 },
+        invalid: { start: -1, end: 12 }
+      },
+      {
+        name: 'JazzTextSuggestionKind',
+        valid: 'list',
+        invalid: 'footnote'
+      },
+      {
+        name: 'JazzTextSuggestion',
+        valid: { kind: 'list', range: { start: 0, end: 22 }, replacement: '- first item\n- second item', why: 'Format items as a list.' },
+        invalid: { kind: 'list', range: { start: 0, end: 22 }, replacement: '', why: '' }
+      },
+      {
+        name: 'JazzTextLeadResponse',
+        valid: {
+          genre: 'notes',
+          palette: [{ voice: 'punctuate', strength: 0.6 }],
+          suggestions: [{ kind: 'list', range: { start: 0, end: 22 }, replacement: '- first item\n- second item', why: 'Turn lines into a list.' }],
+          why: 'Notes with list structure.',
+          fuelBalance: 199
+        },
+        invalid: { genre: 'unknown', palette: [], why: 'no' }
       }
     ];
 
@@ -341,6 +402,42 @@ describe('JSON Schema export', () => {
         phrases: [],
         riffs: [{ id: 'riff-42', strategy: 'continue-series', intent: 'add', title: 'Add subtitle', status: 'proposed' }],
         policy: { autonomy: 'assist', tempo: { idleMs: 900 } }
+      }),
+      'jazz_text_lead_request.json': jazz.JazzTextLeadRequestSchema.parse({
+        paragraph: 'apples\npears\nplums',
+        before: '# Shopping',
+        after: 'See `[table]` below.',
+        flavor: 'gfm',
+        voices: [
+          {
+            voice: 'punctuate',
+            strength: 0.75,
+            kept: 6,
+            undone: 1,
+            rules: {
+              'end-stop': { kept: 1, undone: 1 },
+              'sentence-case': { kept: 5, undone: 0 }
+            }
+          }
+        ],
+        teamId: 'team-swash'
+      }),
+      'jazz_text_lead_response.json': jazz.JazzTextLeadResponseSchema.parse({
+        genre: 'list',
+        palette: [
+          { voice: 'punctuate', strength: 0.3, disabledRules: ['end-stop'] },
+          { voice: 'smart-typography', strength: 0 }
+        ],
+        suggestions: [
+          {
+            kind: 'list',
+            range: { start: 0, end: 18 },
+            replacement: '- apples\n- pears\n- plums',
+            why: 'Three short lines read cleaner as a bulleted list.'
+          }
+        ],
+        why: 'Short shopping items: easing off full stops and offering a list.',
+        fuelBalance: 249
       }),
       'agent_tool.json': agent.AgentToolSchema.parse({
         type: 'code_execution',

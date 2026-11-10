@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/JazzTextFlavor",
+  "definitions": {
+    "JazzTextFlavor": {
+      "type": "string",
+      "enum": [
+        "commonmark",
+        "gfm",
+        "slack"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
