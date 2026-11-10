@@ -79,7 +79,13 @@
         "html": {
           "type": "string"
         },
+        "ampHtml": {
+          "type": "string"
+        },
         "replyTo": {
+          "type": "string"
+        },
+        "impersonateUser": {
           "type": "string"
         },
         "headers": {
