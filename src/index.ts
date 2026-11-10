@@ -492,7 +492,11 @@ export const EmailMessageSchema = z.object({
   subject: z.string(),
   text: z.string().optional(),
   html: z.string().optional(),
+  /** AMP for Email body (`text/x-amp-html`), sent between `text/plain` and `text/html`. */
+  ampHtml: z.string().optional(),
   replyTo: z.string().optional(),
+  /** Google Workspace user to impersonate via domain-wide delegation for this message. */
+  impersonateUser: z.string().optional(),
   headers: z.record(z.string()).optional(),
   templateId: z.string().optional(),
   templateVariables: z.record(z.unknown()).optional(),
