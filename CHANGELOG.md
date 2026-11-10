@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.48.0
+
+### Minor Changes
+
+- d9cbce6: Add the `jazz` text-lead request and response contracts (`JazzTextLeadRequest`, `JazzTextLeadResponse`, `JazzTextVoice`, `JazzTextVoiceState`, `JazzTextVoiceStats`, `JazzTextSuggestion`, `JazzTextRange`, `JazzTextGenre`, `JazzTextFlavor`, `JazzTextVoiceId`, `JazzTextSuggestionKind`) for Swash's writing-partner bandleader turns (`POST /api/agent/text-lead`), generated for TypeScript, JSON Schema and Swift.
+
 ## 1.47.0
 
 ### Minor Changes
