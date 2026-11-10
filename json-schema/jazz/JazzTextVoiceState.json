@@ -1,0 +1,65 @@
+{
+  "$ref": "#/definitions/JazzTextVoiceState",
+  "definitions": {
+    "JazzTextVoiceId": {
+      "type": "string",
+      "enum": [
+        "punctuate",
+        "smart-typography",
+        "chat"
+      ]
+    },
+    "JazzTextVoiceState": {
+      "type": "object",
+      "properties": {
+        "voice": {
+          "$ref": "#/definitions/JazzTextVoiceId"
+        },
+        "strength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        },
+        "kept": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "undone": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "rules": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/JazzTextVoiceStats"
+          },
+          "default": {}
+        }
+      },
+      "required": [
+        "voice"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextVoiceStats": {
+      "type": "object",
+      "properties": {
+        "kept": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "undone": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

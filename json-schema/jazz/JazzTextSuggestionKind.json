@@ -1,0 +1,17 @@
+{
+  "$ref": "#/definitions/JazzTextSuggestionKind",
+  "definitions": {
+    "JazzTextSuggestionKind": {
+      "type": "string",
+      "enum": [
+        "list",
+        "heading",
+        "math",
+        "title",
+        "alert",
+        "quote"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

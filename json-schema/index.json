@@ -1256,6 +1256,61 @@
   },
   {
     "module": "jazz",
+    "name": "JazzTextFlavor",
+    "file": "jazz/JazzTextFlavor.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextGenre",
+    "file": "jazz/JazzTextGenre.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextLeadRequest",
+    "file": "jazz/JazzTextLeadRequest.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextLeadResponse",
+    "file": "jazz/JazzTextLeadResponse.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextRange",
+    "file": "jazz/JazzTextRange.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextSuggestion",
+    "file": "jazz/JazzTextSuggestion.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextSuggestionKind",
+    "file": "jazz/JazzTextSuggestionKind.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextVoice",
+    "file": "jazz/JazzTextVoice.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextVoiceId",
+    "file": "jazz/JazzTextVoiceId.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextVoiceState",
+    "file": "jazz/JazzTextVoiceState.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextVoiceStats",
+    "file": "jazz/JazzTextVoiceStats.json"
+  },
+  {
+    "module": "jazz",
     "name": "JazzToolCall",
     "file": "jazz/JazzToolCall.json"
   },
@@ -1263,6 +1318,16 @@
     "module": "jazz",
     "name": "JazzVerdict",
     "file": "jazz/JazzVerdict.json"
+  },
+  {
+    "module": "jazz",
+    "name": "TextLeadRequest",
+    "file": "jazz/TextLeadRequest.json"
+  },
+  {
+    "module": "jazz",
+    "name": "TextLeadResponse",
+    "file": "jazz/TextLeadResponse.json"
   },
   {
     "module": "jobs",

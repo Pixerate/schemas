@@ -1,0 +1,63 @@
+{
+  "$ref": "#/definitions/JazzTextSuggestion",
+  "definitions": {
+    "JazzTextRange": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextSuggestion": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/JazzTextSuggestionKind"
+        },
+        "range": {
+          "$ref": "#/definitions/JazzTextRange"
+        },
+        "replacement": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "why": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "kind",
+        "range",
+        "replacement",
+        "why"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextSuggestionKind": {
+      "type": "string",
+      "enum": [
+        "list",
+        "heading",
+        "math",
+        "title",
+        "alert",
+        "quote"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
