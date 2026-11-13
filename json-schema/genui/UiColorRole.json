@@ -1,0 +1,11 @@
+{
+  "$ref": "#/definitions/UiColorRole",
+  "definitions": {
+    "UiColorRole": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "A colour role, e.g. surface, ink, accent, track-on (see UI_COLOR_ROLES)"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

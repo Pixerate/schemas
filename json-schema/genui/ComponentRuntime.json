@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/ComponentRuntime",
+  "definitions": {
+    "ComponentRuntime": {
+      "type": "string",
+      "enum": [
+        "code",
+        "engine"
+      ],
+      "description": "code: source you install and own; engine: a fixed, reviewed runtime that takes data"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

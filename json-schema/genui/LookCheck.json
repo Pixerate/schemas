@@ -1,0 +1,49 @@
+{
+  "$ref": "#/definitions/LookCheck",
+  "definitions": {
+    "LookCheck": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Check id, e.g. 'contrast', 'hit-target', 'reduced-motion', 'axe'"
+        },
+        "status": {
+          "$ref": "#/definitions/LookStatus"
+        },
+        "message": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string",
+          "description": "What it's about: a CSS selector, a prop, or an element description"
+        },
+        "ruleId": {
+          "type": "string",
+          "description": "The aesthetic rule it enforces, if any"
+        },
+        "picture": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Index into LookResult.pictures"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "LookStatus": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "warn",
+        "fail"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

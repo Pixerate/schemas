@@ -9,6 +9,28 @@
         "webcomponent"
       ]
     },
+    "UiAestheticRef": {
+      "type": "object",
+      "properties": {
+        "skillId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The aesthetic skill's id, e.g. 'glassmorphism'"
+        },
+        "version": {
+          "type": "string",
+          "description": "The skill's semver; absent means the latest"
+        },
+        "contentHash": {
+          "type": "string",
+          "description": "The skill's contentHash when the thing was made"
+        }
+      },
+      "required": [
+        "skillId"
+      ],
+      "additionalProperties": false
+    },
     "UIGenerationOptions": {
       "type": "object",
       "properties": {
@@ -28,6 +50,10 @@
         "theme": {
           "type": "string",
           "description": "Theme identifier or token reference"
+        },
+        "aesthetic": {
+          "$ref": "#/definitions/UiAestheticRef",
+          "description": "The ui-aesthetic skill to generate in; the generator loads it rather than a slug"
         },
         "systemPrompt": {
           "type": "string",

@@ -777,3 +777,6 @@ export * from "./analytics.js";
 export * from "./jazz.js";
 
 
+
+// --- Agent skills: manifest, kinds, layers and bundles (see ./skills.ts) ---
+export * from "./skills.js";

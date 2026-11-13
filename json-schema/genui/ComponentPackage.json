@@ -51,7 +51,7 @@
         },
         "screenshot": {
           "type": "string",
-          "description": "Data URI or URL of actual rendered component"
+          "description": "Deprecated, use screenshots. Data URI or URL of actual rendered component"
         },
         "themeSupport": {
           "$ref": "#/definitions/ThemeSupport"
@@ -71,6 +71,17 @@
         },
         "previewHarness": {
           "$ref": "#/definitions/PreviewHarness"
+        },
+        "source": {
+          "$ref": "#/definitions/ComponentSource",
+          "description": "Where the package came from; absent for packages made before sources were recorded"
+        },
+        "runtime": {
+          "$ref": "#/definitions/ComponentRuntime",
+          "description": "Absent means 'code'"
+        },
+        "screenshots": {
+          "$ref": "#/definitions/ComponentScreenshots"
         }
       },
       "required": [
@@ -103,6 +114,57 @@
         "name",
         "type",
         "description"
+      ],
+      "additionalProperties": false
+    },
+    "ComponentRuntime": {
+      "type": "string",
+      "enum": [
+        "code",
+        "engine"
+      ],
+      "description": "code: source you install and own; engine: a fixed, reviewed runtime that takes data"
+    },
+    "ComponentScreenshots": {
+      "type": "object",
+      "properties": {
+        "light": {
+          "type": "string",
+          "description": "URL or data URI of a real render in light mode"
+        },
+        "dark": {
+          "type": "string",
+          "description": "URL or data URI of a real render in dark mode"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentSource": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "flair",
+            "editor",
+            "generated",
+            "manual"
+          ]
+        },
+        "itemId": {
+          "type": "string",
+          "description": "The provider's id for the item, e.g. Flair's 'toggle-switch'"
+        },
+        "version": {
+          "type": "string",
+          "description": "The provider package's version, or the generator's"
+        },
+        "contentHash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider"
       ],
       "additionalProperties": false
     },

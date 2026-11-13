@@ -1,0 +1,91 @@
+{
+  "profileVersion": 1,
+  "tokens": {
+    "colors": {
+      "light": {
+        "primary": "#ff7aa8",
+        "background": "#f3efff",
+        "foreground": "#2a2140",
+        "surface": "#ffffff",
+        "border": "rgba(0,0,0,0.12)",
+        "ring": "#ff7aa8"
+      },
+      "dark": {
+        "background": "#0e0f12",
+        "foreground": "#f4f4f5"
+      }
+    },
+    "radii": {
+      "base": "24px"
+    }
+  },
+  "roles": {
+    "surface": "colors.surface",
+    "ink": "colors.foreground",
+    "accent": "colors.primary",
+    "border": "colors.border",
+    "focus": "colors.ring",
+    "track-on": "colors.primary",
+    "track-off": "colors.border"
+  },
+  "motion": {
+    "easing": {
+      "standard": "cubic-bezier(.2,0,0,1)"
+    },
+    "durations": {
+      "short": 120,
+      "long": 320
+    },
+    "reducedMotion": "static"
+  },
+  "shape": {
+    "radius": "24px",
+    "elevation": "high",
+    "density": "regular"
+  },
+  "rules": [
+    {
+      "id": "puffy",
+      "text": "Surfaces look inflated: large radii, inner highlight, soft outer shadow",
+      "checkable": false
+    },
+    {
+      "id": "pastel",
+      "text": "Pastel fills with one saturated accent",
+      "checkable": false
+    },
+    {
+      "id": "text-contrast",
+      "text": "Text meets WCAG AA contrast on its surface",
+      "checkable": true
+    }
+  ],
+  "references": [],
+  "checks": [
+    "contrast",
+    "hit-target",
+    "reduced-motion"
+  ],
+  "overrides": {},
+  "examples": [
+    {
+      "componentTypeId": "button",
+      "props": {
+        "label": "Save"
+      }
+    },
+    {
+      "componentTypeId": "switch",
+      "props": {
+        "checked": true,
+        "label": "Notifications"
+      }
+    },
+    {
+      "componentTypeId": "card",
+      "props": {
+        "title": "Quarterly report"
+      }
+    }
+  ]
+}

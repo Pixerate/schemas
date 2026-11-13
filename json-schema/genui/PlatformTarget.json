@@ -1,0 +1,17 @@
+{
+  "$ref": "#/definitions/PlatformTarget",
+  "definitions": {
+    "PlatformTarget": {
+      "type": "string",
+      "enum": [
+        "svelte",
+        "react",
+        "webcomponent",
+        "swiftui",
+        "compose",
+        "html-page"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

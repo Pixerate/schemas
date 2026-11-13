@@ -1,0 +1,43 @@
+{
+  "$ref": "#/definitions/SkillState",
+  "definitions": {
+    "SkillId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "The skill's id: its folder name, lowercase words joined by hyphens"
+    },
+    "SkillLayer": {
+      "type": "string",
+      "enum": [
+        "builtin",
+        "org",
+        "workspace",
+        "user"
+      ]
+    },
+    "SkillState": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/SkillId"
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "layer": {
+          "$ref": "#/definitions/SkillLayer"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

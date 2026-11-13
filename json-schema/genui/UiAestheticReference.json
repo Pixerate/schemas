@@ -1,0 +1,31 @@
+{
+  "$ref": "#/definitions/UiAestheticReference",
+  "definitions": {
+    "UiAestheticReference": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "file": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path in the skill folder, e.g. 'references/cards.png'"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What to take from it, and what not to"
+        }
+      },
+      "required": [
+        "id",
+        "file",
+        "note"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

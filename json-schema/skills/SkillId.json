@@ -1,0 +1,11 @@
+{
+  "$ref": "#/definitions/SkillId",
+  "definitions": {
+    "SkillId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "The skill's id: its folder name, lowercase words joined by hyphens"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

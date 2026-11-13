@@ -1,0 +1,35 @@
+{
+  "$ref": "#/definitions/ComponentSource",
+  "definitions": {
+    "ComponentSource": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "flair",
+            "editor",
+            "generated",
+            "manual"
+          ]
+        },
+        "itemId": {
+          "type": "string",
+          "description": "The provider's id for the item, e.g. Flair's 'toggle-switch'"
+        },
+        "version": {
+          "type": "string",
+          "description": "The provider package's version, or the generator's"
+        },
+        "contentHash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

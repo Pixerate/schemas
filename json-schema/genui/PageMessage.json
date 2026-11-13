@@ -1,0 +1,315 @@
+{
+  "$ref": "#/definitions/PageMessage",
+  "definitions": {
+    "PageControl": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "range",
+            "select",
+            "toggle",
+            "text",
+            "button"
+          ]
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "value",
+              "label"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "step": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "PageMarks": {
+      "type": "object",
+      "properties": {
+        "pictureLayers": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Canvas and SVG layers inside the data-picture container"
+        },
+        "controls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PageControl"
+          },
+          "default": []
+        },
+        "about": {
+          "type": "string",
+          "description": "Plain-text description from data-about"
+        },
+        "motion": {
+          "$ref": "#/definitions/PageMotionInfo"
+        }
+      },
+      "required": [
+        "pictureLayers"
+      ],
+      "additionalProperties": false
+    },
+    "PageMessage": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "v": {
+              "type": "number",
+              "const": 1
+            },
+            "type": {
+              "type": "string",
+              "const": "ready"
+            },
+            "marks": {
+              "$ref": "#/definitions/PageMarks"
+            }
+          },
+          "required": [
+            "v",
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "v": {
+              "type": "number",
+              "const": 1
+            },
+            "type": {
+              "type": "string",
+              "const": "seek"
+            },
+            "p": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "v",
+            "type",
+            "p"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "v": {
+              "type": "number",
+              "const": 1
+            },
+            "type": {
+              "type": "string",
+              "const": "replay"
+            }
+          },
+          "required": [
+            "v",
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "v": {
+              "type": "number",
+              "const": 1
+            },
+            "type": {
+              "type": "string",
+              "const": "theme"
+            },
+            "mode": {
+              "$ref": "#/definitions/PageThemeMode"
+            },
+            "tokens": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "CSS custom property → value"
+            }
+          },
+          "required": [
+            "v",
+            "type",
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "v": {
+              "type": "number",
+              "const": 1
+            },
+            "type": {
+              "type": "string",
+              "const": "marks-request"
+            }
+          },
+          "required": [
+            "v",
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "v": {
+              "type": "number",
+              "const": 1
+            },
+            "type": {
+              "type": "string",
+              "const": "marks"
+            },
+            "marks": {
+              "$ref": "#/definitions/PageMarks"
+            }
+          },
+          "required": [
+            "v",
+            "type",
+            "marks"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "v": {
+              "type": "number",
+              "const": 1
+            },
+            "type": {
+              "type": "string",
+              "const": "control"
+            },
+            "id": {
+              "type": "string"
+            },
+            "value": {
+              "type": [
+                "string",
+                "number",
+                "boolean"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "type",
+            "id",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "v": {
+              "type": "number",
+              "const": 1
+            },
+            "type": {
+              "type": "string",
+              "const": "error"
+            },
+            "message": {
+              "type": "string"
+            },
+            "detail": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "v",
+            "type",
+            "message"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "PageMotionInfo": {
+      "type": "object",
+      "properties": {
+        "global": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The window property holding the motion object, e.g. 'diagramMotion'"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Length of play() in milliseconds"
+        }
+      },
+      "required": [
+        "global",
+        "duration"
+      ],
+      "additionalProperties": false
+    },
+    "PageThemeMode": {
+      "type": "string",
+      "enum": [
+        "light",
+        "dark"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

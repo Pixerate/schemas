@@ -1,0 +1,40 @@
+{
+  "$ref": "#/definitions/UiA11y",
+  "definitions": {
+    "UiA11y": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string",
+          "description": "ARIA role, e.g. 'switch', 'progressbar', 'img', 'figure'"
+        },
+        "keyboard": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "description": "Key → what it does, e.g. { Space: 'toggle', Enter: 'toggle' }"
+        },
+        "labelFrom": {
+          "type": "string",
+          "enum": [
+            "prop",
+            "children",
+            "aria-label",
+            "content"
+          ],
+          "description": "Where the accessible name comes from; 'content' means a description built from the data"
+        },
+        "reducedMotionAt": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Progress (0–1) to show, still, under prefers-reduced-motion; 1 is the rest state"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

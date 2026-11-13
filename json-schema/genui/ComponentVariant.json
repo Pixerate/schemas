@@ -18,7 +18,11 @@
         },
         "aestheticId": {
           "type": "string",
-          "description": "Style aesthetic, e.g. 'glassmorphism', 'neubrutalism', 'minimalist', 'modern', 'shadcn'"
+          "description": "Deprecated mirror of aesthetic.skillId. Style aesthetic, e.g. 'glassmorphism', 'neubrutalism', 'minimalist', 'modern', 'shadcn'"
+        },
+        "aesthetic": {
+          "$ref": "#/definitions/UiAestheticRef",
+          "description": "The ui-aesthetic skill (and version) this variant is styled by"
         },
         "recommendedThemeId": {
           "type": "string",
@@ -54,6 +58,28 @@
         "aestheticId",
         "createdAt",
         "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "UiAestheticRef": {
+      "type": "object",
+      "properties": {
+        "skillId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The aesthetic skill's id, e.g. 'glassmorphism'"
+        },
+        "version": {
+          "type": "string",
+          "description": "The skill's semver; absent means the latest"
+        },
+        "contentHash": {
+          "type": "string",
+          "description": "The skill's contentHash when the thing was made"
+        }
+      },
+      "required": [
+        "skillId"
       ],
       "additionalProperties": false
     }

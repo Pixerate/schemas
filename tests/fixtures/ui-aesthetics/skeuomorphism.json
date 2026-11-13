@@ -1,0 +1,91 @@
+{
+  "profileVersion": 1,
+  "tokens": {
+    "colors": {
+      "light": {
+        "primary": "#a0522d",
+        "background": "#e9e4da",
+        "foreground": "#2b2620",
+        "surface": "#f6f1e7",
+        "border": "rgba(0,0,0,0.12)",
+        "ring": "#a0522d"
+      },
+      "dark": {
+        "background": "#0e0f12",
+        "foreground": "#f4f4f5"
+      }
+    },
+    "radii": {
+      "base": "10px"
+    }
+  },
+  "roles": {
+    "surface": "colors.surface",
+    "ink": "colors.foreground",
+    "accent": "colors.primary",
+    "border": "colors.border",
+    "focus": "colors.ring",
+    "track-on": "colors.primary",
+    "track-off": "colors.border"
+  },
+  "motion": {
+    "easing": {
+      "standard": "cubic-bezier(.2,0,0,1)"
+    },
+    "durations": {
+      "short": 120,
+      "long": 320
+    },
+    "reducedMotion": "static"
+  },
+  "shape": {
+    "radius": "10px",
+    "elevation": "high",
+    "density": "regular"
+  },
+  "rules": [
+    {
+      "id": "material-light",
+      "text": "Surfaces read as physical materials lit from above",
+      "checkable": false
+    },
+    {
+      "id": "pressed-states",
+      "text": "Pressed states sink (inner shadow), never just change colour",
+      "checkable": false
+    },
+    {
+      "id": "text-contrast",
+      "text": "Text meets WCAG AA contrast on its surface",
+      "checkable": true
+    }
+  ],
+  "references": [],
+  "checks": [
+    "contrast",
+    "hit-target",
+    "reduced-motion"
+  ],
+  "overrides": {},
+  "examples": [
+    {
+      "componentTypeId": "button",
+      "props": {
+        "label": "Save"
+      }
+    },
+    {
+      "componentTypeId": "switch",
+      "props": {
+        "checked": true,
+        "label": "Notifications"
+      }
+    },
+    {
+      "componentTypeId": "card",
+      "props": {
+        "title": "Quarterly report"
+      }
+    }
+  ]
+}

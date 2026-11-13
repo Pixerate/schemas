@@ -1,0 +1,91 @@
+{
+  "profileVersion": 1,
+  "tokens": {
+    "colors": {
+      "light": {
+        "primary": "#18181b",
+        "background": "#ffffff",
+        "foreground": "#18181b",
+        "surface": "#fafafa",
+        "border": "rgba(0,0,0,0.12)",
+        "ring": "#18181b"
+      },
+      "dark": {
+        "background": "#0e0f12",
+        "foreground": "#f4f4f5"
+      }
+    },
+    "radii": {
+      "base": "6px"
+    }
+  },
+  "roles": {
+    "surface": "colors.surface",
+    "ink": "colors.foreground",
+    "accent": "colors.primary",
+    "border": "colors.border",
+    "focus": "colors.ring",
+    "track-on": "colors.primary",
+    "track-off": "colors.border"
+  },
+  "motion": {
+    "easing": {
+      "standard": "cubic-bezier(.2,0,0,1)"
+    },
+    "durations": {
+      "short": 120,
+      "long": 320
+    },
+    "reducedMotion": "static"
+  },
+  "shape": {
+    "radius": "6px",
+    "elevation": "flat",
+    "density": "regular"
+  },
+  "rules": [
+    {
+      "id": "neutral-chrome",
+      "text": "Chrome is neutral; colour only for state and data",
+      "checkable": false
+    },
+    {
+      "id": "whitespace",
+      "text": "Prefer spacing over borders to separate content",
+      "checkable": false
+    },
+    {
+      "id": "text-contrast",
+      "text": "Text meets WCAG AA contrast on its surface",
+      "checkable": true
+    }
+  ],
+  "references": [],
+  "checks": [
+    "contrast",
+    "hit-target",
+    "reduced-motion"
+  ],
+  "overrides": {},
+  "examples": [
+    {
+      "componentTypeId": "button",
+      "props": {
+        "label": "Save"
+      }
+    },
+    {
+      "componentTypeId": "switch",
+      "props": {
+        "checked": true,
+        "label": "Notifications"
+      }
+    },
+    {
+      "componentTypeId": "card",
+      "props": {
+        "title": "Quarterly report"
+      }
+    }
+  ]
+}
