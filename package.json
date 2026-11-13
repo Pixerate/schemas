@@ -47,6 +47,11 @@
       "import": "./dist/jazz.js",
       "require": "./dist/jazz.cjs"
     },
+    "./skills": {
+      "types": "./dist/skills.d.ts",
+      "import": "./dist/skills.js",
+      "require": "./dist/skills.cjs"
+    },
     "./common": {
       "types": "./dist/common.d.ts",
       "import": "./dist/common.js",
@@ -55,7 +60,7 @@
     "./json-schema/*": "./json-schema/*"
   },
   "scripts": {
-    "build": "tsup src/index.ts src/realtime.ts src/genui.ts src/media.ts src/agent.ts src/jobs.ts src/analytics.ts src/jazz.ts src/common.ts --format esm,cjs --dts --clean && npm run export:json-schema",
+    "build": "tsup src/index.ts src/realtime.ts src/genui.ts src/media.ts src/agent.ts src/jobs.ts src/analytics.ts src/jazz.ts src/common.ts src/skills.ts --format esm,cjs --dts --clean && npm run export:json-schema",
     "export:json-schema": "node scripts/export-json-schema.mjs",
     "gen:swift": "node scripts/gen-swift.mjs",
     "test": "npm run build && node --test tests/*.test.mjs",

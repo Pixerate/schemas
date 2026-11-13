@@ -1,0 +1,181 @@
+{
+  "$ref": "#/definitions/LookResult",
+  "definitions": {
+    "LookCheck": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Check id, e.g. 'contrast', 'hit-target', 'reduced-motion', 'axe'"
+        },
+        "status": {
+          "$ref": "#/definitions/LookStatus"
+        },
+        "message": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string",
+          "description": "What it's about: a CSS selector, a prop, or an element description"
+        },
+        "ruleId": {
+          "type": "string",
+          "description": "The aesthetic rule it enforces, if any"
+        },
+        "picture": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Index into LookResult.pictures"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "LookFinding": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What a look (vision) check saw"
+        },
+        "severity": {
+          "$ref": "#/definitions/LookStatus",
+          "default": "warn"
+        },
+        "ruleId": {
+          "type": "string",
+          "description": "The aesthetic rule it relates to"
+        },
+        "referenceId": {
+          "type": "string",
+          "description": "The aesthetic reference it relates to"
+        },
+        "picture": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "LookResult": {
+      "type": "object",
+      "properties": {
+        "pictures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PictureRef"
+          },
+          "default": []
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LookCheck"
+          },
+          "default": []
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LookFinding"
+          },
+          "default": []
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Overall, from a look check; 1 is a perfect match to the aesthetic"
+        },
+        "aesthetic": {
+          "$ref": "#/definitions/UiAestheticRef"
+        }
+      },
+      "additionalProperties": false
+    },
+    "LookStatus": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "warn",
+        "fail"
+      ]
+    },
+    "PageThemeMode": {
+      "type": "string",
+      "enum": [
+        "light",
+        "dark"
+      ]
+    },
+    "PictureRef": {
+      "type": "object",
+      "properties": {
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "URL, data URI or storage path of the image"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "theme": {
+          "$ref": "#/definitions/PageThemeMode"
+        },
+        "at": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        },
+        "hover": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "width",
+        "height",
+        "theme"
+      ],
+      "additionalProperties": false
+    },
+    "UiAestheticRef": {
+      "type": "object",
+      "properties": {
+        "skillId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The aesthetic skill's id, e.g. 'glassmorphism'"
+        },
+        "version": {
+          "type": "string",
+          "description": "The skill's semver; absent means the latest"
+        },
+        "contentHash": {
+          "type": "string",
+          "description": "The skill's contentHash when the thing was made"
+        }
+      },
+      "required": [
+        "skillId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

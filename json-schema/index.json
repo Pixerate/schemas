@@ -426,6 +426,21 @@
   },
   {
     "module": "genui",
+    "name": "ComponentRuntime",
+    "file": "genui/ComponentRuntime.json"
+  },
+  {
+    "module": "genui",
+    "name": "ComponentScreenshots",
+    "file": "genui/ComponentScreenshots.json"
+  },
+  {
+    "module": "genui",
+    "name": "ComponentSource",
+    "file": "genui/ComponentSource.json"
+  },
+  {
+    "module": "genui",
     "name": "ComponentSynthesis",
     "file": "genui/ComponentSynthesis.json"
   },
@@ -601,8 +616,38 @@
   },
   {
     "module": "genui",
+    "name": "JsonSchemaDocument",
+    "file": "genui/JsonSchemaDocument.json"
+  },
+  {
+    "module": "genui",
+    "name": "JsonValue",
+    "file": "genui/JsonValue.json"
+  },
+  {
+    "module": "genui",
     "name": "KineticBlueprint",
     "file": "genui/KineticBlueprint.json"
+  },
+  {
+    "module": "genui",
+    "name": "LookCheck",
+    "file": "genui/LookCheck.json"
+  },
+  {
+    "module": "genui",
+    "name": "LookFinding",
+    "file": "genui/LookFinding.json"
+  },
+  {
+    "module": "genui",
+    "name": "LookResult",
+    "file": "genui/LookResult.json"
+  },
+  {
+    "module": "genui",
+    "name": "LookStatus",
+    "file": "genui/LookStatus.json"
   },
   {
     "module": "genui",
@@ -626,8 +671,48 @@
   },
   {
     "module": "genui",
+    "name": "PageControl",
+    "file": "genui/PageControl.json"
+  },
+  {
+    "module": "genui",
+    "name": "PageMarks",
+    "file": "genui/PageMarks.json"
+  },
+  {
+    "module": "genui",
+    "name": "PageMessage",
+    "file": "genui/PageMessage.json"
+  },
+  {
+    "module": "genui",
+    "name": "PageMotionInfo",
+    "file": "genui/PageMotionInfo.json"
+  },
+  {
+    "module": "genui",
+    "name": "PageThemeMode",
+    "file": "genui/PageThemeMode.json"
+  },
+  {
+    "module": "genui",
+    "name": "PictureRef",
+    "file": "genui/PictureRef.json"
+  },
+  {
+    "module": "genui",
+    "name": "PictureRequest",
+    "file": "genui/PictureRequest.json"
+  },
+  {
+    "module": "genui",
     "name": "PlatformLanguage",
     "file": "genui/PlatformLanguage.json"
+  },
+  {
+    "module": "genui",
+    "name": "PlatformTarget",
+    "file": "genui/PlatformTarget.json"
   },
   {
     "module": "genui",
@@ -781,8 +866,63 @@
   },
   {
     "module": "genui",
+    "name": "UiA11y",
+    "file": "genui/UiA11y.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiAestheticExample",
+    "file": "genui/UiAestheticExample.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiAestheticProfile",
+    "file": "genui/UiAestheticProfile.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiAestheticRef",
+    "file": "genui/UiAestheticRef.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiAestheticReference",
+    "file": "genui/UiAestheticReference.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiAestheticRule",
+    "file": "genui/UiAestheticRule.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiColorRole",
+    "file": "genui/UiColorRole.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiComponentContract",
+    "file": "genui/UiComponentContract.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiComponentGroup",
+    "file": "genui/UiComponentGroup.json"
+  },
+  {
+    "module": "genui",
     "name": "UIComponentType",
     "file": "genui/UIComponentType.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDescriptor",
+    "file": "genui/UiDescriptor.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiEvent",
+    "file": "genui/UiEvent.json"
   },
   {
     "module": "genui",
@@ -798,6 +938,16 @@
     "module": "genui",
     "name": "UIGenerationResult",
     "file": "genui/UIGenerationResult.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiSizing",
+    "file": "genui/UiSizing.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiStateField",
+    "file": "genui/UiStateField.json"
   },
   {
     "module": "genui",
@@ -1803,5 +1953,50 @@
     "module": "realtime",
     "name": "ViewportTransform",
     "file": "realtime/ViewportTransform.json"
+  },
+  {
+    "module": "skills",
+    "name": "SkillBundleManifest",
+    "file": "skills/SkillBundleManifest.json"
+  },
+  {
+    "module": "skills",
+    "name": "SkillFile",
+    "file": "skills/SkillFile.json"
+  },
+  {
+    "module": "skills",
+    "name": "SkillFileRole",
+    "file": "skills/SkillFileRole.json"
+  },
+  {
+    "module": "skills",
+    "name": "SkillId",
+    "file": "skills/SkillId.json"
+  },
+  {
+    "module": "skills",
+    "name": "SkillKind",
+    "file": "skills/SkillKind.json"
+  },
+  {
+    "module": "skills",
+    "name": "SkillLayer",
+    "file": "skills/SkillLayer.json"
+  },
+  {
+    "module": "skills",
+    "name": "SkillManifest",
+    "file": "skills/SkillManifest.json"
+  },
+  {
+    "module": "skills",
+    "name": "SkillMerge",
+    "file": "skills/SkillMerge.json"
+  },
+  {
+    "module": "skills",
+    "name": "SkillState",
+    "file": "skills/SkillState.json"
   }
 ]

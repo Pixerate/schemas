@@ -1,0 +1,13 @@
+{
+  "$ref": "#/definitions/PageThemeMode",
+  "definitions": {
+    "PageThemeMode": {
+      "type": "string",
+      "enum": [
+        "light",
+        "dark"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

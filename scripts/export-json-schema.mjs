@@ -20,7 +20,8 @@ const SUBMODULES = [
   'agent',
   'jobs',
   'analytics',
-  'jazz'
+  'jazz',
+  'skills'
 ];
 
 // Two different clocks for finding defaults computed at parse time (`.default(() => new Date())`).

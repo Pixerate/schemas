@@ -1,0 +1,451 @@
+{
+  "$ref": "#/definitions/UiAestheticProfile",
+  "definitions": {
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/JsonValue"
+          }
+        }
+      ]
+    },
+    "ThemeColors": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "type": "string"
+        },
+        "primaryForeground": {
+          "type": "string"
+        },
+        "secondary": {
+          "type": "string"
+        },
+        "secondaryForeground": {
+          "type": "string"
+        },
+        "accent": {
+          "type": "string"
+        },
+        "accentForeground": {
+          "type": "string"
+        },
+        "background": {
+          "type": "string"
+        },
+        "foreground": {
+          "type": "string"
+        },
+        "surface": {
+          "type": "string"
+        },
+        "surfaceForeground": {
+          "type": "string"
+        },
+        "muted": {
+          "type": "string"
+        },
+        "mutedForeground": {
+          "type": "string"
+        },
+        "destructive": {
+          "type": "string"
+        },
+        "destructiveForeground": {
+          "type": "string"
+        },
+        "border": {
+          "type": "string"
+        },
+        "ring": {
+          "type": "string"
+        },
+        "customProperties": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "primary",
+        "background",
+        "foreground"
+      ],
+      "additionalProperties": false
+    },
+    "ThemeTokens": {
+      "type": "object",
+      "properties": {
+        "colors": {
+          "type": "object",
+          "properties": {
+            "light": {
+              "$ref": "#/definitions/ThemeColors"
+            },
+            "dark": {
+              "type": "object",
+              "properties": {
+                "primary": {
+                  "type": "string"
+                },
+                "primaryForeground": {
+                  "type": "string"
+                },
+                "secondary": {
+                  "type": "string"
+                },
+                "secondaryForeground": {
+                  "type": "string"
+                },
+                "accent": {
+                  "type": "string"
+                },
+                "accentForeground": {
+                  "type": "string"
+                },
+                "background": {
+                  "type": "string"
+                },
+                "foreground": {
+                  "type": "string"
+                },
+                "surface": {
+                  "type": "string"
+                },
+                "surfaceForeground": {
+                  "type": "string"
+                },
+                "muted": {
+                  "type": "string"
+                },
+                "mutedForeground": {
+                  "type": "string"
+                },
+                "destructive": {
+                  "type": "string"
+                },
+                "destructiveForeground": {
+                  "type": "string"
+                },
+                "border": {
+                  "type": "string"
+                },
+                "ring": {
+                  "type": "string"
+                },
+                "customProperties": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "light"
+          ],
+          "additionalProperties": false
+        },
+        "typography": {
+          "$ref": "#/definitions/ThemeTypographyTokens"
+        },
+        "radii": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "not": {}
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "spacing": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "paddings": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "shadows": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "colors"
+      ],
+      "additionalProperties": false
+    },
+    "ThemeTypographyTokens": {
+      "type": "object",
+      "properties": {
+        "fontSans": {
+          "type": "string"
+        },
+        "fontMono": {
+          "type": "string"
+        },
+        "fontHeading": {
+          "type": "string"
+        },
+        "fontImports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fontCss": {
+          "type": "string"
+        },
+        "fontSize": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "fontWeight": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "UiAestheticExample": {
+      "type": "object",
+      "properties": {
+        "componentTypeId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "props": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/JsonValue"
+          },
+          "default": {}
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "componentTypeId"
+      ],
+      "additionalProperties": false
+    },
+    "UiAestheticProfile": {
+      "type": "object",
+      "properties": {
+        "profileVersion": {
+          "type": "number",
+          "const": 1
+        },
+        "tokens": {
+          "$ref": "#/definitions/ThemeTokens",
+          "description": "The aesthetic's tokens (give tokens or themeId)"
+        },
+        "themeId": {
+          "type": "string",
+          "description": "A theme whose tokens to use instead of inline tokens"
+        },
+        "roles": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "description": "Colour role → token path or CSS colour, e.g. { surface: 'colors.surface', accent: 'colors.accent', 'track-on': 'colors.primary' }"
+        },
+        "motion": {
+          "type": "object",
+          "properties": {
+            "easing": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "default": {},
+              "description": "Name → CSS easing, e.g. { standard: 'cubic-bezier(.2,0,0,1)' }"
+            },
+            "durations": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number",
+                "minimum": 0
+              },
+              "default": {},
+              "description": "Name → milliseconds, e.g. { short: 120, long: 360 }"
+            },
+            "reducedMotion": {
+              "type": "string",
+              "enum": [
+                "static",
+                "fade",
+                "shorten"
+              ],
+              "default": "static"
+            }
+          },
+          "additionalProperties": false
+        },
+        "shape": {
+          "type": "object",
+          "properties": {
+            "radius": {
+              "type": "string",
+              "description": "Base radius, e.g. '10px'"
+            },
+            "borderWidth": {
+              "type": "string"
+            },
+            "elevation": {
+              "type": "string",
+              "enum": [
+                "flat",
+                "low",
+                "high"
+              ]
+            },
+            "density": {
+              "type": "string",
+              "enum": [
+                "compact",
+                "regular",
+                "comfortable"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiAestheticRule"
+          },
+          "default": []
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiAestheticReference"
+          },
+          "default": []
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Ids of checks to run on every component, e.g. 'contrast', 'hit-target', 'reduced-motion', 'look'"
+        },
+        "overrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "description": "Component type id → notes for that type, e.g. { table: 'No zebra striping' }"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiAestheticExample"
+          },
+          "default": [],
+          "description": "What to render on the aesthetic's contact sheet"
+        }
+      },
+      "required": [
+        "profileVersion"
+      ],
+      "additionalProperties": false
+    },
+    "UiAestheticReference": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "file": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path in the skill folder, e.g. 'references/cards.png'"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What to take from it, and what not to"
+        }
+      },
+      "required": [
+        "id",
+        "file",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "UiAestheticRule": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "Stable id, so checks and look findings can point at the rule"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One short statement, e.g. 'Only data is coloured; chrome stays neutral'"
+        },
+        "checkable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether a deterministic check enforces it (listed in checks)"
+        }
+      },
+      "required": [
+        "id",
+        "text"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

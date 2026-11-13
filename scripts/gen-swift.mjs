@@ -15,6 +15,7 @@ const isCheck = process.argv.includes('--check');
 const MODULES = [
   { module: 'common', file: 'Common.swift' },
   { module: 'jazz', file: 'Jazz.swift' },
+  { module: 'skills', file: 'Skills.swift' },
   { module: 'agent', file: 'Agent.swift' }
 ];
 

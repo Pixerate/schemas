@@ -1,0 +1,50 @@
+{
+  "$ref": "#/definitions/SkillFile",
+  "definitions": {
+    "SkillFile": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path inside the skill folder, with '/' separators and no '..'"
+        },
+        "role": {
+          "$ref": "#/definitions/SkillFileRole"
+        },
+        "mediaType": {
+          "type": "string",
+          "description": "Media type, e.g. 'text/markdown', 'application/json', 'image/png'"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Size in bytes"
+        },
+        "note": {
+          "type": "string",
+          "description": "What to take from this file (for references: what the picture shows that matters)"
+        }
+      },
+      "required": [
+        "path",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "SkillFileRole": {
+      "type": "string",
+      "enum": [
+        "instructions",
+        "profile",
+        "reference",
+        "example",
+        "kit",
+        "check",
+        "other"
+      ],
+      "description": "instructions: SKILL.md and files it points a model to; profile: the kind's typed profile; reference: pictures or documents to aim for; example: worked examples; kit: code a page or component may use; check: a check that can be run"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

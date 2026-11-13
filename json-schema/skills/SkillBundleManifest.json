@@ -1,0 +1,173 @@
+{
+  "$ref": "#/definitions/SkillBundleManifest",
+  "definitions": {
+    "SkillBundleManifest": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "number",
+          "const": 1,
+          "description": "Bundle format version"
+        },
+        "skill": {
+          "$ref": "#/definitions/SkillManifest"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "size": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            },
+            "required": [
+              "path",
+              "size",
+              "sha256"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Every file in the zip except bundle.json; installers refuse anything not listed, or that doesn't match"
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "format",
+        "skill",
+        "files",
+        "contentHash"
+      ],
+      "additionalProperties": false
+    },
+    "SkillFile": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path inside the skill folder, with '/' separators and no '..'"
+        },
+        "role": {
+          "$ref": "#/definitions/SkillFileRole"
+        },
+        "mediaType": {
+          "type": "string",
+          "description": "Media type, e.g. 'text/markdown', 'application/json', 'image/png'"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Size in bytes"
+        },
+        "note": {
+          "type": "string",
+          "description": "What to take from this file (for references: what the picture shows that matters)"
+        }
+      },
+      "required": [
+        "path",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "SkillFileRole": {
+      "type": "string",
+      "enum": [
+        "instructions",
+        "profile",
+        "reference",
+        "example",
+        "kit",
+        "check",
+        "other"
+      ],
+      "description": "instructions: SKILL.md and files it points a model to; profile: the kind's typed profile; reference: pictures or documents to aim for; example: worked examples; kit: code a page or component may use; check: a check that can be run"
+    },
+    "SkillManifest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "The skill's id: its folder name (loaders fill it in when frontmatter leaves it out)"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Display name"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "When to use this skill, in a sentence or two (shown in catalogs and to models)"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
+          "default": "0.1.0"
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "default": "skill",
+          "description": "The skill's kind (see SkillKindSchema). Built-in kinds: 'rule', 'skill', 'style', 'ui-aesthetic'"
+        },
+        "extends": {
+          "type": "string",
+          "description": "Another skill this one builds on: its id, optionally pinned as 'id@1.2.0'"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "boolean"
+            ]
+          },
+          "description": "Free-form frontmatter metadata a package reads, e.g. editor's { kind: 'workflow', reference: '…' }"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SkillFile"
+          },
+          "default": [],
+          "description": "Files in the skill, SKILL.md included"
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "sha256 (hex) of skillContentHashInput(files with their contents); changes whenever any file does"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

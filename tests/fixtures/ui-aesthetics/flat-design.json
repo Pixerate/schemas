@@ -1,0 +1,86 @@
+{
+  "profileVersion": 1,
+  "tokens": {
+    "colors": {
+      "light": {
+        "primary": "#2563eb",
+        "background": "#ffffff",
+        "foreground": "#1f2937",
+        "surface": "#f3f4f6",
+        "border": "rgba(0,0,0,0.12)",
+        "ring": "#2563eb"
+      },
+      "dark": {
+        "background": "#0e0f12",
+        "foreground": "#f4f4f5"
+      }
+    },
+    "radii": {
+      "base": "4px"
+    }
+  },
+  "roles": {
+    "surface": "colors.surface",
+    "ink": "colors.foreground",
+    "accent": "colors.primary",
+    "border": "colors.border",
+    "focus": "colors.ring",
+    "track-on": "colors.primary",
+    "track-off": "colors.border"
+  },
+  "motion": {
+    "easing": {
+      "standard": "cubic-bezier(.2,0,0,1)"
+    },
+    "durations": {
+      "short": 120,
+      "long": 320
+    },
+    "reducedMotion": "static"
+  },
+  "shape": {
+    "radius": "4px",
+    "elevation": "flat",
+    "density": "regular"
+  },
+  "rules": [
+    {
+      "id": "no-depth",
+      "text": "No shadows or gradients; hierarchy comes from colour and size",
+      "checkable": false
+    },
+    {
+      "id": "text-contrast",
+      "text": "Text meets WCAG AA contrast on its surface",
+      "checkable": true
+    }
+  ],
+  "references": [],
+  "checks": [
+    "contrast",
+    "hit-target",
+    "reduced-motion"
+  ],
+  "overrides": {},
+  "examples": [
+    {
+      "componentTypeId": "button",
+      "props": {
+        "label": "Save"
+      }
+    },
+    {
+      "componentTypeId": "switch",
+      "props": {
+        "checked": true,
+        "label": "Notifications"
+      }
+    },
+    {
+      "componentTypeId": "card",
+      "props": {
+        "title": "Quarterly report"
+      }
+    }
+  ]
+}

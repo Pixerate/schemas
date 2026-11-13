@@ -1,0 +1,28 @@
+{
+  "$ref": "#/definitions/UiAestheticRef",
+  "definitions": {
+    "UiAestheticRef": {
+      "type": "object",
+      "properties": {
+        "skillId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The aesthetic skill's id, e.g. 'glassmorphism'"
+        },
+        "version": {
+          "type": "string",
+          "description": "The skill's semver; absent means the latest"
+        },
+        "contentHash": {
+          "type": "string",
+          "description": "The skill's contentHash when the thing was made"
+        }
+      },
+      "required": [
+        "skillId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

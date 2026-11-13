@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/LookStatus",
+  "definitions": {
+    "LookStatus": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "warn",
+        "fail"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,117 @@
+{
+  "$ref": "#/definitions/PageMarks",
+  "definitions": {
+    "PageControl": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "range",
+            "select",
+            "toggle",
+            "text",
+            "button"
+          ]
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "value",
+              "label"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "step": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "PageMarks": {
+      "type": "object",
+      "properties": {
+        "pictureLayers": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Canvas and SVG layers inside the data-picture container"
+        },
+        "controls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PageControl"
+          },
+          "default": []
+        },
+        "about": {
+          "type": "string",
+          "description": "Plain-text description from data-about"
+        },
+        "motion": {
+          "$ref": "#/definitions/PageMotionInfo"
+        }
+      },
+      "required": [
+        "pictureLayers"
+      ],
+      "additionalProperties": false
+    },
+    "PageMotionInfo": {
+      "type": "object",
+      "properties": {
+        "global": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The window property holding the motion object, e.g. 'diagramMotion'"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Length of play() in milliseconds"
+        }
+      },
+      "required": [
+        "global",
+        "duration"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

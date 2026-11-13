@@ -12,6 +12,37 @@ import { z } from "zod";
 export const PlatformLanguageSchema = z.enum(["svelte", "react", "webcomponent"]);
 export type PlatformLanguage = z.infer<typeof PlatformLanguageSchema>;
 
+/**
+ * Every platform a component package can target: the web languages generators emit
+ * (`PlatformLanguage`), native UI, and `html-page`, a sandboxed page built on a kit (engine
+ * components and generated data visuals).
+ */
+export const PlatformTargetSchema = z.enum(["svelte", "react", "webcomponent", "swiftui", "compose", "html-page"]);
+export type PlatformTarget = z.infer<typeof PlatformTargetSchema>;
+
+/** Any JSON value: example props and data, and JSON Schema documents. */
+export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+export const JsonValueSchema: z.ZodType<JsonValue> = z.lazy(() =>
+  z.union([z.string(), z.number(), z.boolean(), z.null(), z.array(JsonValueSchema), z.record(JsonValueSchema)])
+);
+
+/** A JSON Schema document, kept as JSON (props, data, event payloads). */
+export const JsonSchemaDocumentSchema = z
+  .record(JsonValueSchema)
+  .describe("A JSON Schema (draft 2020-12 or 7) as a JSON object, e.g. { type: 'object', properties: { … } }");
+export type JsonSchemaDocument = z.infer<typeof JsonSchemaDocumentSchema>;
+
+/**
+ * Which `ui-aesthetic` skill (and which version of it) something was made with or should use.
+ * See `UiAestheticProfileSchema` and `@pixerate/schemas/skills`.
+ */
+export const UiAestheticRefSchema = z.object({
+  skillId: z.string().min(1).describe("The aesthetic skill's id, e.g. 'glassmorphism'"),
+  version: z.string().optional().describe("The skill's semver; absent means the latest"),
+  contentHash: z.string().optional().describe("The skill's contentHash when the thing was made")
+});
+export type UiAestheticRef = z.infer<typeof UiAestheticRefSchema>;
+
 export const ThemeSupportSchema = z.enum(["default", "light-and-dark"]);
 export type ThemeSupport = z.infer<typeof ThemeSupportSchema>;
 
@@ -131,15 +162,140 @@ export const ComponentTransformationResultSchema = z.object({
 });
 export type ComponentTransformationResult = z.infer<typeof ComponentTransformationResultSchema>;
 
+// --- Component contracts, provider descriptors, sources and runtimes ---
+
+/**
+ * Standard colour roles. Components and provider items bind colours to roles; an aesthetic
+ * (`UiAestheticProfile.roles`) says what each role is. Other kebab-case roles are allowed.
+ */
+export const UI_COLOR_ROLES = [
+  "surface",
+  "surface-raised",
+  "ink",
+  "ink-muted",
+  "accent",
+  "accent-ink",
+  "border",
+  "focus",
+  "track-on",
+  "track-off",
+  "success",
+  "warning",
+  "danger",
+  "overlay"
+] as const;
+export const UiColorRoleSchema = z
+  .string()
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+  .describe("A colour role, e.g. surface, ink, accent, track-on (see UI_COLOR_ROLES)");
+export type UiColorRole = z.infer<typeof UiColorRoleSchema>;
+
+export const UiComponentGroupSchema = z
+  .enum(["baseline", "data-visual", "paradigm"])
+  .describe(
+    "baseline: the shadcn set; data-visual: charts and diagrams whose layout follows the data; paradigm: new kinds of UI (3-D, instruments)"
+  );
+export type UiComponentGroup = z.infer<typeof UiComponentGroupSchema>;
+
+export const UiStateFieldSchema = z.object({
+  name: z.string().min(1).describe("The controlled value's prop name, e.g. 'checked', 'value', 'progress'"),
+  schema: JsonSchemaDocumentSchema.optional(),
+  event: z.string().optional().describe("The event fired when it changes, e.g. 'change'"),
+  description: z.string().optional()
+});
+export type UiStateField = z.infer<typeof UiStateFieldSchema>;
+
+export const UiEventSchema = z.object({
+  name: z.string().min(1).describe("e.g. 'change', 'select', 'open'"),
+  payload: JsonSchemaDocumentSchema.optional(),
+  description: z.string().optional()
+});
+export type UiEvent = z.infer<typeof UiEventSchema>;
+
+export const UiA11ySchema = z.object({
+  role: z.string().optional().describe("ARIA role, e.g. 'switch', 'progressbar', 'img', 'figure'"),
+  keyboard: z.record(z.string()).default({}).describe("Key → what it does, e.g. { Space: 'toggle', Enter: 'toggle' }"),
+  labelFrom: z
+    .enum(["prop", "children", "aria-label", "content"])
+    .optional()
+    .describe("Where the accessible name comes from; 'content' means a description built from the data"),
+  reducedMotionAt: z
+    .number()
+    .min(0)
+    .max(1)
+    .optional()
+    .describe("Progress (0–1) to show, still, under prefers-reduced-motion; 1 is the rest state")
+});
+export type UiA11y = z.infer<typeof UiA11ySchema>;
+
+export const UiSizingSchema = z.object({
+  mode: z.enum(["intrinsic", "fill"]).default("intrinsic"),
+  minWidth: z.number().nonnegative().optional().describe("CSS px"),
+  minHeight: z.number().nonnegative().optional().describe("CSS px"),
+  aspectRatio: z.number().positive().optional().describe("width / height, for components that keep a shape")
+});
+export type UiSizing = z.infer<typeof UiSizingSchema>;
+
+/** What a component type takes and does, independent of any platform or aesthetic. */
+export const UiComponentContractSchema = z.object({
+  props: JsonSchemaDocumentSchema.optional().describe("JSON Schema for props (or, for an engine, its data)"),
+  state: z.array(UiStateFieldSchema).default([]),
+  events: z.array(UiEventSchema).default([]),
+  a11y: UiA11ySchema.optional(),
+  colorRoles: z.array(UiColorRoleSchema).default([]).describe("The colour roles the component draws with"),
+  motion: z.boolean().default(false).describe("Whether it follows the page motion contract (PageMotionInfoSchema)"),
+  sizing: UiSizingSchema.optional()
+});
+export type UiComponentContract = z.infer<typeof UiComponentContractSchema>;
+export type UiComponentContractInput = z.input<typeof UiComponentContractSchema>;
+
+/**
+ * What a provider (Flair, editor, …) attaches to an item it offers as a UI component. A registry
+ * stores it as it is, so a sync copies rather than translates. An item without one isn't UI.
+ */
+export const UiDescriptorSchema = z.object({
+  implements: z.string().min(1).describe("The component type id it implements, e.g. 'switch', or a new type such as 'gauge'"),
+  group: UiComponentGroupSchema.optional().describe("For a new type: which group it belongs to"),
+  contract: UiComponentContractSchema.partial().optional().describe("Overrides or additions to the type's contract"),
+  platforms: z.array(PlatformTargetSchema).default([]).describe("Platforms the provider can render it on"),
+  swiftReady: z.boolean().optional(),
+  example: z.record(JsonValueSchema).optional().describe("Example props or data, for previews and checks"),
+  contentHash: z.string().optional().describe("Changes whenever the item's output changes, so a sync can tell")
+});
+export type UiDescriptor = z.infer<typeof UiDescriptorSchema>;
+export type UiDescriptorInput = z.input<typeof UiDescriptorSchema>;
+
+export const ComponentSourceSchema = z.object({
+  provider: z.enum(["flair", "editor", "generated", "manual"]),
+  itemId: z.string().optional().describe("The provider's id for the item, e.g. Flair's 'toggle-switch'"),
+  version: z.string().optional().describe("The provider package's version, or the generator's"),
+  contentHash: z.string().optional()
+});
+export type ComponentSource = z.infer<typeof ComponentSourceSchema>;
+
+export const ComponentRuntimeSchema = z
+  .enum(["code", "engine"])
+  .describe("code: source you install and own; engine: a fixed, reviewed runtime that takes data");
+export type ComponentRuntime = z.infer<typeof ComponentRuntimeSchema>;
+
+export const ComponentScreenshotsSchema = z.object({
+  light: z.string().optional().describe("URL or data URI of a real render in light mode"),
+  dark: z.string().optional().describe("URL or data URI of a real render in dark mode")
+});
+export type ComponentScreenshots = z.infer<typeof ComponentScreenshotsSchema>;
+
 export const ComponentPackageSchema = z.object({
   language: PlatformLanguageSchema,
   code: z.string().describe("Formatted code bundle with trimmed leading whitespace"),
   docs: ComponentDocsSchema,
-  screenshot: z.string().describe("Data URI or URL of actual rendered component"),
+  screenshot: z.string().describe("Deprecated, use screenshots. Data URI or URL of actual rendered component"),
   themeSupport: ThemeSupportSchema,
   tags: z.array(z.string()),
   dependencies: z.array(ComponentDependencySchema).default([]),
-  previewHarness: PreviewHarnessSchema.optional()
+  previewHarness: PreviewHarnessSchema.optional(),
+  source: ComponentSourceSchema.optional().describe("Where the package came from; absent for packages made before sources were recorded"),
+  runtime: ComponentRuntimeSchema.optional().describe("Absent means 'code'"),
+  screenshots: ComponentScreenshotsSchema.optional()
 });
 export type ComponentPackage = z.infer<typeof ComponentPackageSchema>;
 
@@ -148,6 +304,9 @@ export const UIComponentTypeSchema = z.object({
   name: z.string().describe("e.g. 'Button'"),
   description: z.string().describe("Official description e.g. from Shadcn documentation"),
   tags: z.array(z.string()).describe("Freeform tags e.g. ['form', 'action']"),
+  group: UiComponentGroupSchema.optional().describe("Absent means 'baseline'"),
+  contract: UiComponentContractSchema.optional(),
+  fallback: z.string().optional().describe("A type id to use where this one can't run (no WebGL, reduced motion)"),
   createdAt: z.string().describe("ISO timestamp"),
   updatedAt: z.string().describe("ISO timestamp")
 });
@@ -157,7 +316,10 @@ export const ComponentVariantSchema = z.object({
   id: z.string().describe("Slug, e.g., 'glass-card' or 'glassmorphism'"),
   componentTypeId: z.string().describe("References UIComponentType.id"),
   name: z.string().describe("e.g. 'Glass Action Button'"),
-  aestheticId: z.string().describe("Style aesthetic, e.g. 'glassmorphism', 'neubrutalism', 'minimalist', 'modern', 'shadcn'"),
+  aestheticId: z
+    .string()
+    .describe("Deprecated mirror of aesthetic.skillId. Style aesthetic, e.g. 'glassmorphism', 'neubrutalism', 'minimalist', 'modern', 'shadcn'"),
+  aesthetic: UiAestheticRefSchema.optional().describe("The ui-aesthetic skill (and version) this variant is styled by"),
   recommendedThemeId: z.string().optional().describe("Optional recommended theme ID (e.g., 'shadcn-zinc', 'tokyo-night')"),
   description: z.string().optional().describe("Style & business logic description"),
   imageUrl: z.string().optional().describe("Optional image URL"),
@@ -175,12 +337,13 @@ export const ComponentVersionSchema = z.object({
   id: z.string().describe("Unique version ID e.g. 'button-glass-action-button-v1.0.0'"),
   componentTypeId: z.string().describe("References UIComponentType.id"),
   variantId: z.string().describe("References ComponentVariant.id"),
-  aestheticId: z.string().describe("References Aesthetic style e.g. 'glassmorphism'"),
+  aestheticId: z.string().describe("Deprecated mirror of aesthetic.skillId. References Aesthetic style e.g. 'glassmorphism'"),
+  aesthetic: UiAestheticRefSchema.optional().describe("The ui-aesthetic skill version this version was built from"),
   version: z.string().describe("Semver e.g. '1.0.0'"),
   changelogNote: z.string(),
   createdBy: z.string(),
   createdAt: z.string().describe("ISO timestamp"),
-  packages: z.record(PlatformLanguageSchema, ComponentPackageSchema)
+  packages: z.record(PlatformTargetSchema, ComponentPackageSchema)
 });
 export type ComponentVersion = z.infer<typeof ComponentVersionSchema>;
 
@@ -294,12 +457,76 @@ export const ThemeIngestionInputSchema = z.object({
 });
 export type ThemeIngestionInput = z.infer<typeof ThemeIngestionInputSchema>;
 
+// --- UI aesthetics (the `ui-aesthetic` skill kind's profile, aesthetic.json) ---
+
+export const UiAestheticRuleSchema = z.object({
+  id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).describe("Stable id, so checks and look findings can point at the rule"),
+  text: z.string().min(1).describe("One short statement, e.g. 'Only data is coloured; chrome stays neutral'"),
+  checkable: z.boolean().default(false).describe("Whether a deterministic check enforces it (listed in checks)")
+});
+export type UiAestheticRule = z.infer<typeof UiAestheticRuleSchema>;
+
+export const UiAestheticReferenceSchema = z.object({
+  id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  file: z.string().min(1).describe("Path in the skill folder, e.g. 'references/cards.png'"),
+  note: z.string().min(1).describe("What to take from it, and what not to")
+});
+export type UiAestheticReference = z.infer<typeof UiAestheticReferenceSchema>;
+
+export const UiAestheticExampleSchema = z.object({
+  componentTypeId: z.string().min(1),
+  props: z.record(JsonValueSchema).default({}),
+  note: z.string().optional()
+});
+export type UiAestheticExample = z.infer<typeof UiAestheticExampleSchema>;
+
+/**
+ * An aesthetic, as the profile of a `ui-aesthetic` skill. Tokens come inline or from a theme;
+ * roles say which token each colour role uses, so components and synced provider items can be
+ * restyled without knowing the aesthetic.
+ */
+export const UiAestheticProfileSchema = z.object({
+  profileVersion: z.literal(1),
+  tokens: ThemeTokensSchema.optional().describe("The aesthetic's tokens (give tokens or themeId)"),
+  themeId: z.string().optional().describe("A theme whose tokens to use instead of inline tokens"),
+  roles: z
+    .record(z.string())
+    .default({})
+    .describe("Colour role → token path or CSS colour, e.g. { surface: 'colors.surface', accent: 'colors.accent', 'track-on': 'colors.primary' }"),
+  motion: z
+    .object({
+      easing: z.record(z.string()).default({}).describe("Name → CSS easing, e.g. { standard: 'cubic-bezier(.2,0,0,1)' }"),
+      durations: z.record(z.number().nonnegative()).default({}).describe("Name → milliseconds, e.g. { short: 120, long: 360 }"),
+      reducedMotion: z.enum(["static", "fade", "shorten"]).default("static")
+    })
+    .optional(),
+  shape: z
+    .object({
+      radius: z.string().optional().describe("Base radius, e.g. '10px'"),
+      borderWidth: z.string().optional(),
+      elevation: z.enum(["flat", "low", "high"]).optional(),
+      density: z.enum(["compact", "regular", "comfortable"]).optional()
+    })
+    .optional(),
+  rules: z.array(UiAestheticRuleSchema).default([]),
+  references: z.array(UiAestheticReferenceSchema).default([]),
+  checks: z
+    .array(z.string())
+    .default([])
+    .describe("Ids of checks to run on every component, e.g. 'contrast', 'hit-target', 'reduced-motion', 'look'"),
+  overrides: z.record(z.string()).default({}).describe("Component type id → notes for that type, e.g. { table: 'No zebra striping' }"),
+  examples: z.array(UiAestheticExampleSchema).default([]).describe("What to render on the aesthetic's contact sheet")
+});
+export type UiAestheticProfile = z.infer<typeof UiAestheticProfileSchema>;
+export type UiAestheticProfileInput = z.input<typeof UiAestheticProfileSchema>;
+
 // --- UI Component Generation ---
 export const UIGenerationOptionsSchema = z.object({
   prompt: z.string().describe("User prompt or instruction for component generation/modification"),
   currentCode: z.string().optional().describe("Existing component code for iterative modification"),
   platform: PlatformLanguageSchema.optional().default("svelte").describe("Target component platform language"),
   theme: z.string().optional().describe("Theme identifier or token reference"),
+  aesthetic: UiAestheticRefSchema.optional().describe("The ui-aesthetic skill to generate in; the generator loads it rather than a slug"),
   systemPrompt: z.string().optional().describe("Custom or override system prompt"),
   maxRetries: z.number().int().nonnegative().optional().default(3).describe("Maximum retry attempts for iterative auto-repair validation"),
   temperature: z.number().optional().describe("Model temperature")
@@ -1378,3 +1605,127 @@ export const SvgGenerationResultSchema = z.object({
 });
 export type SvgGenerationResult = z.infer<typeof SvgGenerationResultSchema>;
 
+
+// --- Page contract, picture requests and look results (sandboxed pages and engine components) ---
+
+/**
+ * A page's motion, as it reports it. The page exposes `window[global] = { duration, seek(p),
+ * play() }`: `seek` is frame-pure (the picture at p depends on p alone), p = 1 is the rest
+ * state, and the page never autoplays while hidden or under prefers-reduced-motion.
+ */
+export const PageMotionInfoSchema = z.object({
+  global: z.string().min(1).describe("The window property holding the motion object, e.g. 'diagramMotion'"),
+  duration: z.number().nonnegative().describe("Length of play() in milliseconds")
+});
+export type PageMotionInfo = z.infer<typeof PageMotionInfoSchema>;
+
+/** The attributes a page marks itself with, so hosts can capture, chrome and describe it without knowing it. */
+export const PAGE_MARK_ATTRIBUTES = {
+  picture: "data-picture",
+  control: "data-control",
+  chrome: "data-chrome",
+  about: "data-about"
+} as const;
+
+export const PageControlSchema = z.object({
+  id: z.string().min(1),
+  label: z.string(),
+  kind: z.enum(["range", "select", "toggle", "text", "button"]),
+  value: z.union([z.string(), z.number(), z.boolean()]).optional(),
+  options: z.array(z.object({ value: z.string(), label: z.string() })).optional(),
+  min: z.number().optional(),
+  max: z.number().optional(),
+  step: z.number().optional()
+});
+export type PageControl = z.infer<typeof PageControlSchema>;
+
+/** What a page reports about itself (from its marks). */
+export const PageMarksSchema = z.object({
+  pictureLayers: z.number().int().nonnegative().describe("Canvas and SVG layers inside the data-picture container"),
+  controls: z.array(PageControlSchema).default([]),
+  about: z.string().optional().describe("Plain-text description from data-about"),
+  motion: PageMotionInfoSchema.optional()
+});
+export type PageMarks = z.infer<typeof PageMarksSchema>;
+
+export const PageThemeModeSchema = z.enum(["light", "dark"]);
+export type PageThemeMode = z.infer<typeof PageThemeModeSchema>;
+
+/** Messages between a host and a sandboxed page over postMessage. Every message carries `v: 1`. */
+export const PageMessageSchema = z.discriminatedUnion("type", [
+  z.object({ v: z.literal(1), type: z.literal("ready"), marks: PageMarksSchema.optional() }),
+  z.object({ v: z.literal(1), type: z.literal("seek"), p: z.number().min(0).max(1) }),
+  z.object({ v: z.literal(1), type: z.literal("replay") }),
+  z.object({
+    v: z.literal(1),
+    type: z.literal("theme"),
+    mode: PageThemeModeSchema,
+    tokens: z.record(z.string()).optional().describe("CSS custom property → value")
+  }),
+  z.object({ v: z.literal(1), type: z.literal("marks-request") }),
+  z.object({ v: z.literal(1), type: z.literal("marks"), marks: PageMarksSchema }),
+  z.object({ v: z.literal(1), type: z.literal("control"), id: z.string(), value: z.union([z.string(), z.number(), z.boolean()]) }),
+  z.object({ v: z.literal(1), type: z.literal("error"), message: z.string(), detail: z.string().optional() })
+]);
+export type PageMessage = z.infer<typeof PageMessageSchema>;
+
+/** What pictures to take of a component or page. One shape for every renderer. */
+export const PictureRequestSchema = z.object({
+  widths: z.array(z.number().int().positive()).min(1).default([1200]).describe("CSS px"),
+  height: z.number().int().positive().optional().describe("CSS px; absent means the content's height"),
+  themes: z.array(PageThemeModeSchema).min(1).default(["light", "dark"]),
+  at: z.array(z.number().min(0).max(1)).min(1).default([1]).describe("Motion progress values; 1 is at rest"),
+  hover: z.string().optional().describe("CSS selector of an element to hover before each picture"),
+  scale: z.number().positive().max(4).default(1).describe("Device pixel ratio"),
+  format: z.enum(["png", "jpeg"]).default("png")
+});
+export type PictureRequest = z.infer<typeof PictureRequestSchema>;
+export type PictureRequestInput = z.input<typeof PictureRequestSchema>;
+
+export const PictureRefSchema = z.object({
+  ref: z.string().min(1).describe("URL, data URI or storage path of the image"),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  theme: PageThemeModeSchema,
+  at: z.number().min(0).max(1).default(1),
+  hover: z.string().optional()
+});
+export type PictureRef = z.infer<typeof PictureRefSchema>;
+
+export const LookStatusSchema = z.enum(["pass", "warn", "fail"]);
+export type LookStatus = z.infer<typeof LookStatusSchema>;
+
+export const LookCheckSchema = z.object({
+  id: z.string().min(1).describe("Check id, e.g. 'contrast', 'hit-target', 'reduced-motion', 'axe'"),
+  status: LookStatusSchema,
+  message: z.string(),
+  target: z.string().optional().describe("What it's about: a CSS selector, a prop, or an element description"),
+  ruleId: z.string().optional().describe("The aesthetic rule it enforces, if any"),
+  picture: z.number().int().nonnegative().optional().describe("Index into LookResult.pictures")
+});
+export type LookCheck = z.infer<typeof LookCheckSchema>;
+
+export const LookFindingSchema = z.object({
+  text: z.string().min(1).describe("What a look (vision) check saw"),
+  severity: LookStatusSchema.default("warn"),
+  ruleId: z.string().optional().describe("The aesthetic rule it relates to"),
+  referenceId: z.string().optional().describe("The aesthetic reference it relates to"),
+  picture: z.number().int().nonnegative().optional()
+});
+export type LookFinding = z.infer<typeof LookFindingSchema>;
+
+/** The outcome of rendering something and checking the pictures. */
+export const LookResultSchema = z.object({
+  pictures: z.array(PictureRefSchema).default([]),
+  checks: z.array(LookCheckSchema).default([]),
+  findings: z.array(LookFindingSchema).default([]),
+  score: z.number().min(0).max(1).optional().describe("Overall, from a look check; 1 is a perfect match to the aesthetic"),
+  aesthetic: UiAestheticRefSchema.optional()
+});
+export type LookResult = z.infer<typeof LookResultSchema>;
+
+/** The worst status in a look result: 'fail' if any check or finding failed, then 'warn', else 'pass'. */
+export function lookStatus(result: Pick<LookResult, "checks" | "findings">): LookStatus {
+  const all = [...result.checks.map((c) => c.status), ...result.findings.map((f) => f.severity)];
+  return all.includes("fail") ? "fail" : all.includes("warn") ? "warn" : "pass";
+}

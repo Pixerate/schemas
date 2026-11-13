@@ -51,7 +51,7 @@
         },
         "screenshot": {
           "type": "string",
-          "description": "Data URI or URL of actual rendered component"
+          "description": "Deprecated, use screenshots. Data URI or URL of actual rendered component"
         },
         "themeSupport": {
           "$ref": "#/definitions/ThemeSupport"
@@ -71,6 +71,17 @@
         },
         "previewHarness": {
           "$ref": "#/definitions/PreviewHarness"
+        },
+        "source": {
+          "$ref": "#/definitions/ComponentSource",
+          "description": "Where the package came from; absent for packages made before sources were recorded"
+        },
+        "runtime": {
+          "$ref": "#/definitions/ComponentRuntime",
+          "description": "Absent means 'code'"
+        },
+        "screenshots": {
+          "$ref": "#/definitions/ComponentScreenshots"
         }
       },
       "required": [
@@ -106,6 +117,57 @@
       ],
       "additionalProperties": false
     },
+    "ComponentRuntime": {
+      "type": "string",
+      "enum": [
+        "code",
+        "engine"
+      ],
+      "description": "code: source you install and own; engine: a fixed, reviewed runtime that takes data"
+    },
+    "ComponentScreenshots": {
+      "type": "object",
+      "properties": {
+        "light": {
+          "type": "string",
+          "description": "URL or data URI of a real render in light mode"
+        },
+        "dark": {
+          "type": "string",
+          "description": "URL or data URI of a real render in dark mode"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentSource": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "flair",
+            "editor",
+            "generated",
+            "manual"
+          ]
+        },
+        "itemId": {
+          "type": "string",
+          "description": "The provider's id for the item, e.g. Flair's 'toggle-switch'"
+        },
+        "version": {
+          "type": "string",
+          "description": "The provider package's version, or the generator's"
+        },
+        "contentHash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider"
+      ],
+      "additionalProperties": false
+    },
     "ComponentVersion": {
       "type": "object",
       "properties": {
@@ -123,7 +185,11 @@
         },
         "aestheticId": {
           "type": "string",
-          "description": "References Aesthetic style e.g. 'glassmorphism'"
+          "description": "Deprecated mirror of aesthetic.skillId. References Aesthetic style e.g. 'glassmorphism'"
+        },
+        "aesthetic": {
+          "$ref": "#/definitions/UiAestheticRef",
+          "description": "The ui-aesthetic skill version this version was built from"
         },
         "version": {
           "type": "string",
@@ -148,7 +214,10 @@
             "enum": [
               "svelte",
               "react",
-              "webcomponent"
+              "webcomponent",
+              "swiftui",
+              "compose",
+              "html-page"
             ]
           }
         }
@@ -272,6 +341,28 @@
         "default",
         "light-and-dark"
       ]
+    },
+    "UiAestheticRef": {
+      "type": "object",
+      "properties": {
+        "skillId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The aesthetic skill's id, e.g. 'glassmorphism'"
+        },
+        "version": {
+          "type": "string",
+          "description": "The skill's semver; absent means the latest"
+        },
+        "contentHash": {
+          "type": "string",
+          "description": "The skill's contentHash when the thing was made"
+        }
+      },
+      "required": [
+        "skillId"
+      ],
+      "additionalProperties": false
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

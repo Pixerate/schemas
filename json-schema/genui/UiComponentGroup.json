@@ -1,0 +1,15 @@
+{
+  "$ref": "#/definitions/UiComponentGroup",
+  "definitions": {
+    "UiComponentGroup": {
+      "type": "string",
+      "enum": [
+        "baseline",
+        "data-visual",
+        "paradigm"
+      ],
+      "description": "baseline: the shadcn set; data-visual: charts and diagrams whose layout follows the data; paradigm: new kinds of UI (3-D, instruments)"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

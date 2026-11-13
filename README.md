@@ -20,10 +20,11 @@ src/
 ├── agent.ts     # Agent runtime contracts: interactions, website crawling & caching (also `@pixerate/schemas/agent`)
 ├── jobs.ts      # Queue job contracts (also `@pixerate/schemas/jobs`)
 ├── analytics.ts # Canonical product analytics schemas & PII guards (also `@pixerate/schemas/analytics`)
-└── jazz.ts      # An agent working alongside the user: observations, phrases, riffs, feedback, policy, product proposals (also `@pixerate/schemas/jazz`)
+├── jazz.ts      # An agent working alongside the user: observations, phrases, riffs, feedback, policy, product proposals (also `@pixerate/schemas/jazz`)
+└── skills.ts    # Agent skills: manifest, kinds with typed profiles, layers, bundles (also `@pixerate/schemas/skills`)
 ```
 
-The root entry re-exports every grouped module, so `import { FormBlockSchema } from "@pixerate/schemas"` keeps working. Client bundles should import from the narrower entry point (`@pixerate/schemas/agent`, `@pixerate/schemas/analytics`, `@pixerate/schemas/genui`, `@pixerate/schemas/jazz`, `@pixerate/schemas/jobs`, `@pixerate/schemas/media`, `@pixerate/schemas/realtime`) so they don't pull in every schema.
+The root entry re-exports every grouped module, so `import { FormBlockSchema } from "@pixerate/schemas"` keeps working. Client bundles should import from the narrower entry point (`@pixerate/schemas/agent`, `@pixerate/schemas/analytics`, `@pixerate/schemas/genui`, `@pixerate/schemas/jazz`, `@pixerate/schemas/jobs`, `@pixerate/schemas/media`, `@pixerate/schemas/realtime`, `@pixerate/schemas/skills`) so they don't pull in every schema.
 
 ## Exported Types & Schemas
 
@@ -91,6 +92,14 @@ Contracts for `@pixerate/jazz`, which watches what a user does in an editor and 
   - **Response**: `genre` (`prose`, `notes`, `chat`, `poem`, `list`, `technical`, `heading`), `palette` (`JazzTextVoice`: which voices should play next and at what `strength` 0–1, with optional `disabledRules`), `suggestions` (`JazzTextSuggestion`: at most 4 structural suggestions of kind `list`, `heading`, `math`, `title`, `alert` or `quote`, each anchored to a half-open `JazzTextRange` in **UTF-16 code-unit offsets** into `paragraph`, the unit `NSString` and AppKit use, with `replacement` and `why`), `why` (one-line rationale) and optional `fuelBalance`.
   - **Privacy rule**: Requests never carry code, math, tables or text outside the `before` / `paragraph` / `after` context window.
 - `JazzToolCall.arguments` is a recursive JSON value: these contracts are for storage and transport, not for Gemini structured outputs (see GOTCHAS).
+
+### 9. Skills and generated UI (`@pixerate/schemas/skills`, `@pixerate/schemas/genui`)
+One contract for skills, and the contracts that let components be generated in an aesthetic, synced from providers (Flair, editor) and checked from real renders.
+- **Skills** (`./skills`): `SkillManifest` (`SKILL.md` frontmatter plus the id, which is the folder name: `name`, `description`, `version`, `kind`, `extends`, `tags`, `metadata`, `files`, `contentHash`), `SkillKind` (profile file, profile JSON Schema, profile version, merge rule) with `BUILT_IN_SKILL_KINDS` (`rule`, `skill`, `style`, `ui-aesthetic`), `SkillLayer` (`builtin`, `org`, `workspace`, `user`), `SkillState`, `SkillBundleManifest` (a `.skill` zip's `bundle.json`) and `skillContentHashInput` (the canonical text whose sha256 is `contentHash`). Also generated into Swift (`Skills.swift`).
+- **Aesthetics**: `UiAestheticProfile` is the `ui-aesthetic` kind's profile (`aesthetic.json`): tokens or a theme, colour `roles`, `motion`, `shape`, `rules` (with ids), `references`, `checks`, per-type `overrides` and contact-sheet `examples`. `UiAestheticRef` (`skillId`, `version`, `contentHash`) is recorded on `ComponentVariant`, `ComponentVersion` and `UIGenerationOptions` (`aestheticId` stays as a deprecated mirror). Fixtures for the eight built-in aesthetics are in `tests/fixtures/ui-aesthetics/`.
+- **Contracts and providers**: `UiComponentContract` (props or data as JSON Schema, controlled `state`, `events`, `a11y`, `colorRoles` from `UI_COLOR_ROLES`, `motion`, `sizing`) on `UIComponentType` with a `group` (`baseline`, `data-visual`, `paradigm`) and a `fallback`; `UiDescriptor`, what a provider attaches to an item it offers as UI; `ComponentSource`, `ComponentRuntime` (`code` or `engine`) and `ComponentScreenshots` on `ComponentPackage`; `PlatformTarget` (the web languages plus `swiftui`, `compose`, `html-page`) for `ComponentVersion.packages`.
+- **Pages and looks**: `PageMotionInfo` and `PageMessage` (host ↔ sandboxed page over `postMessage`: `ready`, `seek`, `replay`, `theme`, `marks`, `control`, `error`), `PAGE_MARK_ATTRIBUTES` and `PageMarks`, `PictureRequest`, and `LookResult` (pictures, `checks`, vision `findings` tied to aesthetic rule ids, `score`) with `lookStatus`. The page kits planned in Pixerate/editor#795 (3-D) and Pixerate/editor#814 (2-D) implement the page contract.
+- `JsonValue` and `JsonSchemaDocument` are recursive JSON: like Jazz, these contracts are for storage and transport, not for Gemini structured outputs (see GOTCHAS).
 
 ---
 

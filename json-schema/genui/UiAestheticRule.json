@@ -1,0 +1,31 @@
+{
+  "$ref": "#/definitions/UiAestheticRule",
+  "definitions": {
+    "UiAestheticRule": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "Stable id, so checks and look findings can point at the rule"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One short statement, e.g. 'Only data is coloured; chrome stays neutral'"
+        },
+        "checkable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether a deterministic check enforces it (listed in checks)"
+        }
+      },
+      "required": [
+        "id",
+        "text"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
