@@ -72,6 +72,14 @@
           "minimum": 0,
           "description": "Size in bytes"
         },
+        "encoding": {
+          "type": "string",
+          "enum": [
+            "text",
+            "binary"
+          ],
+          "description": "text or binary, as skillFileEncoding(path) says; binary files (pictures, PDFs, fonts) enter the content hash by their sha256"
+        },
         "note": {
           "type": "string",
           "description": "What to take from this file (for references: what the picture shows that matters)"
@@ -158,7 +166,7 @@
         "contentHash": {
           "type": "string",
           "pattern": "^[a-f0-9]{64}$",
-          "description": "sha256 (hex) of skillContentHashInput(files with their contents); changes whenever any file does"
+          "description": "sha256 (hex) of skillContentHashInput(every file: text by content, binary by its sha256); changes whenever any file does"
         }
       },
       "required": [

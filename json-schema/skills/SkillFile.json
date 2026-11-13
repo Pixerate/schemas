@@ -21,6 +21,14 @@
           "minimum": 0,
           "description": "Size in bytes"
         },
+        "encoding": {
+          "type": "string",
+          "enum": [
+            "text",
+            "binary"
+          ],
+          "description": "text or binary, as skillFileEncoding(path) says; binary files (pictures, PDFs, fonts) enter the content hash by their sha256"
+        },
         "note": {
           "type": "string",
           "description": "What to take from this file (for references: what the picture shows that matters)"

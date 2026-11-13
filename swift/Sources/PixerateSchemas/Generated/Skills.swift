@@ -106,6 +106,12 @@ public struct SkillBundleManifest: Codable, Sendable, Equatable {
     }
 }
 
+/// text or binary, as skillFileEncoding(path) says; binary files (pictures, PDFs, fonts) enter the content hash by their sha256
+public enum SkillFileEncoding: String, Codable, Sendable, CaseIterable {
+    case text = "text"
+    case binary = "binary"
+}
+
 public struct SkillFile: Codable, Sendable, Equatable {
     /// Path inside the skill folder, with '/' separators and no '..'
     public var path: String
@@ -114,6 +120,8 @@ public struct SkillFile: Codable, Sendable, Equatable {
     public var mediaType: String?
     /// Size in bytes
     public var size: Int?
+    /// text or binary, as skillFileEncoding(path) says; binary files (pictures, PDFs, fonts) enter the content hash by their sha256
+    public var encoding: SkillFileEncoding?
     /// What to take from this file (for references: what the picture shows that matters)
     public var note: String?
 
@@ -122,6 +130,7 @@ public struct SkillFile: Codable, Sendable, Equatable {
         case role = "role"
         case mediaType = "mediaType"
         case size = "size"
+        case encoding = "encoding"
         case note = "note"
     }
 
@@ -130,12 +139,14 @@ public struct SkillFile: Codable, Sendable, Equatable {
         role: SkillFileRole,
         mediaType: String? = nil,
         size: Int? = nil,
+        encoding: SkillFileEncoding? = nil,
         note: String? = nil
     ) {
         self.path = path
         self.role = role
         self.mediaType = mediaType
         self.size = size
+        self.encoding = encoding
         self.note = note
     }
 
@@ -145,6 +156,7 @@ public struct SkillFile: Codable, Sendable, Equatable {
         self.role = try container.decode(SkillFileRole.self, forKey: .role)
         self.mediaType = try container.decodeIfPresent(String.self, forKey: .mediaType)
         self.size = try container.decodeIfPresent(Int.self, forKey: .size)
+        self.encoding = try container.decodeIfPresent(SkillFileEncoding.self, forKey: .encoding)
         self.note = try container.decodeIfPresent(String.self, forKey: .note)
     }
 
@@ -154,6 +166,7 @@ public struct SkillFile: Codable, Sendable, Equatable {
         try container.encode(role, forKey: .role)
         try container.encodeIfPresent(mediaType, forKey: .mediaType)
         try container.encodeIfPresent(size, forKey: .size)
+        try container.encodeIfPresent(encoding, forKey: .encoding)
         try container.encodeIfPresent(note, forKey: .note)
     }
 }
@@ -238,7 +251,7 @@ public struct SkillManifest: Codable, Sendable, Equatable {
     public var metadata: [String: JSONValue]?
     /// Files in the skill, SKILL.md included
     public var files: [SkillFile]
-    /// sha256 (hex) of skillContentHashInput(files with their contents); changes whenever any file does
+    /// sha256 (hex) of skillContentHashInput(every file: text by content, binary by its sha256); changes whenever any file does
     public var contentHash: String?
 
     enum CodingKeys: String, CodingKey {
