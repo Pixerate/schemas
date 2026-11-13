@@ -62,7 +62,7 @@ describe("skills (#76)", () => {
     const files = [
       { path: "SKILL.md", content: "---\nname: ink\n---\n" },
       { path: "aesthetic.json", content: "{}" },
-      { path: "references/a.png", content: "png" }
+      { path: "references/a.md", content: "notes" }
     ];
     const a = sha(skillContentHashInput(files));
     const b = sha(skillContentHashInput([...files].reverse()));

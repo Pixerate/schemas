@@ -35,6 +35,10 @@ export const SkillFileSchema = z.object({
   role: SkillFileRoleSchema,
   mediaType: z.string().optional().describe("Media type, e.g. 'text/markdown', 'application/json', 'image/png'"),
   size: z.number().int().nonnegative().optional().describe("Size in bytes"),
+  encoding: z
+    .enum(["text", "binary"])
+    .optional()
+    .describe("text or binary, as skillFileEncoding(path) says; binary files (pictures, PDFs, fonts) enter the content hash by their sha256"),
   note: z.string().optional().describe("What to take from this file (for references: what the picture shows that matters)")
 });
 export type SkillFile = z.infer<typeof SkillFileSchema>;
@@ -69,7 +73,7 @@ export const SkillManifestSchema = z.object({
     .string()
     .regex(SHA256)
     .optional()
-    .describe("sha256 (hex) of skillContentHashInput(files with their contents); changes whenever any file does")
+    .describe("sha256 (hex) of skillContentHashInput(every file: text by content, binary by its sha256); changes whenever any file does")
 });
 export type SkillManifest = z.infer<typeof SkillManifestSchema>;
 export type SkillManifestInput = z.input<typeof SkillManifestSchema>;
@@ -139,13 +143,87 @@ export const SkillBundleManifestSchema = z.object({
 export type SkillBundleManifest = z.infer<typeof SkillBundleManifestSchema>;
 
 /**
- * The text a skill's `contentHash` is the sha256 of: each file as `path`, a NUL, its content,
- * a NUL, sorted by path (code-point order). Hashing is left to the caller, so this module
- * stays dependency-free in every runtime.
+ * File types a skill may hold, by extension. Text files are hashed by their content; binary files
+ * (pictures, PDFs, fonts) by their bytes' sha256. Anything else is left out of a skill. A path's
+ * extension alone decides which, so every package hashes the same folder the same way.
  */
-export function skillContentHashInput(files: ReadonlyArray<{ path: string; content: string }>): string {
+export const SKILL_TEXT_FILE_EXTENSIONS = [
+  "md", "markdown", "txt", "json", "jsonl", "yaml", "yml", "toml", "csv", "tsv", "xml",
+  "html", "htm", "css", "svg", "js", "mjs", "cjs", "ts", "tsx", "jsx"
+] as const;
+export const SKILL_BINARY_FILE_EXTENSIONS = [
+  "png", "jpg", "jpeg", "webp", "gif", "avif", "pdf", "woff", "woff2", "ttf", "otf"
+] as const;
+
+/** Media types for the file types above. */
+export const SKILL_FILE_MEDIA_TYPES: Readonly<Record<string, string>> = {
+  md: "text/markdown", markdown: "text/markdown", txt: "text/plain", json: "application/json",
+  jsonl: "application/jsonl", yaml: "application/yaml", yml: "application/yaml", toml: "application/toml",
+  csv: "text/csv", tsv: "text/tab-separated-values", xml: "application/xml", html: "text/html", htm: "text/html",
+  css: "text/css", svg: "image/svg+xml", js: "text/javascript", mjs: "text/javascript", cjs: "text/javascript",
+  ts: "text/typescript", tsx: "text/typescript", jsx: "text/javascript",
+  png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", gif: "image/gif",
+  avif: "image/avif", pdf: "application/pdf", woff: "font/woff", woff2: "font/woff2", ttf: "font/ttf", otf: "font/otf"
+};
+
+export type SkillFileEncoding = "text" | "binary";
+
+const extensionOf = (path: string): string => {
+  const name = path.slice(path.lastIndexOf("/") + 1);
+  const dot = name.lastIndexOf(".");
+  return dot > 0 ? name.slice(dot + 1).toLowerCase() : "";
+};
+const TEXT_EXTENSIONS: ReadonlySet<string> = new Set(SKILL_TEXT_FILE_EXTENSIONS);
+const BINARY_EXTENSIONS: ReadonlySet<string> = new Set(SKILL_BINARY_FILE_EXTENSIONS);
+
+/** Whether a skill file is text or binary, from its extension; `undefined` for a type skills don't hold. */
+export function skillFileEncoding(path: string): SkillFileEncoding | undefined {
+  const ext = extensionOf(path);
+  if (TEXT_EXTENSIONS.has(ext)) return "text";
+  if (BINARY_EXTENSIONS.has(ext)) return "binary";
+  return undefined;
+}
+
+/** A skill file's media type from its extension, or `undefined`. */
+export function skillFileMediaType(path: string): string | undefined {
+  return SKILL_FILE_MEDIA_TYPES[extensionOf(path)];
+}
+
+/**
+ * Which content-hash rule this package writes. Format 1 hashed text files only; format 2 adds
+ * binary files as their sha256. A skill with no binary files hashes the same under both, so
+ * format-1 hashes recorded anywhere (`UiAestheticRef.contentHash`, bundles) stay valid.
+ */
+export const SKILL_CONTENT_HASH_FORMAT = 2;
+
+/** A file as it goes into the content hash: a text file with its content, or a binary file with its bytes' sha256 (hex). */
+export type SkillContentHashFile =
+  | { path: string; content: string; sha256?: undefined }
+  | { path: string; sha256: string; content?: undefined };
+
+/**
+ * The text a skill's `contentHash` is the sha256 of. Files are sorted by path (code-point order)
+ * and each adds:
+ *
+ * - a text file: `path`, a NUL, its content, a NUL (format 1, unchanged);
+ * - a binary file: `path`, a NUL, `sha256:` and its bytes' sha256 in lowercase hex, a NUL.
+ *
+ * A file is binary when {@link skillFileEncoding} says so; pass its `sha256`, not its content.
+ * Throws when a binary path is given content or a text path is given a sha256. Hashing is left to
+ * the caller, so this module stays dependency-free in every runtime.
+ */
+export function skillContentHashInput(files: ReadonlyArray<SkillContentHashFile>): string {
   return [...files]
     .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0))
-    .map((f) => `${f.path}\u0000${f.content}\u0000`)
+    .map((f) => {
+      const binary = skillFileEncoding(f.path) === "binary";
+      if (typeof f.sha256 === "string") {
+        if (!binary) throw new Error(`"${f.path}" is not a binary file type; hash it by its content`);
+        if (!SHA256.test(f.sha256)) throw new Error(`"${f.path}": sha256 must be 64 lowercase hex characters`);
+        return `${f.path}\u0000sha256:${f.sha256}\u0000`;
+      }
+      if (binary) throw new Error(`"${f.path}" is a binary file type; pass its bytes' sha256, not its content`);
+      return `${f.path}\u0000${f.content}\u0000`;
+    })
     .join("");
 }
