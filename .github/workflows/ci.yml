@@ -55,6 +55,13 @@ jobs:
       - name: Run test suite
         run: npm test
 
+      # Consumers may run zod 4 (zod 3 has no fix for GHSA-mrhx-c7xc-m3w5). Keep the dist built
+      # above (JSON Schema export needs zod 3) and run the schemas against zod 4 at runtime.
+      - name: Run test suite against zod 4
+        run: |
+          npm install --no-save --no-audit --no-fund zod@4.6.6
+          node --test tests/*.test.mjs
+
   swift:
     name: Swift Package (Build & Test)
     runs-on: macos-latest

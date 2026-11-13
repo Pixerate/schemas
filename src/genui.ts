@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { partialRecord } from "./zod-compat.js";
 
 /**
  * Generative UI contracts used by @pixerate/genui-core: multi-platform components, design
@@ -147,8 +148,8 @@ export const ComponentTransformationResultSchema = z.object({
   title: z.string(),
   description: z.string(),
   tags: z.array(z.string()),
-  platforms: z.record(PlatformLanguageSchema, z.string()),
-  harnesses: z.record(PlatformLanguageSchema, PreviewHarnessSchema),
+  platforms: partialRecord(PlatformLanguageSchema, z.string()),
+  harnesses: partialRecord(PlatformLanguageSchema, PreviewHarnessSchema),
   dependencies: z
     .object({
       svelte: z.array(ComponentDependencySchema).default([]),
@@ -343,7 +344,7 @@ export const ComponentVersionSchema = z.object({
   changelogNote: z.string(),
   createdBy: z.string(),
   createdAt: z.string().describe("ISO timestamp"),
-  packages: z.record(PlatformTargetSchema, ComponentPackageSchema)
+  packages: partialRecord(PlatformTargetSchema, ComponentPackageSchema)
 });
 export type ComponentVersion = z.infer<typeof ComponentVersionSchema>;
 

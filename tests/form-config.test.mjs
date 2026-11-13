@@ -1,6 +1,10 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { zodToJsonSchema } from "zod-to-json-schema";
+import { z } from "zod";
+
+// zod-to-json-schema only understands zod 3; the zod 4 CI job runs these schemas at runtime only.
+const ZOD4_SKIP = "_zod" in z.string() ? "zod-to-json-schema needs zod 3" : false;
 import {
   FormConfigSchema,
   FormHandoffActionSchema,
@@ -77,7 +81,7 @@ describe("Form config schemas", () => {
     assert.deepEqual(parsed.handoffActions[0].config, { target: "crm", mapping: '{"c1":"name"}' });
   });
 
-  it("emits a bounded JSON Schema for config", () => {
+  it("emits a bounded JSON Schema for config", { skip: ZOD4_SKIP }, () => {
     const json = zodToJsonSchema(FormHandoffActionSchema, { $refStrategy: "none" });
     assert.deepEqual(json.properties.config, {
       type: "object",
