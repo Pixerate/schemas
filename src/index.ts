@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { partialRecord } from "./zod-compat.js";
 import {
   AspectRatioSchema,
   VideoAspectRatioSchema,
@@ -466,7 +467,7 @@ export type ChannelPreferences = z.infer<typeof ChannelPreferencesSchema>;
 
 export const NotificationPreferencesSchema = z.object({
   userId: z.string(),
-  channels: z.record(NotificationCategorySchema, ChannelPreferencesSchema).optional().default({}),
+  channels: partialRecord(NotificationCategorySchema, ChannelPreferencesSchema).optional().default({}),
   emailDigest: z.enum(["instant", "hourly", "daily", "weekly", "never"]).default("instant"),
   quietHours: z.object({
     enabled: z.boolean().default(false),

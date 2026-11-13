@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { emptyObjectDefault } from "./zod-compat.js";
 
 /**
  * Jazz contracts: an agent working alongside a user in an editor. Jazz watches what the user
@@ -87,23 +88,23 @@ export type JazzAutonomy = z.infer<typeof JazzAutonomySchema>;
 
 export const JazzPolicySchema = z.object({
   autonomy: JazzAutonomySchema.default("suggest"),
-  tempo: z
-    .object({
+  tempo: emptyObjectDefault(
+    z.object({
       /** Quiet time (ms) that ends a phrase. */
       idleMs: z.number().int().min(200).max(60_000).default(1500),
       /** Least time (ms) between two riffs. */
       minGapMs: z.number().int().min(0).max(600_000).default(8000)
     })
-    .default({}),
-  budget: z
-    .object({
+  ),
+  budget: emptyObjectDefault(
+    z.object({
       maxRiffsPerMinute: z.number().int().min(0).max(60).default(3),
       /** Most riffs waiting for the user at once. */
       maxPending: z.number().int().min(0).max(20).default(3),
       /** Pause (ms) after the user dismisses a riff. */
       cooldownAfterRejectMs: z.number().int().min(0).max(3_600_000).default(30_000)
     })
-    .default({}),
+  ),
   /** Riffs may change or remove what the user made (only with `assist`). Default: they only add. */
   allowEditUserContent: z.boolean().default(false),
   /** Strategies to run (e.g. `continue-series`, `annotate`, `connect`); all when absent. */
