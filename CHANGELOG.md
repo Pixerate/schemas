@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.53.0
+
+### Minor Changes
+
+- 6e508b3: Add `JudgeMediaArgsSchema` and `MediaJudgementQuestionSchema` to `@pixerate/schemas/media`: arguments of the `judge_media` agent tool, which asks a decision model typed questions (`yes_no`, `choice`, `score`) about one to six images, videos or audio clips in one call.
+
 ## 1.52.0
 
 ### Minor Changes
