@@ -536,3 +536,55 @@ export const DocumentGenerationOptionsSchema = z.object({
   theme: z.enum(["light", "dark", "corporate", "minimal"]).optional().default("light")
 });
 export type DocumentGenerationOptions = z.input<typeof DocumentGenerationOptionsSchema>;
+
+// --- Media Judgement (decision model) ---
+/** Question names are the keys answers come back under; the Gemini Decisions API limits them. */
+export const MediaJudgementQuestionNameSchema = z
+  .string()
+  .regex(/^[A-Za-z0-9_-]{1,64}$/)
+  .describe("Short key the answer comes back under (letters, digits, _ or -, up to 64)");
+
+/**
+ * One typed question for a decision model about the media: `yes_no` returns the probability of
+ * yes, `choice` picks one of `options`, and `score` rates against the ordered `levels` (lowest
+ * first). Flat rather than a discriminated union so it converts to Gemini function schemas.
+ */
+export const MediaJudgementQuestionSchema = z.object({
+  name: MediaJudgementQuestionNameSchema,
+  type: z.enum(["yes_no", "choice", "score"]).describe("yes_no, choice (pick one option) or score (rate against levels)"),
+  question: z.string().min(1).max(500).describe("The question, phrased about the media"),
+  options: z
+    .array(z.string().min(1).max(200))
+    .min(2)
+    .max(10)
+    .optional()
+    .describe("For choice: the options (2 to 10)"),
+  levels: z
+    .array(z.string().min(1).max(200))
+    .min(2)
+    .max(10)
+    .optional()
+    .describe("For score: the levels from lowest to highest (2 to 10)")
+});
+export type MediaJudgementQuestion = z.infer<typeof MediaJudgementQuestionSchema>;
+
+/** Arguments of the `judge_media` agent tool: typed questions about one or more images, videos or audio clips. */
+export const JudgeMediaArgsSchema = z.object({
+  media: z
+    .array(z.string())
+    .min(1)
+    .max(6)
+    .describe("Media to judge (1 to 6), each inline as base64 or a data: URI"),
+  mimeTypes: z
+    .array(z.string())
+    .max(6)
+    .optional()
+    .describe("MIME type of each media item, in the same order (inferred for PNG and JPEG when left out)"),
+  questions: z.array(MediaJudgementQuestionSchema).min(1).max(8).describe("Questions to answer (1 to 8), in one call"),
+  context: z
+    .string()
+    .max(4000)
+    .optional()
+    .describe("What the media is for, such as the brief it should match")
+});
+export type JudgeMediaArgs = z.infer<typeof JudgeMediaArgsSchema>;
