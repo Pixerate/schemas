@@ -1,0 +1,103 @@
+{
+  "$ref": "#/definitions/JudgeMediaArgs",
+  "definitions": {
+    "JudgeMediaArgs": {
+      "type": "object",
+      "properties": {
+        "media": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 6,
+          "description": "Media to judge (1 to 6), each inline as base64 or a data: URI"
+        },
+        "mimeTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 6,
+          "description": "MIME type of each media item, in the same order (inferred for PNG and JPEG when left out)"
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MediaJudgementQuestion"
+          },
+          "minItems": 1,
+          "maxItems": 8,
+          "description": "Questions to answer (1 to 8), in one call"
+        },
+        "context": {
+          "type": "string",
+          "maxLength": 4000,
+          "description": "What the media is for, such as the brief it should match"
+        }
+      },
+      "required": [
+        "media",
+        "questions"
+      ],
+      "additionalProperties": false
+    },
+    "MediaJudgementQuestion": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/MediaJudgementQuestionName"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "yes_no",
+            "choice",
+            "score"
+          ],
+          "description": "yes_no, choice (pick one option) or score (rate against levels)"
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "description": "The question, phrased about the media"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "minItems": 2,
+          "maxItems": 10,
+          "description": "For choice: the options (2 to 10)"
+        },
+        "levels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "minItems": 2,
+          "maxItems": 10,
+          "description": "For score: the levels from lowest to highest (2 to 10)"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "question"
+      ],
+      "additionalProperties": false
+    },
+    "MediaJudgementQuestionName": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,64}$",
+      "description": "Short key the answer comes back under (letters, digits, _ or -, up to 64)"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

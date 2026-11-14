@@ -1,0 +1,11 @@
+{
+  "$ref": "#/definitions/MediaJudgementQuestionName",
+  "definitions": {
+    "MediaJudgementQuestionName": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,64}$",
+      "description": "Short key the answer comes back under (letters, digits, _ or -, up to 64)"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

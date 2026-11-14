@@ -1666,8 +1666,23 @@
   },
   {
     "module": "media",
+    "name": "JudgeMediaArgs",
+    "file": "media/JudgeMediaArgs.json"
+  },
+  {
+    "module": "media",
     "name": "KenBurnsOptions",
     "file": "media/KenBurnsOptions.json"
+  },
+  {
+    "module": "media",
+    "name": "MediaJudgementQuestion",
+    "file": "media/MediaJudgementQuestion.json"
+  },
+  {
+    "module": "media",
+    "name": "MediaJudgementQuestionName",
+    "file": "media/MediaJudgementQuestionName.json"
   },
   {
     "module": "media",
