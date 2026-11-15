@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 1.54.0
+
+### Minor Changes
+
+- cde9cf9: Add `ComplimentarySubscriptionSchema` and an optional `complimentary` field on `Organization` and `Team`, for subscriptions granted free of charge by an admin.
+
 ## 1.53.0
 
 ### Minor Changes
