@@ -215,6 +215,23 @@ export const OrgMemberSchema = z.object({
 });
 export type OrgMember = z.infer<typeof OrgMemberSchema>;
 
+// --- Complimentary subscriptions ---
+/**
+ * A subscription granted free of charge by an admin (support, press, partners). Stored apart
+ * from the billing fields, so Stripe and App Store billing never overwrite or revert it.
+ */
+export const ComplimentarySubscriptionSchema = z.object({
+  /** The plan the grant unlocks, e.g. "pro". */
+  planId: z.string(),
+  /** When the grant ends. Absent or null: it never expires. */
+  expiresAt: z.union([z.string(), z.number(), z.date()]).optional().nullable(),
+  reason: z.string().optional(),
+  /** User id of the admin who granted it. */
+  grantedBy: z.string().optional(),
+  grantedAt: z.union([z.string(), z.number(), z.date()]).optional()
+});
+export type ComplimentarySubscription = z.infer<typeof ComplimentarySubscriptionSchema>;
+
 export const OrganizationSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -230,6 +247,7 @@ export const OrganizationSchema = z.object({
   cancelAtPeriodEnd: z.boolean().optional(),
   billingPeriodStart: z.union([z.string(), z.number(), z.date()]).optional(),
   billingPeriodEnd: z.union([z.string(), z.number(), z.date()]).optional(),
+  complimentary: ComplimentarySubscriptionSchema.optional().nullable(),
   metadata: z.record(z.unknown()).optional().default({}),
   createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
   updatedAt: z.union([z.string(), z.number(), z.date()]).optional()
@@ -271,6 +289,7 @@ export const TeamSchema = z.object({
   cancelAtPeriodEnd: z.boolean().optional(),
   billingPeriodStart: z.union([z.string(), z.number(), z.date()]).optional(),
   billingPeriodEnd: z.union([z.string(), z.number(), z.date()]).optional(),
+  complimentary: ComplimentarySubscriptionSchema.optional().nullable(),
   metadata: z.record(z.unknown()).optional().default({}),
   createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
   updatedAt: z.union([z.string(), z.number(), z.date()]).optional()

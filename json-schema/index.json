@@ -991,6 +991,11 @@
   },
   {
     "module": "index",
+    "name": "ComplimentarySubscription",
+    "file": "index/ComplimentarySubscription.json"
+  },
+  {
+    "module": "index",
     "name": "EmailAttachment",
     "file": "index/EmailAttachment.json"
   },
