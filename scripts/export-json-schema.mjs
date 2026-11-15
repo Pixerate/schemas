@@ -6,7 +6,7 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
-const distDir = path.resolve(rootDir, 'dist');
+const zod3Dir = path.resolve(rootDir, 'node_modules', '.cache', 'schemas-zod3');
 const jsonSchemaDir = path.resolve(rootDir, 'json-schema');
 
 const isCheck = process.argv.includes('--check');
@@ -28,13 +28,32 @@ const SUBMODULES = [
 const CLOCK_A = Date.UTC(2001, 0, 1);
 const CLOCK_B = Date.UTC(2002, 0, 1);
 
+/**
+ * The package is written against zod 4, but `zod-to-json-schema` only reads zod 3 schemas. zod 4
+ * still ships the zod 3 API as `zod/v3`, so bundle the source again with `zod` aliased to it and
+ * export from that copy. Code splitting keeps a schema shared by several modules a single object,
+ * which the `$ref` matching below relies on.
+ */
+async function buildZod3Copy() {
+  const { build } = await import('esbuild');
+  fs.rmSync(zod3Dir, { recursive: true, force: true });
+  await build({
+    entryPoints: [...SUBMODULES, 'index'].map((mod) => path.resolve(rootDir, 'src', `${mod}.ts`)),
+    outdir: zod3Dir,
+    bundle: true,
+    splitting: true,
+    format: 'esm',
+    platform: 'node',
+    alias: { zod: 'zod/v3' },
+    logLevel: 'warning'
+  });
+}
+
 async function loadSchemas() {
+  await buildZod3Copy();
   const loadedModules = {};
   for (const mod of [...SUBMODULES, 'index']) {
-    const modPath = path.resolve(distDir, `${mod}.js`);
-    if (!fs.existsSync(modPath)) {
-      throw new Error(`Built module not found at ${modPath}. Run tsup build first.`);
-    }
+    const modPath = path.resolve(zod3Dir, `${mod}.js`);
     loadedModules[mod] = await import(`file://${modPath}`);
   }
 

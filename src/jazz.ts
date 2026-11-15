@@ -19,7 +19,7 @@ export type JazzOrigin = z.infer<typeof JazzOriginSchema>;
 /** A JSON value, for tool-call arguments. */
 export type JazzJsonValue = string | number | boolean | null | JazzJsonValue[] | { [key: string]: JazzJsonValue };
 export const JazzJsonValueSchema: z.ZodType<JazzJsonValue> = z.lazy(() =>
-  z.union([z.string(), z.number(), z.boolean(), z.null(), z.array(JazzJsonValueSchema), z.record(JazzJsonValueSchema)])
+  z.union([z.string(), z.number(), z.boolean(), z.null(), z.array(JazzJsonValueSchema), z.record(z.string(), JazzJsonValueSchema)])
 );
 
 const IsoDateTimeSchema = z.string().datetime({ offset: true });
@@ -118,7 +118,7 @@ export type JazzPolicyInput = z.input<typeof JazzPolicySchema>;
 /** A tool call a riff makes (or proposes), by its exposed name in the editor's tool registry. */
 export const JazzToolCallSchema = z.object({
   name: z.string().min(1),
-  arguments: z.record(JazzJsonValueSchema).default({})
+  arguments: z.record(z.string(), JazzJsonValueSchema).default({})
 });
 export type JazzToolCall = z.infer<typeof JazzToolCallSchema>;
 
@@ -355,7 +355,7 @@ export const JazzTextVoiceStateSchema = z.object({
   /** Edits made by this voice that the writer undid or typed over. */
   undone: z.number().int().min(0).default(0),
   /** Kept and undone counts keyed by rule id (e.g. `sentence-case`, `end-stop`, `clause-comma`, `smart-quotes`). */
-  rules: z.record(JazzTextVoiceStatsSchema).default({})
+  rules: z.record(z.string(), JazzTextVoiceStatsSchema).default({})
 });
 export type JazzTextVoiceState = z.infer<typeof JazzTextVoiceStateSchema>;
 export type JazzTextVoiceStateInput = z.input<typeof JazzTextVoiceStateSchema>;

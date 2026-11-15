@@ -22,7 +22,7 @@ export type AgentDocumentAttachment = z.infer<typeof AgentDocumentAttachmentSche
 
 export const AgentToolSchema = z.object({
   type: z.string(),
-  config: z.record(z.any()).optional()
+  config: z.record(z.string(), z.any()).optional()
 });
 export type AgentTool = z.infer<typeof AgentToolSchema>;
 
@@ -49,7 +49,7 @@ export type AgentEnvironment = z.infer<typeof AgentEnvironmentSchema>;
 export const AgentConfigSchema = z.object({
   type: z.string().optional(),
   model: z.string().optional(),
-  options: z.record(z.any()).optional()
+  options: z.record(z.string(), z.any()).optional()
 });
 export type AgentConfig = z.infer<typeof AgentConfigSchema>;
 
@@ -83,7 +83,7 @@ export const AgentInteractionResultSchema = z.object({
   outputText: z.string().optional(),
   error: z.string().optional(),
   latencyMs: z.number().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 });
@@ -149,7 +149,7 @@ export const CachedPageSchema = z.object({
   fetchedAt: z.union([z.string(), z.date()]),
   expiresAt: z.union([z.string(), z.date()]).optional(),
   hasInjectionWarning: z.boolean().optional(),
-  metadata: z.record(z.unknown()).optional()
+  metadata: z.record(z.string(), z.unknown()).optional()
 });
 export type CachedPage = z.infer<typeof CachedPageSchema>;
 
@@ -344,7 +344,7 @@ export type AgentRiskLevel = z.infer<typeof AgentRiskLevelSchema>;
 export const AgentApprovalRequestSchema = z.object({
   toolCallId: z.string(),
   toolName: z.string(),
-  parameters: z.record(z.unknown()),
+  parameters: z.record(z.string(), z.unknown()),
   riskLevel: AgentRiskLevelSchema,
   riskReason: z.string().optional()
 });
@@ -353,7 +353,7 @@ export type AgentApprovalRequest = z.infer<typeof AgentApprovalRequestSchema>;
 export const AgentApprovalResponseSchema = z.object({
   toolCallId: z.string(),
   status: z.enum(["approved", "denied", "modified"]),
-  modifiedParameters: z.record(z.unknown()).optional(),
+  modifiedParameters: z.record(z.string(), z.unknown()).optional(),
   feedback: z.string().optional()
 });
 export type AgentApprovalResponse = z.infer<typeof AgentApprovalResponseSchema>;

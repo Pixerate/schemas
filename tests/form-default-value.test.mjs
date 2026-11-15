@@ -1,10 +1,8 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { z } from "zod";
-
-// zod-to-json-schema only understands zod 3; the zod 4 CI job runs these schemas at runtime only.
-const ZOD4_SKIP = "_zod" in z.string() ? "zod-to-json-schema needs zod 3" : false;
+// zod-to-json-schema reads zod 3 schemas: use the zod/v3 copy the JSON Schema export builds.
+import * as zod3 from "../node_modules/.cache/schemas-zod3/genui.js";
 import {
   BaseFormControlSchema,
   FormControlSchema,
@@ -66,8 +64,8 @@ describe("Form control defaultValue", () => {
     assert.equal(parsed.stages[0].sections[0].controls[0].itemControls[0].defaultValue, '{"a":1}');
   });
 
-  it("emits a bounded JSON Schema for defaultValue", { skip: ZOD4_SKIP }, () => {
-    const json = zodToJsonSchema(BaseFormControlSchema, { $refStrategy: "none" });
+  it("emits a bounded JSON Schema for defaultValue", () => {
+    const json = zodToJsonSchema(zod3.BaseFormControlSchema, { $refStrategy: "none" });
     assert.deepEqual(json.properties.defaultValue, {
       anyOf: [
         { type: "string" },
@@ -81,7 +79,7 @@ describe("Form control defaultValue", () => {
 
   it("leaves no unconstrained subschema anywhere in TechnicalFormSchema", () => {
     for (const $refStrategy of ["none", "root"]) {
-      assert.deepEqual(findEmptySchemas(zodToJsonSchema(TechnicalFormSchema, { $refStrategy })), []);
+      assert.deepEqual(findEmptySchemas(zodToJsonSchema(zod3.TechnicalFormSchema, { $refStrategy })), []);
     }
   });
 });
