@@ -1,6 +1,66 @@
 {
   "$ref": "#/definitions/Team",
   "definitions": {
+    "ComplimentarySubscription": {
+      "type": "object",
+      "properties": {
+        "planId": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "not": {}
+                },
+                {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "grantedBy": {
+          "type": "string"
+        },
+        "grantedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            }
+          ]
+        }
+      },
+      "required": [
+        "planId"
+      ],
+      "additionalProperties": false
+    },
     "Team": {
       "type": "object",
       "properties": {
@@ -74,6 +134,23 @@
             {
               "type": "string",
               "format": "date-time"
+            }
+          ]
+        },
+        "complimentary": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "not": {}
+                },
+                {
+                  "$ref": "#/definitions/ComplimentarySubscription"
+                }
+              ]
+            },
+            {
+              "type": "null"
             }
           ]
         },
