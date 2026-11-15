@@ -484,7 +484,7 @@ export const MediaProbeResultSchema = z.object({
   sampleRate: z.number().int().optional(),
   audioSampleRate: z.number().int().optional(),
   sizeBytes: z.number().int().optional(),
-  streams: z.array(z.record(z.unknown())).optional()
+  streams: z.array(z.record(z.string(), z.unknown())).optional()
 });
 export type MediaProbeResult = z.infer<typeof MediaProbeResultSchema>;
 

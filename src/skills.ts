@@ -65,7 +65,7 @@ export const SkillManifestSchema = z.object({
     .describe("Another skill this one builds on: its id, optionally pinned as 'id@1.2.0'"),
   tags: z.array(z.string()).default([]),
   metadata: z
-    .record(z.union([z.string(), z.number(), z.boolean()]))
+    .record(z.string(), z.union([z.string(), z.number(), z.boolean()]))
     .optional()
     .describe("Free-form frontmatter metadata a package reads, e.g. editor's { kind: 'workflow', reference: '…' }"),
   files: z.array(SkillFileSchema).default([]).describe("Files in the skill, SKILL.md included"),

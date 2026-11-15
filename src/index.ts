@@ -128,7 +128,7 @@ export * from "./genui.js";
 // --- JSON Generation ---
 export const JsonGenerationSchema = z.object({
   prompt: z.string(),
-  schema: z.record(z.any()).optional()
+  schema: z.record(z.string(), z.any()).optional()
 });
 export type JsonGenerationPayload = z.infer<typeof JsonGenerationSchema>;
 
@@ -147,7 +147,7 @@ export const QueueJobSchema = z.object({
   type: QueueJobTypeSchema,
   status: QueueJobStatusSchema,
   client: ServiceClientSchema.optional(),
-  payload: z.record(z.any()).optional(),
+  payload: z.record(z.string(), z.any()).optional(),
   createdAt: z.any().optional(),
   updatedAt: z.any().optional()
 });
@@ -168,12 +168,12 @@ export const AuthUserSchema = z.object({
   emailVerified: z.boolean().default(false),
   provider: z.string().default("password"),
   createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
-  metadata: z.record(z.unknown()).optional().default({})
+  metadata: z.record(z.string(), z.unknown()).optional().default({})
 });
 export type AuthUser = z.infer<typeof AuthUserSchema>;
 
 // --- User Profile & Preferences ---
-export const UserPreferencesSchema = z.record(z.unknown()).default({});
+export const UserPreferencesSchema = z.record(z.string(), z.unknown()).default({});
 export type UserPreferences = z.infer<typeof UserPreferencesSchema>;
 
 export const UserProfileSchema = z.object({
@@ -248,7 +248,7 @@ export const OrganizationSchema = z.object({
   billingPeriodStart: z.union([z.string(), z.number(), z.date()]).optional(),
   billingPeriodEnd: z.union([z.string(), z.number(), z.date()]).optional(),
   complimentary: ComplimentarySubscriptionSchema.optional().nullable(),
-  metadata: z.record(z.unknown()).optional().default({}),
+  metadata: z.record(z.string(), z.unknown()).optional().default({}),
   createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
   updatedAt: z.union([z.string(), z.number(), z.date()]).optional()
 });
@@ -290,7 +290,7 @@ export const TeamSchema = z.object({
   billingPeriodStart: z.union([z.string(), z.number(), z.date()]).optional(),
   billingPeriodEnd: z.union([z.string(), z.number(), z.date()]).optional(),
   complimentary: ComplimentarySubscriptionSchema.optional().nullable(),
-  metadata: z.record(z.unknown()).optional().default({}),
+  metadata: z.record(z.string(), z.unknown()).optional().default({}),
   createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
   updatedAt: z.union([z.string(), z.number(), z.date()]).optional()
 });
@@ -316,7 +316,7 @@ export const InviteSchema = z.object({
   useCount: z.number().int().nonnegative().default(0),
   acceptedBy: z.array(z.string()).default([]),
   expiresAt: z.union([z.string(), z.number(), z.date()]),
-  metadata: z.record(z.unknown()).optional().default({}),
+  metadata: z.record(z.string(), z.unknown()).optional().default({}),
   createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
   updatedAt: z.union([z.string(), z.number(), z.date()]).optional()
 });
@@ -336,7 +336,7 @@ export const WaitlistEntrySchema = z.object({
   referralCount: z.number().int().nonnegative().default(0),
   position: z.number().int().positive().optional(),
   priorityScore: z.number().default(0),
-  metadata: z.record(z.unknown()).optional().default({}),
+  metadata: z.record(z.string(), z.unknown()).optional().default({}),
   approvedAt: z.union([z.string(), z.number(), z.date()]).optional(),
   onboardedAt: z.union([z.string(), z.number(), z.date()]).optional(),
   createdAt: z.union([z.string(), z.number(), z.date()]).optional(),
@@ -373,7 +373,7 @@ export const FuelTransactionSchema = z.object({
   resultType: z.string().optional(),
   resultId: z.string().optional(),
   client: z.string().optional().default("unknown"),
-  metadata: z.record(z.unknown()).optional().default({}),
+  metadata: z.record(z.string(), z.unknown()).optional().default({}),
   createdAt: z.union([z.string(), z.number(), z.date()]).default(() => new Date())
 });
 export type FuelTransaction = z.infer<typeof FuelTransactionSchema>;
@@ -390,11 +390,11 @@ export const FuelPlanSchema = z.object({
   priceMonthlyCents: z.number().int().nonnegative().optional(),
   features: z.array(z.string()).default([]),
   stripePriceId: z.string().optional(),
-  rateLimits: z.record(z.number()).optional()
+  rateLimits: z.record(z.string(), z.number()).optional()
 });
 export type FuelPlan = z.infer<typeof FuelPlanSchema>;
 
-export const FuelCostMapSchema = z.record(z.number().nonnegative());
+export const FuelCostMapSchema = z.record(z.string(), z.number().nonnegative());
 export type FuelCostMap = z.infer<typeof FuelCostMapSchema>;
 
 // --- Notifications & Messaging Schemas ---
@@ -446,7 +446,7 @@ export const NotificationSchema = z.object({
   targetType: z.string().optional(),
   targetId: z.string().optional(),
   actionUrl: z.string().optional(),
-  metadata: z.record(z.unknown()).optional().default({}),
+  metadata: z.record(z.string(), z.unknown()).optional().default({}),
   createdAt: z.union([z.string(), z.number(), z.date()]).default(() => new Date().toISOString()),
   readAt: z.union([z.string(), z.number(), z.date()]).optional(),
   archivedAt: z.union([z.string(), z.number(), z.date()]).optional()
@@ -517,9 +517,9 @@ export const EmailMessageSchema = z.object({
   replyTo: z.string().optional(),
   /** Google Workspace user to impersonate via domain-wide delegation for this message. */
   impersonateUser: z.string().optional(),
-  headers: z.record(z.string()).optional(),
+  headers: z.record(z.string(), z.string()).optional(),
   templateId: z.string().optional(),
-  templateVariables: z.record(z.unknown()).optional(),
+  templateVariables: z.record(z.string(), z.unknown()).optional(),
   attachments: z.array(EmailAttachmentSchema).optional()
 });
 export type EmailMessage = z.infer<typeof EmailMessageSchema>;
@@ -575,7 +575,7 @@ export const SocialPostPayloadSchema = z.object({
   tags: z.array(z.string()).optional(),
   /** Accessibility description for the attached media, where the platform supports it. */
   altText: z.string().optional(),
-  metadata: z.record(z.unknown()).optional()
+  metadata: z.record(z.string(), z.unknown()).optional()
 });
 export type SocialPostPayload = z.infer<typeof SocialPostPayloadSchema>;
 

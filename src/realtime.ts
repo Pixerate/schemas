@@ -77,7 +77,7 @@ export const PresenceUserSchema = z.object({
   status: PresenceStatusSchema.optional().default("online"),
   agent: AgentActorMetadataSchema.optional(),
   lastSeen: z.number().int().positive().optional().default(() => Date.now()),
-  metadata: z.record(z.unknown()).optional().default({})
+  metadata: z.record(z.string(), z.unknown()).optional().default({})
 });
 export type PresenceUser = z.infer<typeof PresenceUserSchema>;
 
@@ -102,8 +102,8 @@ export type CursorPosition = z.infer<typeof CursorPositionSchema>;
 
 export const PresenceStateSchema = z.object({
   roomId: z.string(),
-  presences: z.record(PresenceUserSchema).default({}),
-  cursors: z.record(CursorPositionSchema).default({})
+  presences: z.record(z.string(), PresenceUserSchema).default({}),
+  cursors: z.record(z.string(), CursorPositionSchema).default({})
 });
 export type PresenceState = z.infer<typeof PresenceStateSchema>;
 
@@ -199,7 +199,7 @@ export const RecordLockSchema = z.object({
   expiresAt: z.number().int().positive(),
   leaseDurationSeconds: z.number().int().positive().default(60),
   status: LockStatusSchema.default("locked"),
-  metadata: z.record(z.unknown()).optional().default({})
+  metadata: z.record(z.string(), z.unknown()).optional().default({})
 });
 export type RecordLock = z.infer<typeof RecordLockSchema>;
 
@@ -212,7 +212,7 @@ export const LockClaimRequestSchema = z.object({
   avatarUrl: z.string().optional(),
   leaseDurationSeconds: z.number().int().positive().optional().default(60),
   force: z.boolean().optional().default(false),
-  metadata: z.record(z.unknown()).optional().default({})
+  metadata: z.record(z.string(), z.unknown()).optional().default({})
 });
 export type LockClaimRequest = z.infer<typeof LockClaimRequestSchema>;
 
@@ -296,9 +296,9 @@ export const ActivityEventSchema = z.object({
   actor: ActivityActorSchema,
   title: z.string().optional(),
   description: z.string().optional(),
-  payload: z.record(z.unknown()).optional(),
+  payload: z.record(z.string(), z.unknown()).optional(),
   timestamp: z.number().int().positive().default(() => Date.now()),
-  metadata: z.record(z.unknown()).optional()
+  metadata: z.record(z.string(), z.unknown()).optional()
 });
 export type ActivityEvent = z.infer<typeof ActivityEventSchema>;
 
@@ -328,7 +328,7 @@ export const OTTextOpSchema = z.object({
   type: OTTextOpTypeSchema,
   count: z.number().int().nonnegative().optional(),
   text: z.string().optional(),
-  attributes: z.record(z.unknown()).optional()
+  attributes: z.record(z.string(), z.unknown()).optional()
 });
 export type OTTextOp = z.infer<typeof OTTextOpSchema>;
 
@@ -351,7 +351,7 @@ export const OTOperationSchema = z.object({
   textOps: z.array(OTTextOpSchema).optional(),
   jsonOps: z.array(OTJsonOpSchema).optional(),
   timestamp: z.number().int().positive().default(() => Date.now()),
-  metadata: z.record(z.unknown()).optional().default({})
+  metadata: z.record(z.string(), z.unknown()).optional().default({})
 });
 export type OTOperation = z.infer<typeof OTOperationSchema>;
 
@@ -366,8 +366,8 @@ export type OTRevision = z.infer<typeof OTRevisionSchema>;
 
 export const CRDTSnapshotSchema = z.object({
   docId: z.string(),
-  vectorClock: z.record(z.number().int().nonnegative()).default({}),
-  state: z.record(z.unknown()).default({}),
+  vectorClock: z.record(z.string(), z.number().int().nonnegative()).default({}),
+  state: z.record(z.string(), z.unknown()).default({}),
   updatedAt: z.number().int().positive().default(() => Date.now())
 });
 export type CRDTSnapshot = z.infer<typeof CRDTSnapshotSchema>;

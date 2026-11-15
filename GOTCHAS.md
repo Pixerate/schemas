@@ -64,6 +64,18 @@ A living document of known issues, pitfalls, quirks, and their solutions or work
 - **Context / Cause**: `z.any()` / `z.unknown()` convert to an empty JSON Schema (`{}`). The AI SDK passes it to Gemini as `responseJsonSchema`, leaving that slot unconstrained during constrained decoding.
 - **Solution / Workaround**: Give every field in a schema used for generation a concrete type, such as `FormConfigSchema` (a record of string, number or boolean values) for free-form settings. To keep stored data parsing, coerce older shapes with `z.preprocess` (as `normalizeFormConfig` does). JSON Schema conversion still emits the inner type. `BaseFormControlSchema.defaultValue` uses `FormDefaultValueSchema` (string, number, boolean or string[]) with `normalizeFormDefaultValue`. `tests/form-default-value.test.mjs` fails if any `{}` subschema reappears in `TechnicalFormSchema`. If Vertex still returns 400, the remaining suspects are schema depth (17 levels), size (about 11.6 KB) and `type: [...]` arrays; the isolation test in the PR that added `FormDefaultValueSchema` separates them.
 
+### Type Declarations Only Match the zod Major They Were Built With
+
+- **Issue / Pitfall**: 1.50–1.54 allowed `zod ^3.23.8 || ^4.6.6`, but consumers on zod 4 got dozens of type errors such as `Property '5' is missing in type '{ owner: number; ... }'` on `Record<TeamRole, number>`, and `TeamRole` showed array methods.
+- **Context / Cause**: tsup emits declarations against the zod installed at build time (zod 3), e.g. `z.ZodEnum<["owner", ...]>`. The consumer's `import { z } from "zod"` resolves to zod 4, whose `ZodEnum` takes a record, so `z.infer` turns the tuple's keys (indexes, `length`, `map`, ...) into the enum. Running the tests under zod 4 only checks runtime behaviour, not types.
+- **Solution / Workaround**: Support one zod major, and build with that major. Since 2.0.0 the source is zod 4 only. To check a change, type-check a consumer (e.g. `@pixerate/teams`) against the new `dist/` before releasing.
+
+### `zod-to-json-schema` Only Reads zod 3 Schemas
+
+- **Issue / Pitfall**: With the source on zod 4, `zodToJsonSchema` returns empty or wrong JSON Schema for the built schemas.
+- **Context / Cause**: `zod-to-json-schema` walks zod 3 internals (`_def.typeName`). zod 4's native `z.toJSONSchema` produces different output, which would change `json-schema/` and the generated Swift.
+- **Solution / Workaround**: `scripts/export-json-schema.mjs` bundles the source again with esbuild, aliasing `zod` to `zod/v3` (zod 4 still ships the zod 3 API), into `node_modules/.cache/schemas-zod3/`, and exports from that copy. `src/zod-compat.ts` falls back to `z.record` / `.default` there. Tests that call `zodToJsonSchema` import from that copy too. Keep code splitting on so shared schemas stay single objects for `$ref` matching.
+
 ### `zod-to-json-schema` Copies Shared Schemas Inline Unless They Are Definitions
 
 - **Issue / Pitfall**: Each exported JSON Schema carried its own inline copy of every schema it used, so generated Swift had one type per use: `JazzPhrase.observations` was `[JazzPhraseObservationsItem]` instead of `[JazzObservation]`, with 20 duplicate enums. Passing `name` together with a `definitions` map that contains the same schema also produced a definition that pointed only at itself (and a `RangeError` in Ajv for recursive schemas).

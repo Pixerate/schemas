@@ -24,12 +24,12 @@ export type PlatformTarget = z.infer<typeof PlatformTargetSchema>;
 /** Any JSON value: example props and data, and JSON Schema documents. */
 export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 export const JsonValueSchema: z.ZodType<JsonValue> = z.lazy(() =>
-  z.union([z.string(), z.number(), z.boolean(), z.null(), z.array(JsonValueSchema), z.record(JsonValueSchema)])
+  z.union([z.string(), z.number(), z.boolean(), z.null(), z.array(JsonValueSchema), z.record(z.string(), JsonValueSchema)])
 );
 
 /** A JSON Schema document, kept as JSON (props, data, event payloads). */
 export const JsonSchemaDocumentSchema = z
-  .record(JsonValueSchema)
+  .record(z.string(), JsonValueSchema)
   .describe("A JSON Schema (draft 2020-12 or 7) as a JSON object, e.g. { type: 'object', properties: { … } }");
 export type JsonSchemaDocument = z.infer<typeof JsonSchemaDocumentSchema>;
 
@@ -72,7 +72,7 @@ export const PreviewHarnessSchema = z.object({
     .describe(
       "Complete, runnable preview driver code harness demonstrating usage of the component with snippets/children or mock props"
     ),
-  mockProps: z.record(z.any()).describe("JSON map of realistic mock prop values passed to the component"),
+  mockProps: z.record(z.string(), z.any()).describe("JSON map of realistic mock prop values passed to the component"),
   wrapperClass: z.string().optional().describe("Tailwind CSS class string for wrapping the preview container")
 });
 export type PreviewHarness = z.infer<typeof PreviewHarnessSchema>;
@@ -215,7 +215,7 @@ export type UiEvent = z.infer<typeof UiEventSchema>;
 
 export const UiA11ySchema = z.object({
   role: z.string().optional().describe("ARIA role, e.g. 'switch', 'progressbar', 'img', 'figure'"),
-  keyboard: z.record(z.string()).default({}).describe("Key → what it does, e.g. { Space: 'toggle', Enter: 'toggle' }"),
+  keyboard: z.record(z.string(), z.string()).default({}).describe("Key → what it does, e.g. { Space: 'toggle', Enter: 'toggle' }"),
   labelFrom: z
     .enum(["prop", "children", "aria-label", "content"])
     .optional()
@@ -260,7 +260,7 @@ export const UiDescriptorSchema = z.object({
   contract: UiComponentContractSchema.partial().optional().describe("Overrides or additions to the type's contract"),
   platforms: z.array(PlatformTargetSchema).default([]).describe("Platforms the provider can render it on"),
   swiftReady: z.boolean().optional(),
-  example: z.record(JsonValueSchema).optional().describe("Example props or data, for previews and checks"),
+  example: z.record(z.string(), JsonValueSchema).optional().describe("Example props or data, for previews and checks"),
   contentHash: z.string().optional().describe("Changes whenever the item's output changes, so a sync can tell")
 });
 export type UiDescriptor = z.infer<typeof UiDescriptorSchema>;
@@ -407,7 +407,7 @@ export const ThemeColorsSchema = z.object({
   destructiveForeground: z.string().optional(),
   border: z.string().optional(),
   ring: z.string().optional(),
-  customProperties: z.record(z.string()).optional()
+  customProperties: z.record(z.string(), z.string()).optional()
 });
 export type ThemeColors = z.infer<typeof ThemeColorsSchema>;
 
@@ -417,8 +417,8 @@ export const ThemeTypographyTokensSchema = z.object({
   fontHeading: z.string().optional(),
   fontImports: z.array(z.string()).optional(),
   fontCss: z.string().optional(),
-  fontSize: z.record(z.string()).optional(),
-  fontWeight: z.record(z.string()).optional()
+  fontSize: z.record(z.string(), z.string()).optional(),
+  fontWeight: z.record(z.string(), z.string()).optional()
 });
 export type ThemeTypographyTokens = z.infer<typeof ThemeTypographyTokensSchema>;
 
@@ -428,10 +428,10 @@ export const ThemeTokensSchema = z.object({
     dark: ThemeColorsSchema.partial().optional()
   }),
   typography: ThemeTypographyTokensSchema.optional(),
-  radii: z.record(z.string().optional()).optional(),
-  spacing: z.record(z.string()).optional(),
-  paddings: z.record(z.string()).optional(),
-  shadows: z.record(z.string()).optional()
+  radii: z.record(z.string(), z.string().optional()).optional(),
+  spacing: z.record(z.string(), z.string()).optional(),
+  paddings: z.record(z.string(), z.string()).optional(),
+  shadows: z.record(z.string(), z.string()).optional()
 });
 export type ThemeTokens = z.infer<typeof ThemeTokensSchema>;
 
@@ -476,7 +476,7 @@ export type UiAestheticReference = z.infer<typeof UiAestheticReferenceSchema>;
 
 export const UiAestheticExampleSchema = z.object({
   componentTypeId: z.string().min(1),
-  props: z.record(JsonValueSchema).default({}),
+  props: z.record(z.string(), JsonValueSchema).default({}),
   note: z.string().optional()
 });
 export type UiAestheticExample = z.infer<typeof UiAestheticExampleSchema>;
@@ -491,13 +491,13 @@ export const UiAestheticProfileSchema = z.object({
   tokens: ThemeTokensSchema.optional().describe("The aesthetic's tokens (give tokens or themeId)"),
   themeId: z.string().optional().describe("A theme whose tokens to use instead of inline tokens"),
   roles: z
-    .record(z.string())
+    .record(z.string(), z.string())
     .default({})
     .describe("Colour role → token path or CSS colour, e.g. { surface: 'colors.surface', accent: 'colors.accent', 'track-on': 'colors.primary' }"),
   motion: z
     .object({
-      easing: z.record(z.string()).default({}).describe("Name → CSS easing, e.g. { standard: 'cubic-bezier(.2,0,0,1)' }"),
-      durations: z.record(z.number().nonnegative()).default({}).describe("Name → milliseconds, e.g. { short: 120, long: 360 }"),
+      easing: z.record(z.string(), z.string()).default({}).describe("Name → CSS easing, e.g. { standard: 'cubic-bezier(.2,0,0,1)' }"),
+      durations: z.record(z.string(), z.number().nonnegative()).default({}).describe("Name → milliseconds, e.g. { short: 120, long: 360 }"),
       reducedMotion: z.enum(["static", "fade", "shorten"]).default("static")
     })
     .optional(),
@@ -515,7 +515,7 @@ export const UiAestheticProfileSchema = z.object({
     .array(z.string())
     .default([])
     .describe("Ids of checks to run on every component, e.g. 'contrast', 'hit-target', 'reduced-motion', 'look'"),
-  overrides: z.record(z.string()).default({}).describe("Component type id → notes for that type, e.g. { table: 'No zebra striping' }"),
+  overrides: z.record(z.string(), z.string()).default({}).describe("Component type id → notes for that type, e.g. { table: 'No zebra striping' }"),
   examples: z.array(UiAestheticExampleSchema).default([]).describe("What to render on the aesthetic's contact sheet")
 });
 export type UiAestheticProfile = z.infer<typeof UiAestheticProfileSchema>;
@@ -809,7 +809,7 @@ export type SubmissionScore = z.infer<typeof SubmissionScoreSchema>;
 export const FormConfigValueSchema = z.union([z.string(), z.number(), z.boolean()]);
 export type FormConfigValue = z.infer<typeof FormConfigValueSchema>;
 
-export const FormConfigSchema = z.record(FormConfigValueSchema);
+export const FormConfigSchema = z.record(z.string(), FormConfigValueSchema);
 export type FormConfig = z.infer<typeof FormConfigSchema>;
 
 /**
@@ -906,7 +906,7 @@ export type SemanticReviewResult = z.infer<typeof SemanticReviewResultSchema>;
 
 export const FormSubmissionPayloadSchema = z.object({
   id: z.string().optional(),
-  answers: z.record(z.any()),
+  answers: z.record(z.string(), z.any()),
   stageReviews: z.array(z.any()).optional(),
   gateDecisions: z.array(z.any()).optional(),
   submittedAt: z.string().optional(),
@@ -1239,7 +1239,7 @@ export type ChartSeries = z.infer<typeof ChartSeriesSchema>;
 
 export const ChartDrilldownSchema = z.object({
   title: z.string().optional(),
-  details: z.record(z.unknown()).optional(),
+  details: z.record(z.string(), z.unknown()).optional(),
   followUps: z.array(z.string()).optional()
 });
 export type ChartDrilldown = z.infer<typeof ChartDrilldownSchema>;
@@ -1287,7 +1287,7 @@ export const TreeNodeSchema: z.ZodType<TreeNode> = z.lazy(() =>
     badge: z.string().optional(),
     badgeTone: z.enum(["success", "warning", "error", "info", "gray"]).optional(),
     status: z.string().optional(),
-    data: z.record(z.unknown()).optional(),
+    data: z.record(z.string(), z.unknown()).optional(),
     children: z.array(z.lazy(() => TreeNodeSchema)).optional()
   })
 );
@@ -1543,7 +1543,7 @@ export const SvgPaletteTokensSchema = z.object({
   accent1: z.string().optional().describe("Primary accent color"),
   accent2: z.string().optional().describe("Secondary accent color"),
   shadow: z.string().optional().describe("Shadow color with opacity"),
-  custom: z.record(z.string()).optional().describe("Additional custom CSS color variables")
+  custom: z.record(z.string(), z.string()).optional().describe("Additional custom CSS color variables")
 });
 export type SvgPaletteTokens = z.infer<typeof SvgPaletteTokensSchema>;
 
@@ -1661,7 +1661,7 @@ export const PageMessageSchema = z.discriminatedUnion("type", [
     v: z.literal(1),
     type: z.literal("theme"),
     mode: PageThemeModeSchema,
-    tokens: z.record(z.string()).optional().describe("CSS custom property → value")
+    tokens: z.record(z.string(), z.string()).optional().describe("CSS custom property → value")
   }),
   z.object({ v: z.literal(1), type: z.literal("marks-request") }),
   z.object({ v: z.literal(1), type: z.literal("marks"), marks: PageMarksSchema }),

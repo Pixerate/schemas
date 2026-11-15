@@ -43,14 +43,14 @@ export const BasicVariantSchema = z.object({
   promptChanges: z.string().optional(),
   category: z.string().optional(),
   seed: z.number().nullable().optional(),
-  editableProperties: z.record(z.any()).nullable().optional(),
+  editableProperties: z.record(z.string(), z.any()).nullable().optional(),
   generationsToIncorporate: z.array(z.any()).nullable().optional(),
 });
 export type BasicVariantParams = z.infer<typeof BasicVariantSchema>;
 
 export const BasicIterationSchema = z.object({
   sourceGenerationId: z.number().nullable().optional(),
-  changes: z.record(z.any()).nullable().optional(),
+  changes: z.record(z.string(), z.any()).nullable().optional(),
   category: z.string().optional(),
 });
 export type BasicIterationParams = z.infer<typeof BasicIterationSchema>;

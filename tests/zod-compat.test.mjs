@@ -1,13 +1,10 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { z } from "zod";
 import { NotificationPreferencesSchema } from "../dist/index.js";
 import { JazzPolicySchema } from "../dist/jazz.js";
 
-// Runs against whichever zod is installed: zod 3 in the main CI step, zod 4 in the follow-up step.
-const zodMajor = "_zod" in z.string() ? 4 : 3;
 
-describe(`zod ${zodMajor} compatibility`, () => {
+describe("zod 4 behaviour matches zod 3", () => {
   it("keeps enum-keyed records partial (zod 4 makes z.record(enum, …) exhaustive)", () => {
     const parsed = NotificationPreferencesSchema.parse({ userId: "u1", channels: { mention: {} } });
     assert.deepEqual(Object.keys(parsed.channels), ["mention"]);
