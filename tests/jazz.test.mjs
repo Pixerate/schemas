@@ -19,6 +19,14 @@ import {
   JazzProposalDraftSchema,
   JAZZ_TEXT_LEAD_MAX_PARAGRAPH_CHARS,
   JAZZ_TEXT_LEAD_MAX_CONTEXT_CHARS,
+  JAZZ_DREAM_MAX_ELEMENT_CHARS,
+  JAZZ_DREAM_MAX_PROMPT_CHARS,
+  JazzDreamImageSchema,
+  JazzDreamElementSchema,
+  JazzDreamRequestSchema,
+  JazzDreamResponseSchema,
+  JazzDreamDropReasonSchema,
+  JazzDreamSchema,
   JazzTextFlavorSchema,
   JazzTextVoiceIdSchema,
   JazzTextVoiceStatsSchema,
@@ -312,6 +320,52 @@ describe("jazz text-lead contracts (Swash writing partner)", () => {
       TextLeadRequestSchema,
       TextLeadResponseSchema
     ]) {
+      assert.ok(Object.values(rootExports).includes(schema));
+    }
+  });
+
+  it("validates a dream request and response", () => {
+    const png = "data:image/png;base64,iVBORw0KGgo=";
+    const jpeg = "data:image/jpeg;base64,/9j/4AAQ";
+
+    const request = JazzDreamRequestSchema.parse({ image: png, prompt: "Imagine where this painting could go next.", teamId: "team-1" });
+    assert.equal(request.image, png);
+    assert.equal(JazzDreamRequestSchema.safeParse({ image: png, prompt: "" }).success, false);
+    assert.equal(JazzDreamRequestSchema.safeParse({ image: png, prompt: "x".repeat(JAZZ_DREAM_MAX_PROMPT_CHARS + 1) }).success, false);
+    // Only image data URLs: no remote URLs, no other media types.
+    for (const image of ["https://example.com/a.png", "data:text/html;base64,AAAA", "data:image/svg+xml;base64,AAAA", ""]) {
+      assert.equal(JazzDreamImageSchema.safeParse(image).success, false, image);
+    }
+    for (const image of [png, jpeg, "data:image/webp;base64,UklGRg=="]) {
+      assert.equal(JazzDreamImageSchema.safeParse(image).success, true, image);
+    }
+
+    const response = JazzDreamResponseSchema.parse({ image: jpeg, model: "an-image-model", fuelBalance: 41 });
+    assert.equal(response.model, "an-image-model");
+    assert.deepEqual(JazzDreamResponseSchema.parse({ image: jpeg }), { image: jpeg });
+    assert.equal(JazzDreamResponseSchema.safeParse({ image: "nope" }).success, false);
+  });
+
+  it("validates a kept dream and fills in its defaults", () => {
+    const image = "data:image/png;base64,iVBORw0KGgo=";
+    const fresh = JazzDreamSchema.parse({ id: "dream-1", image, createdAt: "2026-11-16T12:00:00.000Z" });
+    assert.equal(fresh.strokesSince, 0);
+    assert.deepEqual(fresh.drawn, []);
+
+    const used = JazzDreamSchema.parse({ id: "dream-1", image, model: "an-image-model", createdAt: "2026-11-16T12:00:00.000Z", strokesSince: 7, drawn: ["the sun", "two birds"] });
+    assert.deepEqual(used.drawn, ["the sun", "two birds"]);
+
+    assert.equal(JazzDreamSchema.safeParse({ ...used, strokesSince: -1 }).success, false);
+    assert.equal(JazzDreamSchema.safeParse({ ...used, drawn: [""] }).success, false);
+    assert.equal(JazzDreamElementSchema.safeParse("x".repeat(JAZZ_DREAM_MAX_ELEMENT_CHARS + 1)).success, false);
+    assert.equal(JazzDreamSchema.safeParse({ ...used, createdAt: "yesterday" }).success, false);
+
+    assert.deepEqual(JazzDreamDropReasonSchema.options, ["used-up", "stale", "undone"]);
+    assert.equal(JazzDreamDropReasonSchema.safeParse("bored").success, false);
+  });
+
+  it("re-exports the dream schemas from the root", () => {
+    for (const schema of [JazzDreamImageSchema, JazzDreamElementSchema, JazzDreamRequestSchema, JazzDreamResponseSchema, JazzDreamDropReasonSchema, JazzDreamSchema]) {
       assert.ok(Object.values(rootExports).includes(schema));
     }
   });

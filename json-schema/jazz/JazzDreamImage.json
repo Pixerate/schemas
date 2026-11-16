@@ -1,0 +1,11 @@
+{
+  "$ref": "#/definitions/JazzDreamImage",
+  "definitions": {
+    "JazzDreamImage": {
+      "type": "string",
+      "maxLength": 8000000,
+      "pattern": "^data:image\\/(?:png|jpeg|webp);base64,"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

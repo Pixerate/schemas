@@ -1,0 +1,11 @@
+{
+  "id": "dream-1",
+  "image": "data:image/png;base64,iVBORw0KGgo=",
+  "model": "an-image-model",
+  "createdAt": "2026-11-16T12:00:00.000Z",
+  "strokesSince": 7,
+  "drawn": [
+    "the sun",
+    "two birds"
+  ]
+}

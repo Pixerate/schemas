@@ -17,6 +17,12 @@ public enum JazzAutonomy: String, Codable, Sendable, CaseIterable {
     case assist = "assist"
 }
 
+public enum JazzDreamDropReason: String, Codable, Sendable, CaseIterable {
+    case usedUp = "used-up"
+    case stale = "stale"
+    case undone = "undone"
+}
+
 public enum JazzEvidenceKind: String, Codable, Sendable, CaseIterable {
     case repo = "repo"
     case issue = "issue"
@@ -347,6 +353,137 @@ public struct JazzDomain: Codable, Sendable, Equatable {
         try container.encode(docs, forKey: .docs)
         try container.encode(skills, forKey: .skills)
         try container.encode(labels, forKey: .labels)
+    }
+}
+
+public struct JazzDream: Codable, Sendable, Equatable {
+    public var id: String
+    public var image: JazzDreamImage
+    public var model: String?
+    public var createdAt: String
+    public var strokesSince: Int
+    public var drawn: [JazzDreamElement]
+
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case image = "image"
+        case model = "model"
+        case createdAt = "createdAt"
+        case strokesSince = "strokesSince"
+        case drawn = "drawn"
+    }
+
+    public init(
+        id: String,
+        image: JazzDreamImage,
+        model: String? = nil,
+        createdAt: String,
+        strokesSince: Int = 0,
+        drawn: [JazzDreamElement] = []
+    ) {
+        self.id = id
+        self.image = image
+        self.model = model
+        self.createdAt = createdAt
+        self.strokesSince = strokesSince
+        self.drawn = drawn
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.image = try container.decode(JazzDreamImage.self, forKey: .image)
+        self.model = try container.decodeIfPresent(String.self, forKey: .model)
+        self.createdAt = try container.decode(String.self, forKey: .createdAt)
+        self.strokesSince = try container.decodeIfPresent(Int.self, forKey: .strokesSince) ?? 0
+        self.drawn = try container.decodeIfPresent([JazzDreamElement].self, forKey: .drawn) ?? []
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(image, forKey: .image)
+        try container.encodeIfPresent(model, forKey: .model)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(strokesSince, forKey: .strokesSince)
+        try container.encode(drawn, forKey: .drawn)
+    }
+}
+
+public typealias JazzDreamElement = String
+
+/// Pattern: `^data:image\/(?:png|jpeg|webp);base64,`
+public typealias JazzDreamImage = String
+
+public struct JazzDreamRequest: Codable, Sendable, Equatable {
+    public var image: JazzDreamImage
+    public var prompt: String
+    public var teamId: String?
+
+    enum CodingKeys: String, CodingKey {
+        case image = "image"
+        case prompt = "prompt"
+        case teamId = "teamId"
+    }
+
+    public init(
+        image: JazzDreamImage,
+        prompt: String,
+        teamId: String? = nil
+    ) {
+        self.image = image
+        self.prompt = prompt
+        self.teamId = teamId
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.image = try container.decode(JazzDreamImage.self, forKey: .image)
+        self.prompt = try container.decode(String.self, forKey: .prompt)
+        self.teamId = try container.decodeIfPresent(String.self, forKey: .teamId)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(image, forKey: .image)
+        try container.encode(prompt, forKey: .prompt)
+        try container.encodeIfPresent(teamId, forKey: .teamId)
+    }
+}
+
+public struct JazzDreamResponse: Codable, Sendable, Equatable {
+    public var image: JazzDreamImage
+    public var model: String?
+    public var fuelBalance: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case image = "image"
+        case model = "model"
+        case fuelBalance = "fuelBalance"
+    }
+
+    public init(
+        image: JazzDreamImage,
+        model: String? = nil,
+        fuelBalance: Int? = nil
+    ) {
+        self.image = image
+        self.model = model
+        self.fuelBalance = fuelBalance
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.image = try container.decode(JazzDreamImage.self, forKey: .image)
+        self.model = try container.decodeIfPresent(String.self, forKey: .model)
+        self.fuelBalance = try container.decodeIfPresent(Int.self, forKey: .fuelBalance)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(image, forKey: .image)
+        try container.encodeIfPresent(model, forKey: .model)
+        try container.encodeIfPresent(fuelBalance, forKey: .fuelBalance)
     }
 }
 

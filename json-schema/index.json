@@ -1331,6 +1331,36 @@
   },
   {
     "module": "jazz",
+    "name": "JazzDream",
+    "file": "jazz/JazzDream.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzDreamDropReason",
+    "file": "jazz/JazzDreamDropReason.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzDreamElement",
+    "file": "jazz/JazzDreamElement.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzDreamImage",
+    "file": "jazz/JazzDreamImage.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzDreamRequest",
+    "file": "jazz/JazzDreamRequest.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzDreamResponse",
+    "file": "jazz/JazzDreamResponse.json"
+  },
+  {
+    "module": "jazz",
     "name": "JazzEvidence",
     "file": "jazz/JazzEvidence.json"
   },

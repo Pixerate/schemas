@@ -1,0 +1,56 @@
+{
+  "$ref": "#/definitions/JazzDream",
+  "definitions": {
+    "JazzDream": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "image": {
+          "$ref": "#/definitions/JazzDreamImage"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "strokesSince": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "drawn": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzDreamElement"
+          },
+          "maxItems": 20,
+          "default": []
+        }
+      },
+      "required": [
+        "id",
+        "image",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "JazzDreamElement": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "JazzDreamImage": {
+      "type": "string",
+      "maxLength": 8000000,
+      "pattern": "^data:image\\/(?:png|jpeg|webp);base64,"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
