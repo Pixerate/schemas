@@ -405,6 +405,24 @@ describe('JSON Schema export', () => {
         riffs: [{ id: 'riff-42', strategy: 'continue-series', intent: 'add', title: 'Add subtitle', status: 'proposed' }],
         policy: { autonomy: 'assist', tempo: { idleMs: 900 } }
       }),
+      'jazz_dream.json': jazz.JazzDreamSchema.parse({
+        id: 'dream-1',
+        image: 'data:image/png;base64,iVBORw0KGgo=',
+        model: 'an-image-model',
+        createdAt: '2026-11-16T12:00:00.000Z',
+        strokesSince: 7,
+        drawn: ['the sun', 'two birds']
+      }),
+      'jazz_dream_request.json': jazz.JazzDreamRequestSchema.parse({
+        image: 'data:image/png;base64,iVBORw0KGgo=',
+        prompt: 'Imagine where this painting could go next.',
+        teamId: 'team-paint'
+      }),
+      'jazz_dream_response.json': jazz.JazzDreamResponseSchema.parse({
+        image: 'data:image/jpeg;base64,/9j/4AAQ',
+        model: 'an-image-model',
+        fuelBalance: 41
+      }),
       'jazz_text_lead_request.json': jazz.JazzTextLeadRequestSchema.parse({
         paragraph: 'apples\npears\nplums',
         before: '# Shopping',

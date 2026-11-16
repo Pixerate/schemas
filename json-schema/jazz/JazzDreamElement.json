@@ -1,0 +1,11 @@
+{
+  "$ref": "#/definitions/JazzDreamElement",
+  "definitions": {
+    "JazzDreamElement": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

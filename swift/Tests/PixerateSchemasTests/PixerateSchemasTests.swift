@@ -62,6 +62,25 @@ final class PixerateSchemasTests: XCTestCase {
         XCTAssertEqual(updated.phrases.last?.observations.first, phrase.observations.first)
     }
 
+    func testJazzDream() throws {
+        let dream = try roundTrip(JazzDream.self, fixtureName: "jazz_dream.json")
+        XCTAssertEqual(dream.strokesSince, 7)
+        XCTAssertEqual(dream.drawn, ["the sun", "two birds"])
+
+        // A fresh dream fills in its defaults (strokesSince = 0, drawn = [])
+        let fresh = try JSONDecoder().decode(
+            JazzDream.self,
+            from: Data(#"{"id":"dream-2","image":"data:image/png;base64,iVBORw0KGgo=","createdAt":"2026-11-16T12:00:00.000Z"}"#.utf8)
+        )
+        XCTAssertEqual(fresh.strokesSince, 0)
+        XCTAssertEqual(fresh.drawn, [])
+
+        let req = try roundTrip(JazzDreamRequest.self, fixtureName: "jazz_dream_request.json")
+        XCTAssertEqual(req.teamId, "team-paint")
+        let res = try roundTrip(JazzDreamResponse.self, fixtureName: "jazz_dream_response.json")
+        XCTAssertEqual(res.fuelBalance, 41)
+    }
+
     func testJazzTextLeadRequestAndResponse() throws {
         let req = try roundTrip(JazzTextLeadRequest.self, fixtureName: "jazz_text_lead_request.json")
         XCTAssertEqual(req.flavor, .gfm)

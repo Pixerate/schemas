@@ -450,3 +450,73 @@ export type TextLeadRequest = JazzTextLeadRequest;
 export const TextLeadResponseSchema = JazzTextLeadResponseSchema;
 export type TextLeadResponse = JazzTextLeadResponse;
 
+// --- Dream (paint duet) ---
+// A dream is an image of where a painting could go, made by an image model from a capture of the
+// canvas (`POST /api/agent/paint-dream`). It is reference material: at a later pause the bandleader
+// may draw one thing from it as strokes (the *draw* step), and no dream pixel is ever painted or
+// proposed. See Pixerate/jazz#31.
+//
+// Privacy rule: a dream request sends the user's painting to an image model, so a host dreams only
+// when the user has turned dreaming on.
+
+/** Maximum characters in a dream or capture data URL (about 6 MB of image). */
+export const JAZZ_DREAM_MAX_IMAGE_CHARS = 8_000_000;
+
+/** Maximum characters in the image model's prompt. */
+export const JAZZ_DREAM_MAX_PROMPT_CHARS = 4000;
+
+/** Maximum characters in the name of one thing drawn from a dream ("the sun", "two birds"). */
+export const JAZZ_DREAM_MAX_ELEMENT_CHARS = 60;
+
+/** A PNG, JPEG or WebP image as a base64 data URL: a capture of the canvas, or a dream of it. */
+export const JazzDreamImageSchema = z
+  .string()
+  .max(JAZZ_DREAM_MAX_IMAGE_CHARS)
+  .regex(/^data:image\/(?:png|jpeg|webp);base64,/);
+export type JazzDreamImage = z.infer<typeof JazzDreamImageSchema>;
+
+/** The name of one thing the bandleader drew from a dream. */
+export const JazzDreamElementSchema = z.string().min(1).max(JAZZ_DREAM_MAX_ELEMENT_CHARS);
+export type JazzDreamElement = z.infer<typeof JazzDreamElementSchema>;
+
+/** Request body for `POST /api/agent/paint-dream`: what the image model dreams on. */
+export const JazzDreamRequestSchema = z.object({
+  /** A capture of the painting as it is now. */
+  image: JazzDreamImageSchema,
+  /** The image model's prompt (`buildPaintDreamPrompt` in `@pixerate/jazz/agent-core`). */
+  prompt: z.string().min(1).max(JAZZ_DREAM_MAX_PROMPT_CHARS),
+  /** Optional team id to bill fuel against when the caller belongs to the team. */
+  teamId: z.string().min(1).max(128).optional()
+});
+export type JazzDreamRequest = z.infer<typeof JazzDreamRequestSchema>;
+
+/** Response from `POST /api/agent/paint-dream`. */
+export const JazzDreamResponseSchema = z.object({
+  /** The dream: the painting with a little more in it. */
+  image: JazzDreamImageSchema,
+  /** The image model that made it. */
+  model: z.string().min(1).max(128).optional(),
+  /** Remaining fuel balance after dreaming, when metered. */
+  fuelBalance: z.number().int().optional()
+});
+export type JazzDreamResponse = z.infer<typeof JazzDreamResponseSchema>;
+
+/** Why a dream was dropped: everything useful was drawn from it, the painting moved on, or the painter undid what was drawn from it. */
+export const JazzDreamDropReasonSchema = z.enum(["used-up", "stale", "undone"]);
+export type JazzDreamDropReason = z.infer<typeof JazzDreamDropReasonSchema>;
+
+/** A dream as jazz keeps it across pauses, until it is used up or the painting has moved on. */
+export const JazzDreamSchema = z.object({
+  id: z.string().min(1),
+  /** The dream itself. Shown to the bandleader (and to the user, if the host chooses); never painted. */
+  image: JazzDreamImageSchema,
+  /** The image model that made it. */
+  model: z.string().min(1).max(128).optional(),
+  createdAt: IsoDateTimeSchema,
+  /** The painter's strokes since the capture it was dreamt from. */
+  strokesSince: z.number().int().min(0).default(0),
+  /** What the bandleader's phrases took from it, oldest first. */
+  drawn: z.array(JazzDreamElementSchema).max(20).default([])
+});
+export type JazzDream = z.infer<typeof JazzDreamSchema>;
+export type JazzDreamInput = z.input<typeof JazzDreamSchema>;
