@@ -1,0 +1,46 @@
+{
+  "paragraph": "i think teh notes need a tidy up",
+  "before": "# Release",
+  "flavor": "gfm",
+  "observations": [
+    {
+      "kind": "typed",
+      "where": "paragraph",
+      "range": {
+        "start": 8,
+        "end": 11
+      },
+      "at": "2026-11-17T10:00:00.000Z"
+    },
+    {
+      "kind": "deleted",
+      "where": "elsewhere",
+      "removed": 40
+    },
+    {
+      "kind": "fix-undone",
+      "where": "paragraph",
+      "range": {
+        "start": 0,
+        "end": 1
+      },
+      "rule": "i-capital",
+      "replaced": "i"
+    }
+  ],
+  "rules": {
+    "i-capital": {
+      "kept": 3,
+      "undone": 1
+    }
+  },
+  "feedback": [
+    {
+      "editId": "edit_9",
+      "verdict": "dismissed",
+      "tier": "server"
+    }
+  ],
+  "tier": "server",
+  "teamId": "team-swash"
+}

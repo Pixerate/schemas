@@ -1,0 +1,13 @@
+{
+  "$ref": "#/definitions/JazzTextTier",
+  "definitions": {
+    "JazzTextTier": {
+      "type": "string",
+      "enum": [
+        "server",
+        "on-device"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

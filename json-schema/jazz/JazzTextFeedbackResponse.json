@@ -1,0 +1,19 @@
+{
+  "$ref": "#/definitions/JazzTextFeedbackResponse",
+  "definitions": {
+    "JazzTextFeedbackResponse": {
+      "type": "object",
+      "properties": {
+        "recorded": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "recorded"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -39,7 +39,23 @@ import {
   JazzTextSuggestionSchema,
   JazzTextLeadResponseSchema,
   TextLeadRequestSchema,
-  TextLeadResponseSchema
+  TextLeadResponseSchema,
+  JAZZ_TEXT_MAX_REPLACED_CHARS,
+  JAZZ_TEXT_ON_DEVICE_EDIT_KINDS,
+  JAZZ_TEXT_SERVER_ONLY_FIELDS,
+  JazzTextTierSchema,
+  JazzTextRuleStatsSchema,
+  JazzTextObservationKindSchema,
+  JazzTextObservationWhereSchema,
+  JazzTextObservationSchema,
+  JazzTextFeedbackVerdictSchema,
+  JazzTextFeedbackItemSchema,
+  JazzTextLeadV2RequestSchema,
+  JazzTextEditKindSchema,
+  JazzTextEditSchema,
+  JazzTextLeadV2ResponseSchema,
+  JazzTextFeedbackRequestSchema,
+  JazzTextFeedbackResponseSchema
 } from "../dist/jazz.js";
 import * as rootExports from "../dist/index.js";
 
@@ -366,6 +382,140 @@ describe("jazz text-lead contracts (Swash writing partner)", () => {
 
   it("re-exports the dream schemas from the root", () => {
     for (const schema of [JazzDreamImageSchema, JazzDreamElementSchema, JazzDreamRequestSchema, JazzDreamResponseSchema, JazzDreamDropReasonSchema, JazzDreamSchema]) {
+      assert.ok(Object.values(rootExports).includes(schema));
+    }
+  });
+});
+
+describe("jazz text-lead v2 contracts (observations in, suggested edits out)", () => {
+  it("parses a minimal request with defaults", () => {
+    assert.deepEqual(JazzTextLeadV2RequestSchema.parse({ paragraph: "teh notes" }), {
+      paragraph: "teh notes",
+      flavor: "gfm",
+      observations: [],
+      rules: {},
+      feedback: [],
+      tier: "server"
+    });
+  });
+
+  it("parses observations, per-rule counts and batched feedback", () => {
+    const request = JazzTextLeadV2RequestSchema.parse({
+      paragraph: "I think teh release notes need a tidy up",
+      before: "# Release",
+      flavor: "commonmark",
+      observations: [
+        { kind: "typed", range: { start: 8, end: 11 } },
+        { kind: "pasted", where: "before", range: { start: 2, end: 9 }, removed: 0 },
+        { kind: "deleted", range: { start: 20, end: 20 }, removed: 6 },
+        { kind: "deleted", where: "elsewhere", removed: 40 },
+        { kind: "fix-applied", range: { start: 0, end: 1 }, rule: "i-capital", replaced: "i", at: "2026-11-17T10:00:00.000Z" },
+        { kind: "fix-undone", range: { start: 40, end: 40 }, rule: "end-stop" }
+      ],
+      rules: { "i-capital": { kept: 3 }, "end-stop": { kept: 1, undone: 2 } },
+      feedback: [{ editId: "edit_9", verdict: "dismissed" }],
+      tier: "on-device",
+      teamId: "team-swash"
+    });
+    assert.equal(request.observations[0].where, "paragraph");
+    assert.equal(request.observations[3].range, undefined);
+    assert.deepEqual(request.rules["i-capital"], { kept: 3, undone: 0 });
+    assert.equal(request.feedback[0].tier, "server");
+    assert.equal(request.tier, "on-device");
+
+    // Same window bounds as v1.
+    assert.equal(JazzTextLeadV2RequestSchema.safeParse({ paragraph: "" }).success, false);
+    assert.equal(JazzTextLeadV2RequestSchema.safeParse({ paragraph: "x".repeat(JAZZ_TEXT_LEAD_MAX_PARAGRAPH_CHARS + 1) }).success, false);
+    assert.equal(JazzTextLeadV2RequestSchema.safeParse({ paragraph: "ok", after: "x".repeat(JAZZ_TEXT_LEAD_MAX_CONTEXT_CHARS + 1) }).success, false);
+    assert.equal(JazzTextLeadV2RequestSchema.safeParse({ paragraph: "ok", tier: "cloud" }).success, false);
+    // Text rules are not "voices".
+    assert.equal("voices" in JazzTextLeadV2RequestSchema.shape, false);
+    assert.equal(JazzTextObservationSchema.safeParse({ kind: "moved" }).success, false);
+    assert.equal(JazzTextObservationSchema.safeParse({ kind: "fix-applied", replaced: "x".repeat(JAZZ_TEXT_MAX_REPLACED_CHARS + 1) }).success, false);
+    assert.equal(JazzTextRuleStatsSchema.safeParse({ kept: -1 }).success, false);
+    assert.equal(JazzTextObservationKindSchema.options.length, 6);
+    assert.deepEqual(JazzTextObservationWhereSchema.options, ["paragraph", "before", "after", "elsewhere"]);
+  });
+
+  it("parses suggested edits with UTF-16 ranges, replacements and structural actions", () => {
+    const paragraph = "🎨 I think teh notes need a tidy up";
+    const start = paragraph.indexOf("teh");
+    // 🎨 is two UTF-16 code units, so offsets match JS slice and NSString.
+    assert.equal(start, 11);
+    const response = JazzTextLeadV2ResponseSchema.parse({
+      tier: "server",
+      genre: "notes",
+      edits: [
+        { id: "edit_1", kind: "spelling", range: { start, end: start + 3 }, replacement: "the", confidence: 0.98, why: "Spelling.", mode: "assist" },
+        { id: "edit_2", kind: "house-style", range: { start: 27, end: 35 }, replacement: "tidy-up", confidence: 0.7, why: "House style hyphenates the noun.", rule: "tidy-up" },
+        { id: "edit_3", kind: "structure", range: { start: 0, end: 0 }, action: "title", replacement: "# Notes\n\n", confidence: 0.5, why: "Add a title." },
+        { id: "edit_4", kind: "structure", range: { start: 0, end: 35 }, action: "list", confidence: 0.4, why: "Read as a list." }
+      ],
+      holdBack: ["end-stop"],
+      why: "Short notes: fix spelling, hold back full stops.",
+      fuelBalance: 120
+    });
+    assert.equal(paragraph.slice(response.edits[0].range.start, response.edits[0].range.end), "teh");
+    assert.equal(response.edits[1].mode, "suggest");
+    assert.equal(response.edits[3].replacement, undefined);
+
+    const base = { id: "e", kind: "spelling", range: { start: 0, end: 1 }, replacement: "x", confidence: 0.5, why: "y" };
+    assert.equal(JazzTextEditSchema.safeParse(base).success, true);
+    assert.equal(JazzTextEditSchema.safeParse({ ...base, replacement: "" }).success, true, "empty replacement deletes");
+    assert.equal(JazzTextEditSchema.safeParse({ ...base, replacement: undefined }).success, false, "needs replacement or action");
+    assert.equal(JazzTextEditSchema.safeParse({ ...base, range: { start: 4, end: 2 } }).success, false, "end before start");
+    assert.equal(JazzTextEditSchema.safeParse({ ...base, confidence: 1.2 }).success, false);
+    assert.equal(JazzTextEditSchema.safeParse({ ...base, kind: "voice" }).success, false);
+    assert.equal(JazzTextEditSchema.safeParse({ ...base, mode: "auto" }).success, false);
+    assert.equal(JazzTextEditSchema.safeParse({ ...base, id: "" }).success, false);
+  });
+
+  it("parses an on-device answer without the server-only fields", () => {
+    const onDevice = JazzTextLeadV2ResponseSchema.parse({
+      tier: "on-device",
+      genre: "prose",
+      edits: [{ id: "d1", kind: "wrong-word", range: { start: 0, end: 5 }, replacement: "their", confidence: 0.8, why: "Wrong word." }]
+    });
+    for (const field of JAZZ_TEXT_SERVER_ONLY_FIELDS) {
+      assert.equal(onDevice[field], undefined, field);
+      assert.ok(JazzTextLeadV2ResponseSchema.shape[field].isOptional(), `${field} is optional`);
+    }
+    for (const edit of onDevice.edits) assert.ok(JAZZ_TEXT_ON_DEVICE_EDIT_KINDS.includes(edit.kind));
+    assert.deepEqual([...JAZZ_TEXT_ON_DEVICE_EDIT_KINDS].sort(), ["spelling", "structure", "wrong-word"]);
+    assert.deepEqual(JazzTextLeadV2ResponseSchema.parse({ tier: "server", genre: "poem" }).edits, []);
+    assert.equal(JazzTextLeadV2ResponseSchema.safeParse({ genre: "poem" }).success, false, "tier is required");
+    assert.deepEqual(JazzTextTierSchema.options, ["server", "on-device"]);
+  });
+
+  it("parses the feedback call", () => {
+    const request = JazzTextFeedbackRequestSchema.parse({
+      items: [
+        { editId: "edit_1", verdict: "accepted" },
+        { editId: "edit_2", verdict: "edited", at: "2026-11-17T10:00:05.000Z" },
+        { editId: "d1", verdict: "undone", tier: "on-device" }
+      ]
+    });
+    assert.equal(request.items[0].tier, "server");
+    assert.deepEqual(JazzTextFeedbackVerdictSchema.options, ["accepted", "edited", "dismissed", "ignored", "undone"]);
+    assert.equal(JazzTextFeedbackRequestSchema.safeParse({ items: [] }).success, false);
+    assert.equal(JazzTextFeedbackItemSchema.safeParse({ editId: "e", verdict: "rejected" }).success, false);
+    assert.deepEqual(JazzTextFeedbackResponseSchema.parse({ recorded: 3 }), { recorded: 3 });
+    assert.equal(JazzTextFeedbackResponseSchema.safeParse({ recorded: -1 }).success, false);
+  });
+
+  it("is re-exported from the root", () => {
+    for (const schema of [
+      JazzTextTierSchema,
+      JazzTextRuleStatsSchema,
+      JazzTextObservationSchema,
+      JazzTextFeedbackItemSchema,
+      JazzTextLeadV2RequestSchema,
+      JazzTextEditKindSchema,
+      JazzTextEditSchema,
+      JazzTextLeadV2ResponseSchema,
+      JazzTextFeedbackRequestSchema,
+      JazzTextFeedbackResponseSchema
+    ]) {
       assert.ok(Object.values(rootExports).includes(schema));
     }
   });

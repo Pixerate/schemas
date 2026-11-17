@@ -294,6 +294,26 @@ describe('JSON Schema export', () => {
         invalid: { kind: 'list', range: { start: 0, end: 22 }, replacement: '', why: '' }
       },
       {
+        name: 'JazzTextObservation',
+        valid: { kind: 'fix-applied', range: { start: 0, end: 1 }, rule: 'i-capital', replaced: 'i' },
+        invalid: { kind: 'fix-applied', where: 'document' }
+      },
+      {
+        name: 'JazzTextLeadV2Request',
+        valid: { paragraph: 'teh notes', observations: [{ kind: 'typed', range: { start: 0, end: 3 } }], rules: { 'end-stop': { kept: 1 } }, tier: 'on-device' },
+        invalid: { paragraph: 'teh notes', voices: [], tier: 'cloud' }
+      },
+      {
+        name: 'JazzTextLeadV2Response',
+        valid: { tier: 'server', genre: 'notes', edits: [{ id: 'e1', kind: 'spelling', range: { start: 0, end: 3 }, replacement: 'the', confidence: 0.9, why: 'Spelling.' }] },
+        invalid: { genre: 'notes', edits: [] }
+      },
+      {
+        name: 'JazzTextFeedbackRequest',
+        valid: { items: [{ editId: 'e1', verdict: 'ignored' }] },
+        invalid: { items: [{ editId: 'e1', verdict: 'rejected' }] }
+      },
+      {
         name: 'JazzTextLeadResponse',
         valid: {
           genre: 'notes',
@@ -461,6 +481,43 @@ describe('JSON Schema export', () => {
         why: 'Short shopping items: easing off full stops and offering a list.',
         fuelBalance: 249
       }),
+      'jazz_text_lead_v2_request.json': jazz.JazzTextLeadV2RequestSchema.parse({
+        paragraph: 'i think teh notes need a tidy up',
+        before: '# Release',
+        observations: [
+          { kind: 'typed', range: { start: 8, end: 11 }, at: '2026-11-17T10:00:00.000Z' },
+          { kind: 'deleted', where: 'elsewhere', removed: 40 },
+          { kind: 'fix-undone', range: { start: 0, end: 1 }, rule: 'i-capital', replaced: 'i' }
+        ],
+        rules: { 'i-capital': { kept: 3, undone: 1 } },
+        feedback: [{ editId: 'edit_9', verdict: 'dismissed' }],
+        tier: 'server',
+        teamId: 'team-swash'
+      }),
+      'jazz_text_lead_v2_response.json': jazz.JazzTextLeadV2ResponseSchema.parse({
+        tier: 'server',
+        genre: 'notes',
+        edits: [
+          { id: 'edit_1', kind: 'spelling', range: { start: 8, end: 11 }, replacement: 'the', confidence: 0.98, why: 'Spelling.', mode: 'assist' },
+          { id: 'edit_2', kind: 'structure', range: { start: 0, end: 0 }, action: 'title', replacement: '# Notes\n\n', confidence: 0.5, why: 'Add a title.', rule: 'title' }
+        ],
+        holdBack: ['end-stop'],
+        why: 'Short notes: fix spelling, hold back full stops.',
+        fuelBalance: 120
+      }),
+      'jazz_text_lead_v2_response_on_device.json': jazz.JazzTextLeadV2ResponseSchema.parse({
+        tier: 'on-device',
+        genre: 'prose',
+        edits: [{ id: 'd1', kind: 'wrong-word', range: { start: 0, end: 5 }, replacement: 'their', confidence: 0.8, why: 'Wrong word.' }]
+      }),
+      'jazz_text_feedback_request.json': jazz.JazzTextFeedbackRequestSchema.parse({
+        items: [
+          { editId: 'edit_1', verdict: 'accepted', at: '2026-11-17T10:00:05.000Z' },
+          { editId: 'd1', verdict: 'undone', tier: 'on-device' }
+        ],
+        teamId: 'team-swash'
+      }),
+      'jazz_text_feedback_response.json': jazz.JazzTextFeedbackResponseSchema.parse({ recorded: 2 }),
       'agent_tool.json': agent.AgentToolSchema.parse({
         type: 'code_execution',
         config: { timeout: 30, networkAccess: false, environment: 'sandbox' }

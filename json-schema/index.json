@@ -1546,6 +1546,36 @@
   },
   {
     "module": "jazz",
+    "name": "JazzTextEdit",
+    "file": "jazz/JazzTextEdit.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextEditKind",
+    "file": "jazz/JazzTextEditKind.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextFeedbackItem",
+    "file": "jazz/JazzTextFeedbackItem.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextFeedbackRequest",
+    "file": "jazz/JazzTextFeedbackRequest.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextFeedbackResponse",
+    "file": "jazz/JazzTextFeedbackResponse.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextFeedbackVerdict",
+    "file": "jazz/JazzTextFeedbackVerdict.json"
+  },
+  {
+    "module": "jazz",
     "name": "JazzTextFlavor",
     "file": "jazz/JazzTextFlavor.json"
   },
@@ -1566,8 +1596,38 @@
   },
   {
     "module": "jazz",
+    "name": "JazzTextLeadV2Request",
+    "file": "jazz/JazzTextLeadV2Request.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextLeadV2Response",
+    "file": "jazz/JazzTextLeadV2Response.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextObservation",
+    "file": "jazz/JazzTextObservation.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextObservationKind",
+    "file": "jazz/JazzTextObservationKind.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextObservationWhere",
+    "file": "jazz/JazzTextObservationWhere.json"
+  },
+  {
+    "module": "jazz",
     "name": "JazzTextRange",
     "file": "jazz/JazzTextRange.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextRuleStats",
+    "file": "jazz/JazzTextRuleStats.json"
   },
   {
     "module": "jazz",
@@ -1578,6 +1638,11 @@
     "module": "jazz",
     "name": "JazzTextSuggestionKind",
     "file": "jazz/JazzTextSuggestionKind.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzTextTier",
+    "file": "jazz/JazzTextTier.json"
   },
   {
     "module": "jazz",

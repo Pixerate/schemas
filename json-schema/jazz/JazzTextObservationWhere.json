@@ -1,0 +1,15 @@
+{
+  "$ref": "#/definitions/JazzTextObservationWhere",
+  "definitions": {
+    "JazzTextObservationWhere": {
+      "type": "string",
+      "enum": [
+        "paragraph",
+        "before",
+        "after",
+        "elsewhere"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

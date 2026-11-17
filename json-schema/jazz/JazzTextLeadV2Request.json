@@ -1,0 +1,205 @@
+{
+  "$ref": "#/definitions/JazzTextLeadV2Request",
+  "definitions": {
+    "JazzTextFeedbackItem": {
+      "type": "object",
+      "properties": {
+        "editId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "verdict": {
+          "$ref": "#/definitions/JazzTextFeedbackVerdict"
+        },
+        "tier": {
+          "$ref": "#/definitions/JazzTextTier",
+          "default": "server"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "editId",
+        "verdict"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextFeedbackVerdict": {
+      "type": "string",
+      "enum": [
+        "accepted",
+        "edited",
+        "dismissed",
+        "ignored",
+        "undone"
+      ]
+    },
+    "JazzTextFlavor": {
+      "type": "string",
+      "enum": [
+        "commonmark",
+        "gfm",
+        "slack"
+      ]
+    },
+    "JazzTextLeadV2Request": {
+      "type": "object",
+      "properties": {
+        "paragraph": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "before": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "after": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "flavor": {
+          "$ref": "#/definitions/JazzTextFlavor",
+          "default": "gfm"
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzTextObservation"
+          },
+          "maxItems": 100,
+          "default": []
+        },
+        "rules": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/JazzTextRuleStats"
+          },
+          "default": {}
+        },
+        "feedback": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzTextFeedbackItem"
+          },
+          "maxItems": 100,
+          "default": []
+        },
+        "tier": {
+          "$ref": "#/definitions/JazzTextTier",
+          "default": "server"
+        },
+        "teamId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "paragraph"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextObservation": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/JazzTextObservationKind"
+        },
+        "where": {
+          "$ref": "#/definitions/JazzTextObservationWhere",
+          "default": "paragraph"
+        },
+        "range": {
+          "$ref": "#/definitions/JazzTextRange"
+        },
+        "removed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rule": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "replaced": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextObservationKind": {
+      "type": "string",
+      "enum": [
+        "typed",
+        "pasted",
+        "deleted",
+        "fix-applied",
+        "fix-accepted",
+        "fix-undone"
+      ]
+    },
+    "JazzTextObservationWhere": {
+      "type": "string",
+      "enum": [
+        "paragraph",
+        "before",
+        "after",
+        "elsewhere"
+      ]
+    },
+    "JazzTextRange": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextRuleStats": {
+      "type": "object",
+      "properties": {
+        "kept": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "undone": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "JazzTextTier": {
+      "type": "string",
+      "enum": [
+        "server",
+        "on-device"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

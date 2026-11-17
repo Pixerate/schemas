@@ -1,0 +1,99 @@
+{
+  "$ref": "#/definitions/JazzTextEdit",
+  "definitions": {
+    "JazzTextEdit": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "kind": {
+          "$ref": "#/definitions/JazzTextEditKind"
+        },
+        "range": {
+          "$ref": "#/definitions/JazzTextRange"
+        },
+        "replacement": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "action": {
+          "$ref": "#/definitions/JazzTextSuggestionKind"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "why": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "suggest",
+            "assist"
+          ],
+          "default": "suggest"
+        },
+        "rule": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "range",
+        "confidence",
+        "why"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextEditKind": {
+      "type": "string",
+      "enum": [
+        "spelling",
+        "wrong-word",
+        "house-style",
+        "tone",
+        "structure"
+      ]
+    },
+    "JazzTextRange": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextSuggestionKind": {
+      "type": "string",
+      "enum": [
+        "list",
+        "heading",
+        "math",
+        "title",
+        "alert",
+        "quote"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
