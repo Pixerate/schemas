@@ -1,0 +1,30 @@
+{
+  "$ref": "#/definitions/InsightsActor",
+  "definitions": {
+    "InsightsActor": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/InsightsActorType"
+        },
+        "id_hash": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "type",
+        "id_hash"
+      ],
+      "additionalProperties": false
+    },
+    "InsightsActorType": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

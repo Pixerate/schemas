@@ -20,6 +20,7 @@ const SUBMODULES = [
   'agent',
   'jobs',
   'analytics',
+  'insights',
   'jazz',
   'skills'
 ];

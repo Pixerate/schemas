@@ -1,0 +1,42 @@
+{
+  "$ref": "#/definitions/FrictionPoint",
+  "definitions": {
+    "FrictionPoint": {
+      "type": "object",
+      "properties": {
+        "screen": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "$ref": "#/definitions/SignalType"
+        },
+        "description": {
+          "type": "string"
+        },
+        "flow": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "screen",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "SignalType": {
+      "type": "string",
+      "enum": [
+        "hesitation",
+        "loop",
+        "rage_click",
+        "error",
+        "backtrack",
+        "abandon_flow",
+        "dead_end",
+        "goal_mismatch"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

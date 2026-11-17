@@ -1,0 +1,112 @@
+{
+  "$ref": "#/definitions/InteractionEvent",
+  "definitions": {
+    "InsightsActor": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/InsightsActorType"
+        },
+        "id_hash": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "type",
+        "id_hash"
+      ],
+      "additionalProperties": false
+    },
+    "InsightsActorType": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent"
+      ]
+    },
+    "InteractionEvent": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actor": {
+          "$ref": "#/definitions/InsightsActor"
+        },
+        "ts": {
+          "type": "string",
+          "minLength": 1
+        },
+        "screen": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "click",
+            "submit",
+            "navigate",
+            "input_blur",
+            "error",
+            "custom"
+          ]
+        },
+        "target": {
+          "$ref": "#/definitions/InteractionTarget"
+        },
+        "outcome": {
+          "$ref": "#/definitions/InteractionOutcome",
+          "default": "unknown"
+        },
+        "state_ref": {
+          "type": "string"
+        },
+        "flow": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "session_id",
+        "actor",
+        "ts",
+        "screen",
+        "action"
+      ],
+      "additionalProperties": false
+    },
+    "InteractionOutcome": {
+      "type": "string",
+      "enum": [
+        "navigated",
+        "mutated",
+        "no_op",
+        "errored",
+        "dismissed",
+        "unknown"
+      ]
+    },
+    "InteractionTarget": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "pbId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "role"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

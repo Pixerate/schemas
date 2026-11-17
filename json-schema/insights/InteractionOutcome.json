@@ -1,0 +1,17 @@
+{
+  "$ref": "#/definitions/InteractionOutcome",
+  "definitions": {
+    "InteractionOutcome": {
+      "type": "string",
+      "enum": [
+        "navigated",
+        "mutated",
+        "no_op",
+        "errored",
+        "dismissed",
+        "unknown"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
