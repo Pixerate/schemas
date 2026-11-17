@@ -13,6 +13,7 @@ import * as media from '../dist/media.js';
 import * as agent from '../dist/agent.js';
 import * as jobs from '../dist/jobs.js';
 import * as analytics from '../dist/analytics.js';
+import * as insights from '../dist/insights.js';
 import * as jazz from '../dist/jazz.js';
 import * as skills from '../dist/skills.js';
 import * as index from '../dist/index.js';
@@ -34,6 +35,7 @@ const MODULES = {
   agent,
   jobs,
   analytics,
+  insights,
   jazz,
   skills,
   index
@@ -53,7 +55,7 @@ describe('JSON Schema export', () => {
     }
 
     const seenSchemas = new Set();
-    const submodules = ['common', 'realtime', 'genui', 'media', 'agent', 'jobs', 'analytics', 'jazz', 'skills'];
+    const submodules = ['common', 'realtime', 'genui', 'media', 'agent', 'jobs', 'analytics', 'insights', 'jazz', 'skills'];
 
     for (const modName of submodules) {
       const mod = MODULES[modName];

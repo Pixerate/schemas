@@ -9,14 +9,17 @@ import { validateNoPii } from "./analytics.js";
  * while reusing its PII guards.
  */
 
-export const ActorTypeSchema = z.enum(["human", "agent"]);
-export type ActorType = z.infer<typeof ActorTypeSchema>;
+// Named `InsightsActorType` because `ActorTypeSchema` in ./realtime.ts already means
+// "human" | "agent" | "system"; a shared name would be dropped from json-schema/ and
+// would clash in the root re-export.
+export const InsightsActorTypeSchema = z.enum(["human", "agent"]);
+export type InsightsActorType = z.infer<typeof InsightsActorTypeSchema>;
 
 export const UserCohortSchema = z.enum(["new", "returning"]);
 export type UserCohort = z.infer<typeof UserCohortSchema>;
 
 export const InsightsActorSchema = z.object({
-  type: ActorTypeSchema,
+  type: InsightsActorTypeSchema,
   id_hash: z.string().min(1)
 });
 export type InsightsActor = z.infer<typeof InsightsActorSchema>;
@@ -53,7 +56,7 @@ export type InteractionTarget = z.infer<typeof InteractionTargetSchema>;
 export const InteractionEventSchema = z.object({
   session_id: z.string().min(1),
   actor: InsightsActorSchema,
-  ts: z.string().datetime({ offset: true }).or(z.string().min(1)),
+  ts: z.string().min(1),
   screen: z.string().min(1),
   action: z.enum(["click", "submit", "navigate", "input_blur", "error", "custom"]),
   target: InteractionTargetSchema.optional(),
@@ -146,7 +149,7 @@ export type ProbeAnswer = z.infer<typeof ProbeAnswerSchema>;
 export const SessionSummarySchema = z.object({
   session_id: z.string().min(1),
   product: z.string().min(1),
-  actor_type: ActorTypeSchema,
+  actor_type: InsightsActorTypeSchema,
   actor_id_hash: z.string().min(1),
   user_cohort: UserCohortSchema.default("returning"),
   role_preference: z.string().optional(),

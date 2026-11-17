@@ -24,9 +24,9 @@ const PII_KEYS = new Set([
   "mobile"
 ]);
 
-export const EMAIL_REGEX = /[^\s@]+@[^\s@]+\.[^\s@]+/;
+const EMAIL_REGEX = /[^\s@]+@[^\s@]+\.[^\s@]+/;
 
-export function isPiiKey(key: string): boolean {
+function isPiiKey(key: string): boolean {
   const lower = key.toLowerCase();
   if (lower.includes("email") || lower.includes("phone")) {
     return true;
@@ -34,7 +34,7 @@ export function isPiiKey(key: string): boolean {
   return PII_KEYS.has(lower);
 }
 
-export function isUnhashedIdKey(key: string): boolean {
+function isUnhashedIdKey(key: string): boolean {
   const lower = key.toLowerCase();
   return lower === "team_id" || lower === "org_id";
 }

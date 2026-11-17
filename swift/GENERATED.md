@@ -3,7 +3,7 @@
 
 Generated modules: `common`, `jazz`, `skills`, `agent`.
 
-JSON Schema only (not generated into Swift yet): `analytics`, `genui`, `index`, `jobs`, `media`, `realtime`.
+JSON Schema only (not generated into Swift yet): `analytics`, `genui`, `index`, `insights`, `jobs`, `media`, `realtime`.
 
 ## Skipped schemas
 

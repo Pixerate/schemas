@@ -90,3 +90,11 @@ test("SessionSummarySchema and FindingSchema validate cleanly", () => {
   });
   assert.equal(finding.status, "open");
 });
+
+test("insights schemas are re-exported from the package root", async () => {
+  const root = await import("../dist/index.js");
+  assert.equal(root.IngestBatchSchema, IngestBatchSchema);
+  assert.deepEqual(root.InsightsActorTypeSchema.options, ["human", "agent"]);
+  // realtime's ActorTypeSchema keeps its own meaning
+  assert.deepEqual(root.ActorTypeSchema.options, ["human", "agent", "system"]);
+});

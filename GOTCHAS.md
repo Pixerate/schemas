@@ -111,3 +111,9 @@ A living document of known issues, pitfalls, quirks, and their solutions or work
 - **Issue / Pitfall**: A field that is both `.nullable()` and `.optional()` decodes `null` and a missing key to the same `nil`.
 - **Context / Cause**: `String?` has one empty state.
 - **Solution / Workaround**: Generated `encode(to:)` writes a nullable field's `nil` as `null` (matching records written by TypeScript) and leaves other `nil` fields out. Where an API gives `null` and a missing key different meanings, make that explicit in the schema rather than relying on the difference.
+
+### A Schema Name Reused in Another Module Is Silently Dropped From `json-schema/`
+
+- **Issue / Pitfall**: `src/insights.ts` first exported its own `ActorTypeSchema` (`"human" | "agent"`). No `insights/ActorType.json` was written and nothing failed; the module also could not be re-exported from `src/index.ts`.
+- **Context / Cause**: `scripts/export-json-schema.mjs` keys schemas by export name and keeps the first module in `SUBMODULES` (`realtime` already exports `ActorTypeSchema`). `export *` of two modules with the same name is a type error in the root.
+- **Solution / Workaround**: Give every exported schema a package-wide unique name (here `InsightsActorTypeSchema`), re-export the module from `src/index.ts` so tsc catches clashes, and add the module to the lists in `tests/json-schema.test.mjs`.

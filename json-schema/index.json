@@ -1341,6 +1341,11 @@
   },
   {
     "module": "insights",
+    "name": "InsightsActorType",
+    "file": "insights/InsightsActorType.json"
+  },
+  {
+    "module": "insights",
     "name": "InteractionEvent",
     "file": "insights/InteractionEvent.json"
   },

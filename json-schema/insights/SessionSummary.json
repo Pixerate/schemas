@@ -24,6 +24,13 @@
       ],
       "additionalProperties": false
     },
+    "InsightsActorType": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent"
+      ]
+    },
     "ProbeAnswer": {
       "type": "object",
       "properties": {
@@ -65,11 +72,7 @@
           "minLength": 1
         },
         "actor_type": {
-          "type": "string",
-          "enum": [
-            "human",
-            "agent"
-          ]
+          "$ref": "#/definitions/InsightsActorType"
         },
         "actor_id_hash": {
           "type": "string",

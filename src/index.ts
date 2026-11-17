@@ -793,6 +793,9 @@ export type LlmsFullTxtConfig = z.infer<typeof LlmsFullTxtConfigSchema>;
 // --- Product Analytics Schemas (see ./analytics.ts) ---
 export * from "./analytics.js";
 
+// --- Session insights for @pixerate/piggyback (see ./insights.ts) ---
+export * from "./insights.js";
+
 // --- Jazz: an agent working alongside the user (see ./jazz.ts) ---
 export * from "./jazz.js";
 
