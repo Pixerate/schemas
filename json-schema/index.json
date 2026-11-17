@@ -1300,6 +1300,106 @@
     "file": "index/WaitlistStatus.json"
   },
   {
+    "module": "insights",
+    "name": "BaseIngestBatch",
+    "file": "insights/BaseIngestBatch.json"
+  },
+  {
+    "module": "insights",
+    "name": "Finding",
+    "file": "insights/Finding.json"
+  },
+  {
+    "module": "insights",
+    "name": "FindingSeverity",
+    "file": "insights/FindingSeverity.json"
+  },
+  {
+    "module": "insights",
+    "name": "FindingStatus",
+    "file": "insights/FindingStatus.json"
+  },
+  {
+    "module": "insights",
+    "name": "FindingUserSegment",
+    "file": "insights/FindingUserSegment.json"
+  },
+  {
+    "module": "insights",
+    "name": "FrictionPoint",
+    "file": "insights/FrictionPoint.json"
+  },
+  {
+    "module": "insights",
+    "name": "IngestBatch",
+    "file": "insights/IngestBatch.json"
+  },
+  {
+    "module": "insights",
+    "name": "InsightsActor",
+    "file": "insights/InsightsActor.json"
+  },
+  {
+    "module": "insights",
+    "name": "InteractionEvent",
+    "file": "insights/InteractionEvent.json"
+  },
+  {
+    "module": "insights",
+    "name": "InteractionOutcome",
+    "file": "insights/InteractionOutcome.json"
+  },
+  {
+    "module": "insights",
+    "name": "InteractionTarget",
+    "file": "insights/InteractionTarget.json"
+  },
+  {
+    "module": "insights",
+    "name": "ProbeAnswer",
+    "file": "insights/ProbeAnswer.json"
+  },
+  {
+    "module": "insights",
+    "name": "SessionContext",
+    "file": "insights/SessionContext.json"
+  },
+  {
+    "module": "insights",
+    "name": "SessionOutcome",
+    "file": "insights/SessionOutcome.json"
+  },
+  {
+    "module": "insights",
+    "name": "SessionSummary",
+    "file": "insights/SessionSummary.json"
+  },
+  {
+    "module": "insights",
+    "name": "Signal",
+    "file": "insights/Signal.json"
+  },
+  {
+    "module": "insights",
+    "name": "SignalType",
+    "file": "insights/SignalType.json"
+  },
+  {
+    "module": "insights",
+    "name": "StateSnapshot",
+    "file": "insights/StateSnapshot.json"
+  },
+  {
+    "module": "insights",
+    "name": "UserCohort",
+    "file": "insights/UserCohort.json"
+  },
+  {
+    "module": "insights",
+    "name": "VisibleElement",
+    "file": "insights/VisibleElement.json"
+  },
+  {
     "module": "jazz",
     "name": "JazzAction",
     "file": "jazz/JazzAction.json"

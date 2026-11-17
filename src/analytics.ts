@@ -24,9 +24,9 @@ const PII_KEYS = new Set([
   "mobile"
 ]);
 
-const EMAIL_REGEX = /[^\s@]+@[^\s@]+\.[^\s@]+/;
+export const EMAIL_REGEX = /[^\s@]+@[^\s@]+\.[^\s@]+/;
 
-function isPiiKey(key: string): boolean {
+export function isPiiKey(key: string): boolean {
   const lower = key.toLowerCase();
   if (lower.includes("email") || lower.includes("phone")) {
     return true;
@@ -34,9 +34,51 @@ function isPiiKey(key: string): boolean {
   return PII_KEYS.has(lower);
 }
 
-function isUnhashedIdKey(key: string): boolean {
+export function isUnhashedIdKey(key: string): boolean {
   const lower = key.toLowerCase();
   return lower === "team_id" || lower === "org_id";
+}
+
+export function validateNoPii(
+  value: unknown,
+  path: (string | number)[],
+  ctx: z.RefinementCtx,
+  allowedKeysUnderParent: Record<string, string[]> = {}
+): void {
+  if (typeof value === "string") {
+    if (EMAIL_REGEX.test(value)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `PII detected: string value at '${path.join(".")}' looks like an email address`,
+        path
+      });
+    }
+  } else if (Array.isArray(value)) {
+    value.forEach((item, index) =>
+      validateNoPii(item, [...path, index], ctx, allowedKeysUnderParent)
+    );
+  } else if (value !== null && typeof value === "object") {
+    const parentKey = [...path].reverse().find((seg) => typeof seg === "string") as
+      | string
+      | undefined;
+    const allowedForParent = parentKey ? allowedKeysUnderParent[parentKey] ?? [] : [];
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      if (isUnhashedIdKey(k)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `IDs for teams and orgs must be hashed: use '${k}_hash' instead of '${k}'`,
+          path: [...path, k]
+        });
+      } else if (isPiiKey(k) && !allowedForParent.includes(k)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `PII key '${k}' is not allowed`,
+          path: [...path, k]
+        });
+      }
+      validateNoPii(v, [...path, k], ctx, allowedKeysUnderParent);
+    }
+  }
 }
 
 function validateParamValue(

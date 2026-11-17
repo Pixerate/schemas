@@ -1,0 +1,17 @@
+{
+  "$ref": "#/definitions/SessionOutcome",
+  "definitions": {
+    "SessionOutcome": {
+      "type": "string",
+      "enum": [
+        "activated",
+        "progressed",
+        "abandoned",
+        "errored",
+        "bounced",
+        "unknown"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,166 @@
+{
+  "$ref": "#/definitions/SessionSummary",
+  "definitions": {
+    "FrictionPoint": {
+      "type": "object",
+      "properties": {
+        "screen": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "$ref": "#/definitions/SignalType"
+        },
+        "description": {
+          "type": "string"
+        },
+        "flow": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "screen",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "ProbeAnswer": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "answer": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "question",
+        "answer"
+      ],
+      "additionalProperties": false
+    },
+    "SessionOutcome": {
+      "type": "string",
+      "enum": [
+        "activated",
+        "progressed",
+        "abandoned",
+        "errored",
+        "bounced",
+        "unknown"
+      ]
+    },
+    "SessionSummary": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "product": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "human",
+            "agent"
+          ]
+        },
+        "actor_id_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "user_cohort": {
+          "$ref": "#/definitions/UserCohort",
+          "default": "returning"
+        },
+        "role_preference": {
+          "type": "string"
+        },
+        "stated_goal": {
+          "type": "string"
+        },
+        "outcome": {
+          "$ref": "#/definitions/SessionOutcome"
+        },
+        "narrative": {
+          "type": "string",
+          "minLength": 1
+        },
+        "friction_points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FrictionPoint"
+          },
+          "default": []
+        },
+        "probe_answers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProbeAnswer"
+          },
+          "default": []
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "started_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ended_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "event_count": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "signal_count": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "required": [
+        "session_id",
+        "product",
+        "actor_type",
+        "actor_id_hash",
+        "outcome",
+        "narrative",
+        "confidence"
+      ],
+      "additionalProperties": false
+    },
+    "SignalType": {
+      "type": "string",
+      "enum": [
+        "hesitation",
+        "loop",
+        "rage_click",
+        "error",
+        "backtrack",
+        "abandon_flow",
+        "dead_end",
+        "goal_mismatch"
+      ]
+    },
+    "UserCohort": {
+      "type": "string",
+      "enum": [
+        "new",
+        "returning"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

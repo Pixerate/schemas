@@ -1,0 +1,321 @@
+{
+  "$ref": "#/definitions/BaseIngestBatch",
+  "definitions": {
+    "BaseIngestBatch": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "product": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actor": {
+          "$ref": "#/definitions/InsightsActor"
+        },
+        "context": {
+          "$ref": "#/definitions/SessionContext"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/InteractionEvent"
+          },
+          "default": []
+        },
+        "snapshots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StateSnapshot"
+          },
+          "default": []
+        },
+        "signals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Signal"
+          },
+          "default": []
+        },
+        "ended": {
+          "type": "boolean",
+          "default": false
+        },
+        "sent_at": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "session_id",
+        "product",
+        "actor"
+      ],
+      "additionalProperties": false
+    },
+    "InsightsActor": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "human",
+            "agent"
+          ]
+        },
+        "id_hash": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "type",
+        "id_hash"
+      ],
+      "additionalProperties": false
+    },
+    "InteractionEvent": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actor": {
+          "$ref": "#/definitions/InsightsActor"
+        },
+        "ts": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
+          ]
+        },
+        "screen": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "click",
+            "submit",
+            "navigate",
+            "input_blur",
+            "error",
+            "custom"
+          ]
+        },
+        "target": {
+          "$ref": "#/definitions/InteractionTarget"
+        },
+        "outcome": {
+          "$ref": "#/definitions/InteractionOutcome",
+          "default": "unknown"
+        },
+        "state_ref": {
+          "type": "string"
+        },
+        "flow": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "session_id",
+        "actor",
+        "ts",
+        "screen",
+        "action"
+      ],
+      "additionalProperties": false
+    },
+    "InteractionOutcome": {
+      "type": "string",
+      "enum": [
+        "navigated",
+        "mutated",
+        "no_op",
+        "errored",
+        "dismissed",
+        "unknown"
+      ]
+    },
+    "InteractionTarget": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "pbId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "SessionContext": {
+      "type": "object",
+      "properties": {
+        "userCohort": {
+          "$ref": "#/definitions/UserCohort"
+        },
+        "accountAgeDays": {
+          "type": "number",
+          "minimum": 0
+        },
+        "rolePreference": {
+          "type": "string"
+        },
+        "statedGoal": {
+          "type": "string"
+        },
+        "activeFlows": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "plan": {
+          "type": "string"
+        },
+        "teamIdHash": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Signal": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "$ref": "#/definitions/SignalType"
+        },
+        "screen": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ts": {
+          "type": "string",
+          "minLength": 1
+        },
+        "duration_ms": {
+          "type": "number",
+          "minimum": 0
+        },
+        "count": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "flow": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "session_id",
+        "type",
+        "screen"
+      ],
+      "additionalProperties": false
+    },
+    "SignalType": {
+      "type": "string",
+      "enum": [
+        "hesitation",
+        "loop",
+        "rage_click",
+        "error",
+        "backtrack",
+        "abandon_flow",
+        "dead_end",
+        "goal_mismatch"
+      ]
+    },
+    "StateSnapshot": {
+      "type": "object",
+      "properties": {
+        "state_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ts": {
+          "type": "string",
+          "minLength": 1
+        },
+        "screen": {
+          "type": "string",
+          "minLength": 1
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "visible": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VisibleElement"
+          },
+          "default": []
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      },
+      "required": [
+        "state_ref",
+        "screen"
+      ],
+      "additionalProperties": false
+    },
+    "UserCohort": {
+      "type": "string",
+      "enum": [
+        "new",
+        "returning"
+      ]
+    },
+    "VisibleElement": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "role"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

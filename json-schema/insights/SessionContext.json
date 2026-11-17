@@ -1,0 +1,44 @@
+{
+  "$ref": "#/definitions/SessionContext",
+  "definitions": {
+    "SessionContext": {
+      "type": "object",
+      "properties": {
+        "userCohort": {
+          "$ref": "#/definitions/UserCohort"
+        },
+        "accountAgeDays": {
+          "type": "number",
+          "minimum": 0
+        },
+        "rolePreference": {
+          "type": "string"
+        },
+        "statedGoal": {
+          "type": "string"
+        },
+        "activeFlows": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "plan": {
+          "type": "string"
+        },
+        "teamIdHash": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UserCohort": {
+      "type": "string",
+      "enum": [
+        "new",
+        "returning"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

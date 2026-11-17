@@ -1,0 +1,13 @@
+{
+  "$ref": "#/definitions/UserCohort",
+  "definitions": {
+    "UserCohort": {
+      "type": "string",
+      "enum": [
+        "new",
+        "returning"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

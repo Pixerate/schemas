@@ -1,0 +1,15 @@
+{
+  "$ref": "#/definitions/FindingStatus",
+  "definitions": {
+    "FindingStatus": {
+      "type": "string",
+      "enum": [
+        "open",
+        "acknowledged",
+        "resolved",
+        "dismissed"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

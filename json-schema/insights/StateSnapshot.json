@@ -1,0 +1,65 @@
+{
+  "$ref": "#/definitions/StateSnapshot",
+  "definitions": {
+    "StateSnapshot": {
+      "type": "object",
+      "properties": {
+        "state_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ts": {
+          "type": "string",
+          "minLength": 1
+        },
+        "screen": {
+          "type": "string",
+          "minLength": 1
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "visible": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VisibleElement"
+          },
+          "default": []
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      },
+      "required": [
+        "state_ref",
+        "screen"
+      ],
+      "additionalProperties": false
+    },
+    "VisibleElement": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "role"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

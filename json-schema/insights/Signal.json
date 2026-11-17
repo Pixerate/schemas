@@ -1,0 +1,59 @@
+{
+  "$ref": "#/definitions/Signal",
+  "definitions": {
+    "Signal": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "$ref": "#/definitions/SignalType"
+        },
+        "screen": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ts": {
+          "type": "string",
+          "minLength": 1
+        },
+        "duration_ms": {
+          "type": "number",
+          "minimum": 0
+        },
+        "count": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "flow": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "session_id",
+        "type",
+        "screen"
+      ],
+      "additionalProperties": false
+    },
+    "SignalType": {
+      "type": "string",
+      "enum": [
+        "hesitation",
+        "loop",
+        "rage_click",
+        "error",
+        "backtrack",
+        "abandon_flow",
+        "dead_end",
+        "goal_mismatch"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/FindingUserSegment",
+  "definitions": {
+    "FindingUserSegment": {
+      "type": "string",
+      "enum": [
+        "new",
+        "returning",
+        "all"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
