@@ -1,0 +1,18 @@
+{
+  "tier": "on-device",
+  "genre": "prose",
+  "edits": [
+    {
+      "id": "d1",
+      "kind": "wrong-word",
+      "range": {
+        "start": 0,
+        "end": 5
+      },
+      "replacement": "their",
+      "confidence": 0.8,
+      "why": "Wrong word.",
+      "mode": "suggest"
+    }
+  ]
+}

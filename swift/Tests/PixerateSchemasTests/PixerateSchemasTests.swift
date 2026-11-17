@@ -110,6 +110,47 @@ final class PixerateSchemasTests: XCTestCase {
         XCTAssertEqual(nsParagraph.substring(with: nsRange), "apples\npears\nplums")
     }
 
+    func testJazzTextLeadV2AndFeedback() throws {
+        let req = try roundTrip(JazzTextLeadV2Request.self, fixtureName: "jazz_text_lead_v2_request.json")
+        XCTAssertEqual(req.tier, .server)
+        XCTAssertEqual(req.observations.first?.kind, .typed)
+        XCTAssertEqual(req.observations[1].where, .elsewhere)
+        XCTAssertNil(req.observations[1].range)
+        XCTAssertEqual(req.rules["i-capital"]?.undone, 1)
+        XCTAssertEqual(req.feedback.first?.verdict, .dismissed)
+
+        // Minimal request fills in defaults
+        let minimal = try JSONDecoder().decode(JazzTextLeadV2Request.self, from: Data(#"{"paragraph":"teh"}"#.utf8))
+        XCTAssertEqual(minimal.tier, .server)
+        XCTAssertEqual(minimal.flavor, .gfm)
+        XCTAssertEqual(minimal.observations, [])
+        XCTAssertEqual(minimal.rules, [:])
+
+        let res = try roundTrip(JazzTextLeadV2Response.self, fixtureName: "jazz_text_lead_v2_response.json")
+        XCTAssertEqual(res.edits.first?.kind, .spelling)
+        XCTAssertEqual(res.edits.first?.mode, .assist)
+        XCTAssertEqual(res.edits[1].action, .title)
+        XCTAssertEqual(res.holdBack, ["end-stop"])
+
+        // UTF-16 ranges match NSString
+        let edit = try XCTUnwrap(res.edits.first)
+        let nsRange = NSRange(location: edit.range.start, length: edit.range.end - edit.range.start)
+        XCTAssertEqual((req.paragraph as NSString).substring(with: nsRange), "teh")
+
+        // On-device answers leave the server-only fields out
+        let onDevice = try roundTrip(JazzTextLeadV2Response.self, fixtureName: "jazz_text_lead_v2_response_on_device.json")
+        XCTAssertEqual(onDevice.tier, .onDevice)
+        XCTAssertNil(onDevice.holdBack)
+        XCTAssertNil(onDevice.why)
+        XCTAssertNil(onDevice.fuelBalance)
+        XCTAssertEqual(onDevice.edits.first?.mode, .suggest)
+
+        let feedback = try roundTrip(JazzTextFeedbackRequest.self, fixtureName: "jazz_text_feedback_request.json")
+        XCTAssertEqual(feedback.items.last?.tier, .onDevice)
+        XCTAssertEqual(feedback.items.last?.verdict, .undone)
+        try roundTrip(JazzTextFeedbackResponse.self, fixtureName: "jazz_text_feedback_response.json")
+    }
+
     func testAgentTool() throws {
         try roundTrip(AgentTool.self, fixtureName: "agent_tool.json")
     }

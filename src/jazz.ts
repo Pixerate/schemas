@@ -310,6 +310,7 @@ export const JazzProposalDraftSchema = z.object({
 export type JazzProposalDraft = z.infer<typeof JazzProposalDraftSchema>;
 
 // --- Text lead (Swash writing partner) ---
+// v1, superseded by text lead v2 below (Pixerate/schemas#87); kept until Swash moves over.
 // A bandleader turn on pause for the Markdown writing partner (`POST /api/agent/text-lead`),
 // the text counterpart of `PaintLeadResponse`.
 //
@@ -361,7 +362,9 @@ export type JazzTextVoiceState = z.infer<typeof JazzTextVoiceStateSchema>;
 export type JazzTextVoiceStateInput = z.input<typeof JazzTextVoiceStateSchema>;
 
 /**
- * Request body for `POST /api/agent/text-lead`.
+ * Request body for `POST /api/agent/text-lead` (v1).
+ *
+ * @deprecated Use `JazzTextLeadV2RequestSchema`.
  *
  * Privacy rule: carries only the paragraph at the caret and a small `before` / `after` window,
  * never text outside the context window, and never raw code, math or tables (all replaced with placeholders).
@@ -429,7 +432,11 @@ export const JazzTextSuggestionSchema = z.object({
 });
 export type JazzTextSuggestion = z.infer<typeof JazzTextSuggestionSchema>;
 
-/** Response from `POST /api/agent/text-lead` (the text equivalent of `PaintLeadResponse`). */
+/**
+ * Response from `POST /api/agent/text-lead` (v1, the text equivalent of `PaintLeadResponse`).
+ *
+ * @deprecated Use `JazzTextLeadV2ResponseSchema`.
+ */
 export const JazzTextLeadResponseSchema = z.object({
   /** Detected genre of the paragraph (`prose`, `notes`, `chat`, `poem`, `list`, `technical`, `heading`). */
   genre: JazzTextGenreSchema,
@@ -449,6 +456,220 @@ export const TextLeadRequestSchema = JazzTextLeadRequestSchema;
 export type TextLeadRequest = JazzTextLeadRequest;
 export const TextLeadResponseSchema = JazzTextLeadResponseSchema;
 export type TextLeadResponse = JazzTextLeadResponse;
+
+// --- Text lead v2 (Swash writing partner, jazz on the server) ---
+// Jazz runs on the Pixerate server for Swash (Pixerate/jazz#30). The open client sends what happened
+// since the last turn (observations, not a summary of its local state) and gets suggested edits
+// back, as jazz does on the canvas. It then reports what the writer did with each suggestion
+// (`POST /api/agent/text-feedback`, or batched in the next request) so the server can learn.
+// Strategies, learning and house style stay on the server. See Pixerate/schemas#87.
+//
+// Privacy rule (as for v1, restated for the new fields): a request carries only the paragraph at
+// the caret and a small `before` / `after` window, never the whole document, and never raw code,
+// math or tables (the client replaces those spans with placeholders first). Observations carry
+// positions and lengths, not text: a change outside the window is reported only as `elsewhere`,
+// pasted or deleted text is never sent, and `replaced` (the few characters a local fix changed) is
+// sent only when it sat inside the window and outside any placeholder. Feedback carries ids and
+// verdicts only.
+//
+// Tiers: the same types serve the server tier and the on-device tier (Pixerate/Swash#102). An
+// on-device answer fills in only `tier`, `genre` and edits whose `kind` is in
+// `JAZZ_TEXT_ON_DEVICE_EDIT_KINDS` (spelling and wrong-word fixes, simple structure hints). Fields
+// described as "Server-only" (listed in `JAZZ_TEXT_SERVER_ONLY_FIELDS`) are optional so an
+// on-device answer parses; clients must work without them.
+//
+// Text rules are "rules", never "voices": jazz reserves "voice" for paint.
+
+/** Who answers a text-lead turn: jazz on the Pixerate server, or the on-device model. */
+export const JazzTextTierSchema = z.enum(["server", "on-device"]);
+export type JazzTextTier = z.infer<typeof JazzTextTierSchema>;
+
+/** Kept and undone counts for one local rule (e.g. `sentence-case`, `end-stop`, `smart-quotes`). */
+export const JazzTextRuleStatsSchema = z.object({
+  /** Edits made by this rule that the writer kept. */
+  kept: z.number().int().min(0).default(0),
+  /** Edits made by this rule that the writer undid or typed over. */
+  undone: z.number().int().min(0).default(0)
+});
+export type JazzTextRuleStats = z.infer<typeof JazzTextRuleStatsSchema>;
+export type JazzTextRuleStatsInput = z.input<typeof JazzTextRuleStatsSchema>;
+
+/**
+ * What happened since the last turn:
+ * - `typed` / `pasted` / `deleted`: the writer's own edits;
+ * - `fix-applied`: a local rule changed the text at once;
+ * - `fix-accepted`: the writer accepted a local fix that was offered;
+ * - `fix-undone`: the writer undid or typed over a local fix.
+ */
+export const JazzTextObservationKindSchema = z.enum(["typed", "pasted", "deleted", "fix-applied", "fix-accepted", "fix-undone"]);
+export type JazzTextObservationKind = z.infer<typeof JazzTextObservationKindSchema>;
+
+/**
+ * Where a change happened: in the request's `paragraph`, `before` or `after` (with a `range` into
+ * that string), or `elsewhere` in the document (no range, no text).
+ */
+export const JazzTextObservationWhereSchema = z.enum(["paragraph", "before", "after", "elsewhere"]);
+export type JazzTextObservationWhere = z.infer<typeof JazzTextObservationWhereSchema>;
+
+/** Maximum UTF-16 code units in `JazzTextObservation.replaced`. */
+export const JAZZ_TEXT_MAX_REPLACED_CHARS = 200;
+
+/** One change since the last turn, as positions and lengths (see the privacy rule above). */
+export const JazzTextObservationSchema = z.object({
+  kind: JazzTextObservationKindSchema,
+  where: JazzTextObservationWhereSchema.default("paragraph"),
+  /**
+   * Where the change is now, in UTF-16 offsets into the string `where` names (absent for
+   * `elsewhere`). Inserted or fixed text spans the range; a deletion is an empty range at the point
+   * where the text was.
+   */
+  range: JazzTextRangeSchema.optional(),
+  /** UTF-16 code units removed (for `deleted`, or text a paste or fix replaced). */
+  removed: z.number().int().min(0).optional(),
+  /** For local fixes: the rule id (e.g. `sentence-case`, `end-stop`). */
+  rule: z.string().min(1).max(64).optional(),
+  /** For local fixes inside the window: the text the fix replaced (e.g. `i` for `I`). Never pasted or deleted text. */
+  replaced: z.string().max(JAZZ_TEXT_MAX_REPLACED_CHARS).optional(),
+  at: IsoDateTimeSchema.optional()
+});
+export type JazzTextObservation = z.infer<typeof JazzTextObservationSchema>;
+export type JazzTextObservationInput = z.input<typeof JazzTextObservationSchema>;
+
+/**
+ * What the writer did with a suggested edit:
+ * - `accepted`: applied as offered (or kept, for one applied at once);
+ * - `edited`: accepted, then changed;
+ * - `dismissed`: turned down;
+ * - `ignored`: left until it went stale;
+ * - `undone`: applied (at once or on accept), then undone or typed over.
+ */
+export const JazzTextFeedbackVerdictSchema = z.enum(["accepted", "edited", "dismissed", "ignored", "undone"]);
+export type JazzTextFeedbackVerdict = z.infer<typeof JazzTextFeedbackVerdictSchema>;
+
+/** The writer's answer to one suggested edit, by its id. Carries no text. */
+export const JazzTextFeedbackItemSchema = z.object({
+  /** `JazzTextEdit.id`. */
+  editId: z.string().min(1).max(128),
+  verdict: JazzTextFeedbackVerdictSchema,
+  /** The tier that made the edit. */
+  tier: JazzTextTierSchema.default("server"),
+  at: IsoDateTimeSchema.optional()
+});
+export type JazzTextFeedbackItem = z.infer<typeof JazzTextFeedbackItemSchema>;
+export type JazzTextFeedbackItemInput = z.input<typeof JazzTextFeedbackItemSchema>;
+
+/**
+ * Request body for `POST /api/agent/text-lead` (v2): observations in.
+ *
+ * Privacy rule: see the section comment. Only `paragraph`, `before`, `after` and fix `replaced`
+ * carry text, all from inside the context window with code, math and tables replaced by placeholders.
+ */
+export const JazzTextLeadV2RequestSchema = z.object({
+  /** The paragraph being written, as raw Markdown, with code, math and tables replaced by placeholders. */
+  paragraph: z.string().min(1).max(JAZZ_TEXT_LEAD_MAX_PARAGRAPH_CHARS),
+  /** A little surrounding context before `paragraph` (e.g. the previous heading and paragraph), with the same exclusions. */
+  before: z.string().max(JAZZ_TEXT_LEAD_MAX_CONTEXT_CHARS).optional(),
+  /** A little surrounding context after `paragraph`, with the same exclusions. */
+  after: z.string().max(JAZZ_TEXT_LEAD_MAX_CONTEXT_CHARS).optional(),
+  flavor: JazzTextFlavorSchema.default("gfm"),
+  /** What changed since the last turn, oldest first. */
+  observations: z.array(JazzTextObservationSchema).max(100).default([]),
+  /** The local tier's kept/undone counts, keyed by rule id. */
+  rules: z.record(z.string(), JazzTextRuleStatsSchema).default({}),
+  /** Answers to earlier suggested edits not yet sent to `POST /api/agent/text-feedback`. */
+  feedback: z.array(JazzTextFeedbackItemSchema).max(100).default([]),
+  /** Who is asked to answer, for telemetry and so the tiers' answers can be compared. */
+  tier: JazzTextTierSchema.default("server"),
+  /** Optional team id to bill fuel against when the caller belongs to the team. */
+  teamId: z.string().min(1).max(128).optional()
+});
+export type JazzTextLeadV2Request = z.infer<typeof JazzTextLeadV2RequestSchema>;
+export type JazzTextLeadV2RequestInput = z.input<typeof JazzTextLeadV2RequestSchema>;
+
+/**
+ * - `spelling`, `wrong-word`: fixes (on-device too);
+ * - `house-style`, `tone`: server-only;
+ * - `structure`: a structural `action` (simple hints on-device).
+ */
+export const JazzTextEditKindSchema = z.enum(["spelling", "wrong-word", "house-style", "tone", "structure"]);
+export type JazzTextEditKind = z.infer<typeof JazzTextEditKindSchema>;
+
+/** Edit kinds an on-device answer may contain (Pixerate/Swash#102). */
+export const JAZZ_TEXT_ON_DEVICE_EDIT_KINDS = ["spelling", "wrong-word", "structure"] as const satisfies readonly JazzTextEditKind[];
+
+/**
+ * A suggested edit (a riff) anchored to a UTF-16 range in the request's `paragraph`. It carries a
+ * `replacement`, a structural `action`, or both (then `replacement` is the exact Markdown and
+ * `action` names it).
+ */
+export const JazzTextEditSchema = z
+  .object({
+    /** Unique per edit; feedback refers to it. */
+    id: z.string().min(1).max(128),
+    kind: JazzTextEditKindSchema,
+    /** Range in UTF-16 code-unit offsets into `paragraph` that the edit changes (`0..0` to insert at the start). */
+    range: JazzTextRangeSchema,
+    /** Markdown that replaces `paragraph.slice(range.start, range.end)`; empty to delete. */
+    replacement: z.string().max(JAZZ_TEXT_LEAD_MAX_PARAGRAPH_CHARS).optional(),
+    /** The structural change (`list`, `heading`, `math`, `title`, `alert`, `quote`), for `kind: "structure"`. */
+    action: JazzTextSuggestionKindSchema.optional(),
+    confidence: z.number().min(0).max(1),
+    /** Short rationale shown with the edit. */
+    why: z.string().min(1).max(200),
+    /**
+     * `assist`: may be applied at once (its own undo step); `suggest`: must be offered.
+     * The client may always downgrade `assist` to `suggest`.
+     */
+    mode: z.enum(["suggest", "assist"]).default("suggest"),
+    /** The house-style or local rule behind it, so kept/undone counts can be kept per rule. */
+    rule: z.string().min(1).max(64).optional()
+  })
+  .superRefine((edit, ctx) => {
+    if (edit.range.end < edit.range.start) {
+      ctx.addIssue({ code: "custom", path: ["range", "end"], message: "`end` must be at least `start`" });
+    }
+    if (edit.replacement === undefined && edit.action === undefined) {
+      ctx.addIssue({ code: "custom", path: ["replacement"], message: "An edit needs a `replacement` or an `action`" });
+    }
+  });
+export type JazzTextEdit = z.infer<typeof JazzTextEditSchema>;
+export type JazzTextEditInput = z.input<typeof JazzTextEditSchema>;
+
+/** Response from `POST /api/agent/text-lead` (v2): suggested edits out. */
+export const JazzTextLeadV2ResponseSchema = z.object({
+  /** Who answered. */
+  tier: JazzTextTierSchema,
+  /** Genre of the paragraph (`prose`, `notes`, `chat`, `poem`, `list`, `technical`, `heading`). */
+  genre: JazzTextGenreSchema,
+  /** Suggested edits, most useful first. */
+  edits: z.array(JazzTextEditSchema).max(8).default([]),
+  /** Server-only. Local rule ids to hold back for this genre or writer (e.g. `end-stop` for a poem). */
+  holdBack: z.array(z.string().min(1).max(64)).max(20).optional().describe("Server-only. Local rule ids to hold back for this genre or writer."),
+  /** Server-only. One-line rationale for the turn. */
+  why: z.string().max(280).optional().describe("Server-only. One-line rationale for the turn."),
+  /** Server-only. Remaining fuel balance after the turn, when metered. */
+  fuelBalance: z.number().int().optional().describe("Server-only. Remaining fuel balance after the turn, when metered.")
+});
+export type JazzTextLeadV2Response = z.infer<typeof JazzTextLeadV2ResponseSchema>;
+export type JazzTextLeadV2ResponseInput = z.input<typeof JazzTextLeadV2ResponseSchema>;
+
+/** Response fields only the server tier fills in. Edits of kind `house-style` or `tone` are server-only too. */
+export const JAZZ_TEXT_SERVER_ONLY_FIELDS = ["holdBack", "why", "fuelBalance"] as const satisfies readonly (keyof JazzTextLeadV2Response)[];
+
+/** Request body for `POST /api/agent/text-feedback`. Free: it costs no fuel. */
+export const JazzTextFeedbackRequestSchema = z.object({
+  items: z.array(JazzTextFeedbackItemSchema).min(1).max(100),
+  teamId: z.string().min(1).max(128).optional()
+});
+export type JazzTextFeedbackRequest = z.infer<typeof JazzTextFeedbackRequestSchema>;
+export type JazzTextFeedbackRequestInput = z.input<typeof JazzTextFeedbackRequestSchema>;
+
+/** Response from `POST /api/agent/text-feedback`. */
+export const JazzTextFeedbackResponseSchema = z.object({
+  /** Items recorded (unknown or repeated edit ids are skipped). */
+  recorded: z.number().int().min(0)
+});
+export type JazzTextFeedbackResponse = z.infer<typeof JazzTextFeedbackResponseSchema>;
 
 // --- Dream (paint duet) ---
 // A dream is an image of where a painting could go, made by an image model from a capture of the

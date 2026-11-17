@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "editId": "edit_1",
+      "verdict": "accepted",
+      "tier": "server",
+      "at": "2026-11-17T10:00:05.000Z"
+    },
+    {
+      "editId": "d1",
+      "verdict": "undone",
+      "tier": "on-device"
+    }
+  ],
+  "teamId": "team-swash"
+}

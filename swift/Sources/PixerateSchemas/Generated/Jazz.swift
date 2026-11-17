@@ -71,6 +71,22 @@ public enum JazzTargetKind: String, Codable, Sendable, CaseIterable {
     case other = "other"
 }
 
+public enum JazzTextEditKind: String, Codable, Sendable, CaseIterable {
+    case spelling = "spelling"
+    case wrongWord = "wrong-word"
+    case houseStyle = "house-style"
+    case tone = "tone"
+    case structure = "structure"
+}
+
+public enum JazzTextFeedbackVerdict: String, Codable, Sendable, CaseIterable {
+    case accepted = "accepted"
+    case edited = "edited"
+    case dismissed = "dismissed"
+    case ignored = "ignored"
+    case undone = "undone"
+}
+
 public enum JazzTextFlavor: String, Codable, Sendable, CaseIterable {
     case commonmark = "commonmark"
     case gfm = "gfm"
@@ -87,6 +103,22 @@ public enum JazzTextGenre: String, Codable, Sendable, CaseIterable {
     case heading = "heading"
 }
 
+public enum JazzTextObservationKind: String, Codable, Sendable, CaseIterable {
+    case typed = "typed"
+    case pasted = "pasted"
+    case deleted = "deleted"
+    case fixApplied = "fix-applied"
+    case fixAccepted = "fix-accepted"
+    case fixUndone = "fix-undone"
+}
+
+public enum JazzTextObservationWhere: String, Codable, Sendable, CaseIterable {
+    case paragraph = "paragraph"
+    case before = "before"
+    case after = "after"
+    case elsewhere = "elsewhere"
+}
+
 public enum JazzTextSuggestionKind: String, Codable, Sendable, CaseIterable {
     case list = "list"
     case heading = "heading"
@@ -94,6 +126,11 @@ public enum JazzTextSuggestionKind: String, Codable, Sendable, CaseIterable {
     case title = "title"
     case alert = "alert"
     case quote = "quote"
+}
+
+public enum JazzTextTier: String, Codable, Sendable, CaseIterable {
+    case server = "server"
+    case onDevice = "on-device"
 }
 
 public enum JazzTextVoiceId: String, Codable, Sendable, CaseIterable {
@@ -1146,9 +1183,371 @@ public struct JazzTarget: Codable, Sendable, Equatable {
     }
 }
 
+public enum JazzTextEditMode: String, Codable, Sendable, CaseIterable {
+    case suggest = "suggest"
+    case assist = "assist"
+}
+
+public struct JazzTextEdit: Codable, Sendable, Equatable {
+    public var id: String
+    public var kind: JazzTextEditKind
+    public var range: JazzTextRange
+    public var replacement: String?
+    public var action: JazzTextSuggestionKind?
+    public var confidence: Double
+    public var why: String
+    public var mode: JazzTextEditMode
+    public var rule: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case kind = "kind"
+        case range = "range"
+        case replacement = "replacement"
+        case action = "action"
+        case confidence = "confidence"
+        case why = "why"
+        case mode = "mode"
+        case rule = "rule"
+    }
+
+    public init(
+        id: String,
+        kind: JazzTextEditKind,
+        range: JazzTextRange,
+        replacement: String? = nil,
+        action: JazzTextSuggestionKind? = nil,
+        confidence: Double,
+        why: String,
+        mode: JazzTextEditMode = .suggest,
+        rule: String? = nil
+    ) {
+        self.id = id
+        self.kind = kind
+        self.range = range
+        self.replacement = replacement
+        self.action = action
+        self.confidence = confidence
+        self.why = why
+        self.mode = mode
+        self.rule = rule
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.kind = try container.decode(JazzTextEditKind.self, forKey: .kind)
+        self.range = try container.decode(JazzTextRange.self, forKey: .range)
+        self.replacement = try container.decodeIfPresent(String.self, forKey: .replacement)
+        self.action = try container.decodeIfPresent(JazzTextSuggestionKind.self, forKey: .action)
+        self.confidence = try container.decode(Double.self, forKey: .confidence)
+        self.why = try container.decode(String.self, forKey: .why)
+        self.mode = try container.decodeIfPresent(JazzTextEditMode.self, forKey: .mode) ?? .suggest
+        self.rule = try container.decodeIfPresent(String.self, forKey: .rule)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(kind, forKey: .kind)
+        try container.encode(range, forKey: .range)
+        try container.encodeIfPresent(replacement, forKey: .replacement)
+        try container.encodeIfPresent(action, forKey: .action)
+        try container.encode(confidence, forKey: .confidence)
+        try container.encode(why, forKey: .why)
+        try container.encode(mode, forKey: .mode)
+        try container.encodeIfPresent(rule, forKey: .rule)
+    }
+}
+
+public struct JazzTextFeedbackItem: Codable, Sendable, Equatable {
+    public var editId: String
+    public var verdict: JazzTextFeedbackVerdict
+    public var tier: JazzTextTier
+    public var at: String?
+
+    enum CodingKeys: String, CodingKey {
+        case editId = "editId"
+        case verdict = "verdict"
+        case tier = "tier"
+        case at = "at"
+    }
+
+    public init(
+        editId: String,
+        verdict: JazzTextFeedbackVerdict,
+        tier: JazzTextTier = .server,
+        at: String? = nil
+    ) {
+        self.editId = editId
+        self.verdict = verdict
+        self.tier = tier
+        self.at = at
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.editId = try container.decode(String.self, forKey: .editId)
+        self.verdict = try container.decode(JazzTextFeedbackVerdict.self, forKey: .verdict)
+        self.tier = try container.decodeIfPresent(JazzTextTier.self, forKey: .tier) ?? .server
+        self.at = try container.decodeIfPresent(String.self, forKey: .at)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(editId, forKey: .editId)
+        try container.encode(verdict, forKey: .verdict)
+        try container.encode(tier, forKey: .tier)
+        try container.encodeIfPresent(at, forKey: .at)
+    }
+}
+
+public struct JazzTextFeedbackRequest: Codable, Sendable, Equatable {
+    public var items: [JazzTextFeedbackItem]
+    public var teamId: String?
+
+    enum CodingKeys: String, CodingKey {
+        case items = "items"
+        case teamId = "teamId"
+    }
+
+    public init(
+        items: [JazzTextFeedbackItem],
+        teamId: String? = nil
+    ) {
+        self.items = items
+        self.teamId = teamId
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.items = try container.decode([JazzTextFeedbackItem].self, forKey: .items)
+        self.teamId = try container.decodeIfPresent(String.self, forKey: .teamId)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(items, forKey: .items)
+        try container.encodeIfPresent(teamId, forKey: .teamId)
+    }
+}
+
+public struct JazzTextFeedbackResponse: Codable, Sendable, Equatable {
+    public var recorded: Int
+
+    enum CodingKeys: String, CodingKey {
+        case recorded = "recorded"
+    }
+
+    public init(
+        recorded: Int
+    ) {
+        self.recorded = recorded
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.recorded = try container.decode(Int.self, forKey: .recorded)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(recorded, forKey: .recorded)
+    }
+}
+
 public typealias JazzTextLeadRequest = TextLeadRequest
 
 public typealias JazzTextLeadResponse = TextLeadResponse
+
+public struct JazzTextLeadV2Request: Codable, Sendable, Equatable {
+    public var paragraph: String
+    public var before: String?
+    public var after: String?
+    public var flavor: JazzTextFlavor
+    public var observations: [JazzTextObservation]
+    public var rules: [String: JazzTextRuleStats]
+    public var feedback: [JazzTextFeedbackItem]
+    public var tier: JazzTextTier
+    public var teamId: String?
+
+    enum CodingKeys: String, CodingKey {
+        case paragraph = "paragraph"
+        case before = "before"
+        case after = "after"
+        case flavor = "flavor"
+        case observations = "observations"
+        case rules = "rules"
+        case feedback = "feedback"
+        case tier = "tier"
+        case teamId = "teamId"
+    }
+
+    public init(
+        paragraph: String,
+        before: String? = nil,
+        after: String? = nil,
+        flavor: JazzTextFlavor = .gfm,
+        observations: [JazzTextObservation] = [],
+        rules: [String: JazzTextRuleStats] = [:],
+        feedback: [JazzTextFeedbackItem] = [],
+        tier: JazzTextTier = .server,
+        teamId: String? = nil
+    ) {
+        self.paragraph = paragraph
+        self.before = before
+        self.after = after
+        self.flavor = flavor
+        self.observations = observations
+        self.rules = rules
+        self.feedback = feedback
+        self.tier = tier
+        self.teamId = teamId
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.paragraph = try container.decode(String.self, forKey: .paragraph)
+        self.before = try container.decodeIfPresent(String.self, forKey: .before)
+        self.after = try container.decodeIfPresent(String.self, forKey: .after)
+        self.flavor = try container.decodeIfPresent(JazzTextFlavor.self, forKey: .flavor) ?? .gfm
+        self.observations = try container.decodeIfPresent([JazzTextObservation].self, forKey: .observations) ?? []
+        self.rules = try container.decodeIfPresent([String: JazzTextRuleStats].self, forKey: .rules) ?? [:]
+        self.feedback = try container.decodeIfPresent([JazzTextFeedbackItem].self, forKey: .feedback) ?? []
+        self.tier = try container.decodeIfPresent(JazzTextTier.self, forKey: .tier) ?? .server
+        self.teamId = try container.decodeIfPresent(String.self, forKey: .teamId)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(paragraph, forKey: .paragraph)
+        try container.encodeIfPresent(before, forKey: .before)
+        try container.encodeIfPresent(after, forKey: .after)
+        try container.encode(flavor, forKey: .flavor)
+        try container.encode(observations, forKey: .observations)
+        try container.encode(rules, forKey: .rules)
+        try container.encode(feedback, forKey: .feedback)
+        try container.encode(tier, forKey: .tier)
+        try container.encodeIfPresent(teamId, forKey: .teamId)
+    }
+}
+
+public struct JazzTextLeadV2Response: Codable, Sendable, Equatable {
+    public var tier: JazzTextTier
+    public var genre: JazzTextGenre
+    public var edits: [JazzTextEdit]
+    /// Server-only. Local rule ids to hold back for this genre or writer.
+    public var holdBack: [String]?
+    /// Server-only. One-line rationale for the turn.
+    public var why: String?
+    /// Server-only. Remaining fuel balance after the turn, when metered.
+    public var fuelBalance: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case tier = "tier"
+        case genre = "genre"
+        case edits = "edits"
+        case holdBack = "holdBack"
+        case why = "why"
+        case fuelBalance = "fuelBalance"
+    }
+
+    public init(
+        tier: JazzTextTier,
+        genre: JazzTextGenre,
+        edits: [JazzTextEdit] = [],
+        holdBack: [String]? = nil,
+        why: String? = nil,
+        fuelBalance: Int? = nil
+    ) {
+        self.tier = tier
+        self.genre = genre
+        self.edits = edits
+        self.holdBack = holdBack
+        self.why = why
+        self.fuelBalance = fuelBalance
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.tier = try container.decode(JazzTextTier.self, forKey: .tier)
+        self.genre = try container.decode(JazzTextGenre.self, forKey: .genre)
+        self.edits = try container.decodeIfPresent([JazzTextEdit].self, forKey: .edits) ?? []
+        self.holdBack = try container.decodeIfPresent([String].self, forKey: .holdBack)
+        self.why = try container.decodeIfPresent(String.self, forKey: .why)
+        self.fuelBalance = try container.decodeIfPresent(Int.self, forKey: .fuelBalance)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(tier, forKey: .tier)
+        try container.encode(genre, forKey: .genre)
+        try container.encode(edits, forKey: .edits)
+        try container.encodeIfPresent(holdBack, forKey: .holdBack)
+        try container.encodeIfPresent(why, forKey: .why)
+        try container.encodeIfPresent(fuelBalance, forKey: .fuelBalance)
+    }
+}
+
+public struct JazzTextObservation: Codable, Sendable, Equatable {
+    public var kind: JazzTextObservationKind
+    public var `where`: JazzTextObservationWhere
+    public var range: JazzTextRange?
+    public var removed: Int?
+    public var rule: String?
+    public var replaced: String?
+    public var at: String?
+
+    enum CodingKeys: String, CodingKey {
+        case kind = "kind"
+        case `where` = "where"
+        case range = "range"
+        case removed = "removed"
+        case rule = "rule"
+        case replaced = "replaced"
+        case at = "at"
+    }
+
+    public init(
+        kind: JazzTextObservationKind,
+        `where`: JazzTextObservationWhere = .paragraph,
+        range: JazzTextRange? = nil,
+        removed: Int? = nil,
+        rule: String? = nil,
+        replaced: String? = nil,
+        at: String? = nil
+    ) {
+        self.kind = kind
+        self.`where` = `where`
+        self.range = range
+        self.removed = removed
+        self.rule = rule
+        self.replaced = replaced
+        self.at = at
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.kind = try container.decode(JazzTextObservationKind.self, forKey: .kind)
+        self.`where` = try container.decodeIfPresent(JazzTextObservationWhere.self, forKey: .`where`) ?? .paragraph
+        self.range = try container.decodeIfPresent(JazzTextRange.self, forKey: .range)
+        self.removed = try container.decodeIfPresent(Int.self, forKey: .removed)
+        self.rule = try container.decodeIfPresent(String.self, forKey: .rule)
+        self.replaced = try container.decodeIfPresent(String.self, forKey: .replaced)
+        self.at = try container.decodeIfPresent(String.self, forKey: .at)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(kind, forKey: .kind)
+        try container.encode(`where`, forKey: .`where`)
+        try container.encodeIfPresent(range, forKey: .range)
+        try container.encodeIfPresent(removed, forKey: .removed)
+        try container.encodeIfPresent(rule, forKey: .rule)
+        try container.encodeIfPresent(replaced, forKey: .replaced)
+        try container.encodeIfPresent(at, forKey: .at)
+    }
+}
 
 public struct JazzTextRange: Codable, Sendable, Equatable {
     public var start: Int
@@ -1177,6 +1576,36 @@ public struct JazzTextRange: Codable, Sendable, Equatable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(start, forKey: .start)
         try container.encode(end, forKey: .end)
+    }
+}
+
+public struct JazzTextRuleStats: Codable, Sendable, Equatable {
+    public var kept: Int
+    public var undone: Int
+
+    enum CodingKeys: String, CodingKey {
+        case kept = "kept"
+        case undone = "undone"
+    }
+
+    public init(
+        kept: Int = 0,
+        undone: Int = 0
+    ) {
+        self.kept = kept
+        self.undone = undone
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.kept = try container.decodeIfPresent(Int.self, forKey: .kept) ?? 0
+        self.undone = try container.decodeIfPresent(Int.self, forKey: .undone) ?? 0
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(kept, forKey: .kept)
+        try container.encode(undone, forKey: .undone)
     }
 }
 

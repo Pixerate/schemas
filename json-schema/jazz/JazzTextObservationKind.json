@@ -1,0 +1,17 @@
+{
+  "$ref": "#/definitions/JazzTextObservationKind",
+  "definitions": {
+    "JazzTextObservationKind": {
+      "type": "string",
+      "enum": [
+        "typed",
+        "pasted",
+        "deleted",
+        "fix-applied",
+        "fix-accepted",
+        "fix-undone"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

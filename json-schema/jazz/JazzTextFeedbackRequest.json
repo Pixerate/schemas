@@ -1,0 +1,71 @@
+{
+  "$ref": "#/definitions/JazzTextFeedbackRequest",
+  "definitions": {
+    "JazzTextFeedbackItem": {
+      "type": "object",
+      "properties": {
+        "editId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "verdict": {
+          "$ref": "#/definitions/JazzTextFeedbackVerdict"
+        },
+        "tier": {
+          "$ref": "#/definitions/JazzTextTier",
+          "default": "server"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "editId",
+        "verdict"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextFeedbackRequest": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JazzTextFeedbackItem"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "teamId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "JazzTextFeedbackVerdict": {
+      "type": "string",
+      "enum": [
+        "accepted",
+        "edited",
+        "dismissed",
+        "ignored",
+        "undone"
+      ]
+    },
+    "JazzTextTier": {
+      "type": "string",
+      "enum": [
+        "server",
+        "on-device"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
