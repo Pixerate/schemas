@@ -16,7 +16,8 @@ const MODULES = [
   { module: 'common', file: 'Common.swift' },
   { module: 'jazz', file: 'Jazz.swift' },
   { module: 'skills', file: 'Skills.swift' },
-  { module: 'agent', file: 'Agent.swift' }
+  { module: 'agent', file: 'Agent.swift' },
+  { module: 'genui', file: 'Genui.swift' }
 ];
 
 // Reserved Swift keywords to escape
@@ -241,8 +242,17 @@ class Generator {
     let code = docComment(description);
     code += `public enum ${name}: String, Codable, Sendable, CaseIterable {\n`;
     for (const value of values) {
-      const caseName = toEnumCase(value);
-      if (cases.has(caseName)) throw new Error(`Enum ${name} has two values that map to the Swift case ${caseName}`);
+      let caseName = toEnumCase(value);
+      if (cases.has(caseName)) {
+        const rawFallback = escapeKeyword(value.replace(/[^a-zA-Z0-9_]/g, '_'));
+        if (!cases.has(rawFallback) && /^[a-zA-Z_`][a-zA-Z0-9_`]*$/.test(rawFallback)) {
+          caseName = rawFallback;
+        } else {
+          let suffix = 2;
+          while (cases.has(`${caseName}_${suffix}`)) suffix += 1;
+          caseName = `${caseName}_${suffix}`;
+        }
+      }
       cases.add(caseName);
       code += `    case ${caseName} = ${swiftString(value)}\n`;
     }
@@ -360,8 +370,14 @@ class Generator {
 
     switch (def.type) {
       case 'object':
-        if (def.properties) return this.structCode(name, def, ctx);
-        break;
+        if (def.properties && Object.keys(def.properties).length > 0) {
+          return this.structCode(name, def, ctx);
+        }
+        if (def.additionalProperties && typeof def.additionalProperties === 'object') {
+          const valType = this.propertyTypeName(def.additionalProperties, `${name}Value`, `${name}{}`, ctx);
+          return docComment(def.description) + `public typealias ${name} = [String: ${valType}]\n`;
+        }
+        return docComment(def.description) + `public typealias ${name} = [String: JSONValue]\n`;
       case 'string':
       case 'integer':
       case 'number':
@@ -370,6 +386,9 @@ class Generator {
         const notes = [def.description, def.pattern && `Pattern: \`${def.pattern}\``].filter(Boolean).join('\n\n');
         return docComment(notes) + `public typealias ${name} = ${swiftType}\n`;
       }
+    }
+    if (variants || Array.isArray(def.type)) {
+      return docComment(def.description) + `public typealias ${name} = JSONValue\n`;
     }
     return null;
   }
