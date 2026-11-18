@@ -178,6 +178,37 @@ final class PixerateSchemasTests: XCTestCase {
         let object = try roundTrip(VideoAttachment.self, fixtureName: "common_video_attachment_object.json")
         XCTAssertEqual(object, .object(VideoAttachmentData(mimeType: "video/mp4", url: "https://example.com/clip.mp4")))
     }
+
+    func testGenuiCalloutAndStatsBlocks() throws {
+        let calloutJSON = """
+        {"kind":"callout","severity":"info","title":"Heads up","body":"Rendered natively"}
+        """
+        let callout = try JSONDecoder().decode(CalloutBlock.self, from: Data(calloutJSON.utf8))
+        XCTAssertEqual(callout.kind, .callout)
+        XCTAssertEqual(callout.severity, .info)
+        XCTAssertEqual(callout.title, "Heads up")
+        XCTAssertEqual(callout.body, "Rendered natively")
+
+        let statsJSON = """
+        {"kind":"stats","items":[{"label":"Active","value":"42"}]}
+        """
+        let stats = try JSONDecoder().decode(StatsBlock.self, from: Data(statsJSON.utf8))
+        XCTAssertEqual(stats.kind, .stats)
+        XCTAssertEqual(stats.items.count, 1)
+        XCTAssertEqual(stats.items.first?.label, "Active")
+
+        let encoded = try JSONEncoder().encode(stats)
+        let decoded = try JSONDecoder().decode(StatsBlock.self, from: encoded)
+        XCTAssertEqual(decoded, stats)
+    }
+
+    func testGenuiConditionOperatorVariants() throws {
+        let camel = try JSONDecoder().decode(ConditionOperator.self, from: Data("\"notEquals\"".utf8))
+        let snake = try JSONDecoder().decode(ConditionOperator.self, from: Data("\"not_equals\"".utf8))
+        XCTAssertEqual(camel, .notEquals)
+        XCTAssertEqual(snake, .not_equals)
+        XCTAssertNotEqual(camel, snake)
+    }
 }
 
 extension PixerateSchemasTests {
