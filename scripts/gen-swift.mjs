@@ -16,7 +16,8 @@ const MODULES = [
   { module: 'common', file: 'Common.swift' },
   { module: 'jazz', file: 'Jazz.swift' },
   { module: 'skills', file: 'Skills.swift' },
-  { module: 'agent', file: 'Agent.swift' }
+  { module: 'agent', file: 'Agent.swift' },
+  { module: 'insights', file: 'Insights.swift' }
 ];
 
 // Reserved Swift keywords to escape

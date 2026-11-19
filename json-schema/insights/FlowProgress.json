@@ -1,0 +1,58 @@
+{
+  "$ref": "#/definitions/FlowProgress",
+  "definitions": {
+    "FlowProgress": {
+      "type": "object",
+      "properties": {
+        "flow_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "flow_version": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "entered": {
+          "type": "boolean"
+        },
+        "steps_completed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "furthest_step": {
+          "type": "string"
+        },
+        "result": {
+          "$ref": "#/definitions/FlowProgressResult"
+        },
+        "exit": {
+          "type": "string"
+        },
+        "duration_ms": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "flow_id",
+        "flow_version",
+        "entered",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "FlowProgressResult": {
+      "type": "string",
+      "enum": [
+        "succeeded",
+        "exited",
+        "abandoned",
+        "in_progress"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

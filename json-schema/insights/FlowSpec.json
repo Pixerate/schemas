@@ -1,0 +1,108 @@
+{
+  "$ref": "#/definitions/FlowSpec",
+  "definitions": {
+    "FlowExitSpec": {
+      "type": "object",
+      "properties": {
+        "milestone": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "milestone"
+      ],
+      "additionalProperties": false
+    },
+    "FlowMatcher": {
+      "type": "object",
+      "properties": {
+        "milestone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "screen": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "FlowSpec": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "intent": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entry": {
+          "$ref": "#/definitions/FlowMatcher"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FlowStepSpec"
+          }
+        },
+        "success": {
+          "$ref": "#/definitions/FlowMatcher"
+        },
+        "exits": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/FlowExitSpec"
+          }
+        },
+        "expectedDurationSec": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "intent",
+        "entry",
+        "steps",
+        "success"
+      ],
+      "additionalProperties": false
+    },
+    "FlowStepSpec": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "milestone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "screen": {
+          "type": "string",
+          "minLength": 1
+        },
+        "optional": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

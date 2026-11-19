@@ -1,0 +1,15 @@
+{
+  "$ref": "#/definitions/FlowProgressResult",
+  "definitions": {
+    "FlowProgressResult": {
+      "type": "string",
+      "enum": [
+        "succeeded",
+        "exited",
+        "abandoned",
+        "in_progress"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

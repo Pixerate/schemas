@@ -1,0 +1,20 @@
+{
+  "$ref": "#/definitions/FlowMatcher",
+  "definitions": {
+    "FlowMatcher": {
+      "type": "object",
+      "properties": {
+        "milestone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "screen": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
