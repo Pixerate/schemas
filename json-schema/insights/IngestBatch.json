@@ -191,6 +191,9 @@
                 "type": "boolean"
               }
             ]
+          },
+          "propertyNames": {
+            "pattern": "^[a-z0-9_]{1,32}$"
           }
         }
       },

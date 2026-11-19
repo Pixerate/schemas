@@ -137,6 +137,30 @@ test("IngestBatchSchema accepts milestone events and rejects invalid milestone n
       ]
     });
   });
+
+  const milestoneBatch = (milestone) => ({
+    session_id: "s_ms_3",
+    product: "slopmachine",
+    actor: { type: "human", id_hash: "u_123" },
+    events: [
+      {
+        session_id: "s_ms_3",
+        actor: { type: "human", id_hash: "u_123" },
+        ts: "2026-11-19T12:00:00.000Z",
+        screen: "/",
+        action: "milestone",
+        ...(milestone ? { milestone } : {})
+      }
+    ]
+  });
+
+  // A milestone event without its payload
+  assert.throws(() => IngestBatchSchema.parse(milestoneBatch(undefined)), /milestone payload/);
+  // More than 10 prop keys
+  const tooMany = Object.fromEntries(Array.from({ length: 11 }, (_, i) => [`k${i}`, i]));
+  assert.throws(() => IngestBatchSchema.parse(milestoneBatch({ name: "a.b", props: tooMany })), /at most 10 keys/);
+  // Prop keys must be short snake_case identifiers
+  assert.throws(() => IngestBatchSchema.parse(milestoneBatch({ name: "a.b", props: { "Free Text Key": 1 } })));
 });
 
 test("FlowSpecSchema, flow_progress on SessionSummary, and flow_id on Finding validate cleanly", () => {

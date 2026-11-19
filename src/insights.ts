@@ -60,7 +60,15 @@ export const MilestonePayloadSchema = z.object({
     .string()
     .regex(/^[a-z0-9_]+(\.[a-z0-9_]+)*$/)
     .max(64),
-  props: z.record(z.string(), z.union([z.string().max(64), z.number(), z.boolean()])).optional()
+  props: z
+    .record(
+      z.string().regex(/^[a-z0-9_]{1,32}$/),
+      z.union([z.string().max(64), z.number(), z.boolean()])
+    )
+    .refine((props) => Object.keys(props).length <= 10, {
+      message: "Milestone props allow at most 10 keys"
+    })
+    .optional()
 });
 export type MilestonePayload = z.infer<typeof MilestonePayloadSchema>;
 
@@ -134,6 +142,15 @@ export const IngestBatchSchema = BaseIngestBatchSchema.superRefine((batch, ctx) 
     target: ["name"],
     visible: ["name"],
     milestone: ["name"]
+  });
+  batch.events.forEach((event, index) => {
+    if (event.action === "milestone" && !event.milestone) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Milestone events must include a milestone payload",
+        path: ["events", index, "milestone"]
+      });
+    }
   });
 });
 export type IngestBatch = z.infer<typeof BaseIngestBatchSchema>;
