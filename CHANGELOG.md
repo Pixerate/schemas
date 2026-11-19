@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 2.4.0
+
+### Minor Changes
+
+- 861c521: Add milestone events (`action: "milestone"` and `milestone: { name, props? }`), versioned flow specs (`FlowSpecSchema`), `flow_progress` on `SessionSummary`, `flow_id` on `Finding`, and generated Swift types (`Insights.swift`) for `@pixerate/schemas/insights`.
+
 ## 2.3.0
 
 ### Minor Changes
