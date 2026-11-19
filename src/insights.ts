@@ -53,13 +53,33 @@ export const InteractionTargetSchema = z.object({
 });
 export type InteractionTarget = z.infer<typeof InteractionTargetSchema>;
 
+export type MilestonePropValue = string | number | boolean;
+
+export const MilestonePayloadSchema = z.object({
+  name: z
+    .string()
+    .regex(/^[a-z0-9_]+(\.[a-z0-9_]+)*$/)
+    .max(64),
+  props: z
+    .record(
+      z.string().regex(/^[a-z0-9_]{1,32}$/),
+      z.union([z.string().max(64), z.number(), z.boolean()])
+    )
+    .refine((props) => Object.keys(props).length <= 10, {
+      message: "Milestone props allow at most 10 keys"
+    })
+    .optional()
+});
+export type MilestonePayload = z.infer<typeof MilestonePayloadSchema>;
+
 export const InteractionEventSchema = z.object({
   session_id: z.string().min(1),
   actor: InsightsActorSchema,
   ts: z.string().min(1),
   screen: z.string().min(1),
-  action: z.enum(["click", "submit", "navigate", "input_blur", "error", "custom"]),
+  action: z.enum(["click", "submit", "navigate", "input_blur", "error", "custom", "milestone"]),
   target: InteractionTargetSchema.optional(),
+  milestone: MilestonePayloadSchema.optional(),
   outcome: InteractionOutcomeSchema.default("unknown"),
   state_ref: z.string().optional(),
   flow: z.string().optional()
@@ -118,7 +138,20 @@ export const BaseIngestBatchSchema = z.object({
 });
 
 export const IngestBatchSchema = BaseIngestBatchSchema.superRefine((batch, ctx) => {
-  validateNoPii(batch, [], ctx, { target: ["name"], visible: ["name"] });
+  validateNoPii(batch, [], ctx, {
+    target: ["name"],
+    visible: ["name"],
+    milestone: ["name"]
+  });
+  batch.events.forEach((event, index) => {
+    if (event.action === "milestone" && !event.milestone) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Milestone events must include a milestone payload",
+        path: ["events", index, "milestone"]
+      });
+    }
+  });
 });
 export type IngestBatch = z.infer<typeof BaseIngestBatchSchema>;
 
@@ -146,6 +179,58 @@ export const ProbeAnswerSchema = z.object({
 });
 export type ProbeAnswer = z.infer<typeof ProbeAnswerSchema>;
 
+export const FlowMatcherSchema = z.object({
+  milestone: z.string().min(1).optional(),
+  screen: z.string().min(1).optional()
+});
+export type FlowMatcher = z.infer<typeof FlowMatcherSchema>;
+
+export const FlowStepSpecSchema = z.object({
+  id: z.string().min(1),
+  milestone: z.string().min(1).optional(),
+  screen: z.string().min(1).optional(),
+  optional: z.boolean().optional()
+});
+export type FlowStepSpec = z.infer<typeof FlowStepSpecSchema>;
+
+export const FlowExitSpecSchema = z.object({
+  milestone: z.string().min(1)
+});
+export type FlowExitSpec = z.infer<typeof FlowExitSpecSchema>;
+
+export const FlowSpecSchema = z.object({
+  id: z.string().min(1),
+  version: z.number().int().positive(),
+  intent: z.string().min(1),
+  entry: FlowMatcherSchema,
+  steps: z.array(FlowStepSpecSchema),
+  success: FlowMatcherSchema,
+  exits: z.record(z.string(), FlowExitSpecSchema).optional(),
+  expectedDurationSec: z.number().positive().optional(),
+  notes: z.string().optional()
+});
+export type FlowSpec = z.infer<typeof FlowSpecSchema>;
+
+export const FlowProgressResultSchema = z.enum([
+  "succeeded",
+  "exited",
+  "abandoned",
+  "in_progress"
+]);
+export type FlowProgressResult = z.infer<typeof FlowProgressResultSchema>;
+
+export const FlowProgressSchema = z.object({
+  flow_id: z.string().min(1),
+  flow_version: z.number().int().positive(),
+  entered: z.boolean(),
+  steps_completed: z.array(z.string()).default([]),
+  furthest_step: z.string().optional(),
+  result: FlowProgressResultSchema,
+  exit: z.string().optional(),
+  duration_ms: z.number().nonnegative().optional()
+});
+export type FlowProgress = z.infer<typeof FlowProgressSchema>;
+
 export const SessionSummarySchema = z.object({
   session_id: z.string().min(1),
   product: z.string().min(1),
@@ -158,6 +243,7 @@ export const SessionSummarySchema = z.object({
   narrative: z.string().min(1),
   friction_points: z.array(FrictionPointSchema).default([]),
   probe_answers: z.array(ProbeAnswerSchema).default([]),
+  flow_progress: z.array(FlowProgressSchema).optional(),
   confidence: z.number().min(0).max(1),
   started_at: z.string().min(1).optional(),
   ended_at: z.string().min(1).optional(),
@@ -186,6 +272,7 @@ export const FindingSchema = z.object({
   severity: FindingSeveritySchema,
   suggested_fix: z.string().min(1),
   status: FindingStatusSchema.default("open"),
+  flow_id: z.string().min(1).optional(),
   created_at: z.string().min(1).optional(),
   updated_at: z.string().min(1).optional()
 });

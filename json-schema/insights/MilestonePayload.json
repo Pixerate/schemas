@@ -1,0 +1,40 @@
+{
+  "$ref": "#/definitions/MilestonePayload",
+  "definitions": {
+    "MilestonePayload": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$",
+          "maxLength": 64
+        },
+        "props": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "propertyNames": {
+            "pattern": "^[a-z0-9_]{1,32}$"
+          }
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

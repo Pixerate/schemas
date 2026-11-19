@@ -1326,6 +1326,36 @@
   },
   {
     "module": "insights",
+    "name": "FlowExitSpec",
+    "file": "insights/FlowExitSpec.json"
+  },
+  {
+    "module": "insights",
+    "name": "FlowMatcher",
+    "file": "insights/FlowMatcher.json"
+  },
+  {
+    "module": "insights",
+    "name": "FlowProgress",
+    "file": "insights/FlowProgress.json"
+  },
+  {
+    "module": "insights",
+    "name": "FlowProgressResult",
+    "file": "insights/FlowProgressResult.json"
+  },
+  {
+    "module": "insights",
+    "name": "FlowSpec",
+    "file": "insights/FlowSpec.json"
+  },
+  {
+    "module": "insights",
+    "name": "FlowStepSpec",
+    "file": "insights/FlowStepSpec.json"
+  },
+  {
+    "module": "insights",
     "name": "FrictionPoint",
     "file": "insights/FrictionPoint.json"
   },
@@ -1358,6 +1388,11 @@
     "module": "insights",
     "name": "InteractionTarget",
     "file": "insights/InteractionTarget.json"
+  },
+  {
+    "module": "insights",
+    "name": "MilestonePayload",
+    "file": "insights/MilestonePayload.json"
   },
   {
     "module": "insights",

@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 import {
   IngestBatchSchema,
   SessionSummarySchema,
-  FindingSchema
+  FindingSchema,
+  FlowSpecSchema,
+  FlowProgressSchema
 } from "../dist/insights.js";
 
 test("IngestBatchSchema accepts valid session batch without GA4 100-char limit", () => {
@@ -97,4 +99,121 @@ test("insights schemas are re-exported from the package root", async () => {
   assert.deepEqual(root.InsightsActorTypeSchema.options, ["human", "agent"]);
   // realtime's ActorTypeSchema keeps its own meaning
   assert.deepEqual(root.ActorTypeSchema.options, ["human", "agent", "system"]);
+});
+
+test("IngestBatchSchema accepts milestone events and rejects invalid milestone names", () => {
+  const parsed = IngestBatchSchema.parse({
+    session_id: "s_ms_1",
+    product: "slopmachine",
+    actor: { type: "human", id_hash: "u_123" },
+    events: [
+      {
+        session_id: "s_ms_1",
+        actor: { type: "human", id_hash: "u_123" },
+        ts: "2026-11-19T12:00:00.000Z",
+        screen: "/",
+        action: "milestone",
+        milestone: { name: "onboarding.step.role", props: { step: 2, skipped: false, role: "creative" } },
+        outcome: "mutated"
+      }
+    ]
+  });
+  assert.equal(parsed.events[0].milestone?.name, "onboarding.step.role");
+
+  assert.throws(() => {
+    IngestBatchSchema.parse({
+      session_id: "s_ms_2",
+      product: "slopmachine",
+      actor: { type: "human", id_hash: "u_123" },
+      events: [
+        {
+          session_id: "s_ms_2",
+          actor: { type: "human", id_hash: "u_123" },
+          ts: "2026-11-19T12:00:00.000Z",
+          screen: "/",
+          action: "milestone",
+          milestone: { name: "Invalid Name!" }
+        }
+      ]
+    });
+  });
+
+  const milestoneBatch = (milestone) => ({
+    session_id: "s_ms_3",
+    product: "slopmachine",
+    actor: { type: "human", id_hash: "u_123" },
+    events: [
+      {
+        session_id: "s_ms_3",
+        actor: { type: "human", id_hash: "u_123" },
+        ts: "2026-11-19T12:00:00.000Z",
+        screen: "/",
+        action: "milestone",
+        ...(milestone ? { milestone } : {})
+      }
+    ]
+  });
+
+  // A milestone event without its payload
+  assert.throws(() => IngestBatchSchema.parse(milestoneBatch(undefined)), /milestone payload/);
+  // More than 10 prop keys
+  const tooMany = Object.fromEntries(Array.from({ length: 11 }, (_, i) => [`k${i}`, i]));
+  assert.throws(() => IngestBatchSchema.parse(milestoneBatch({ name: "a.b", props: tooMany })), /at most 10 keys/);
+  // Prop keys must be short snake_case identifiers
+  assert.throws(() => IngestBatchSchema.parse(milestoneBatch({ name: "a.b", props: { "Free Text Key": 1 } })));
+});
+
+test("FlowSpecSchema, flow_progress on SessionSummary, and flow_id on Finding validate cleanly", () => {
+  const spec = FlowSpecSchema.parse({
+    id: "onboarding",
+    version: 1,
+    intent: "Complete initial workspace setup",
+    entry: { milestone: "onboarding.started" },
+    steps: [
+      { id: "identity", milestone: "onboarding.step.identity" },
+      { id: "role", milestone: "onboarding.step.role" }
+    ],
+    success: { milestone: "onboarding.completed" },
+    exits: { skipped: { milestone: "onboarding.skipped" } },
+    expectedDurationSec: 120,
+    notes: "Users may pause on role selection"
+  });
+  assert.equal(spec.version, 1);
+
+  const progress = FlowProgressSchema.parse({
+    flow_id: "onboarding",
+    flow_version: 1,
+    entered: true,
+    steps_completed: ["identity", "role"],
+    furthest_step: "role",
+    result: "exited",
+    exit: "skipped",
+    duration_ms: 42000
+  });
+  assert.equal(progress.result, "exited");
+
+  const summary = SessionSummarySchema.parse({
+    session_id: "s_flow_1",
+    product: "slopmachine",
+    actor_type: "human",
+    actor_id_hash: "u_1",
+    outcome: "abandoned",
+    narrative: "Exited onboarding at step 2.",
+    flow_progress: [progress],
+    confidence: 0.9
+  });
+  assert.equal(summary.flow_progress?.length, 1);
+
+  const finding = FindingSchema.parse({
+    id: "f_flow_1",
+    product: "slopmachine",
+    title: "Onboarding funnel (v1)",
+    cohort: "all_users",
+    affected_share: 0.4,
+    evidence: ["s_flow_1"],
+    severity: "medium",
+    suggested_fix: "Clarify role step.",
+    flow_id: "onboarding"
+  });
+  assert.equal(finding.flow_id, "onboarding");
 });

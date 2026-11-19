@@ -48,6 +48,10 @@
           "$ref": "#/definitions/FindingStatus",
           "default": "open"
         },
+        "flow_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "created_at": {
           "type": "string",
           "minLength": 1
