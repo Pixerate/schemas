@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/JazzUsageReportStatus",
+  "definitions": {
+    "JazzUsageReportStatus": {
+      "type": "string",
+      "enum": [
+        "drafted",
+        "accepted",
+        "rejected"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

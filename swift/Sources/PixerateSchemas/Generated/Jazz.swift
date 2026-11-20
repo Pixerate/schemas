@@ -37,6 +37,7 @@ public enum JazzProposalKind: String, Codable, Sendable, CaseIterable {
     case followUp = "follow-up"
     case interop = "interop"
     case agentPath = "agent-path"
+    case usageFriction = "usage-friction"
 }
 
 public enum JazzRiffIntent: String, Codable, Sendable, CaseIterable {
@@ -137,6 +138,12 @@ public enum JazzTextVoiceId: String, Codable, Sendable, CaseIterable {
     case punctuate = "punctuate"
     case smartTypography = "smart-typography"
     case chat = "chat"
+}
+
+public enum JazzUsageReportStatus: String, Codable, Sendable, CaseIterable {
+    case drafted = "drafted"
+    case accepted = "accepted"
+    case rejected = "rejected"
 }
 
 public enum JazzVerdict: String, Codable, Sendable, CaseIterable {
@@ -346,6 +353,7 @@ public struct JazzDomain: Codable, Sendable, Equatable {
     public var docs: [String]
     public var skills: [String]
     public var labels: [String]
+    public var routes: [String]
 
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -354,6 +362,7 @@ public struct JazzDomain: Codable, Sendable, Equatable {
         case docs = "docs"
         case skills = "skills"
         case labels = "labels"
+        case routes = "routes"
     }
 
     public init(
@@ -362,7 +371,8 @@ public struct JazzDomain: Codable, Sendable, Equatable {
         paths: [String],
         docs: [String] = [],
         skills: [String] = [],
-        labels: [String] = []
+        labels: [String] = [],
+        routes: [String] = []
     ) {
         self.id = id
         self.name = name
@@ -370,6 +380,7 @@ public struct JazzDomain: Codable, Sendable, Equatable {
         self.docs = docs
         self.skills = skills
         self.labels = labels
+        self.routes = routes
     }
 
     public init(from decoder: Decoder) throws {
@@ -380,6 +391,7 @@ public struct JazzDomain: Codable, Sendable, Equatable {
         self.docs = try container.decodeIfPresent([String].self, forKey: .docs) ?? []
         self.skills = try container.decodeIfPresent([String].self, forKey: .skills) ?? []
         self.labels = try container.decodeIfPresent([String].self, forKey: .labels) ?? []
+        self.routes = try container.decodeIfPresent([String].self, forKey: .routes) ?? []
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -390,6 +402,7 @@ public struct JazzDomain: Codable, Sendable, Equatable {
         try container.encode(docs, forKey: .docs)
         try container.encode(skills, forKey: .skills)
         try container.encode(labels, forKey: .labels)
+        try container.encode(routes, forKey: .routes)
     }
 }
 
@@ -1792,6 +1805,162 @@ public struct JazzToolCall: Codable, Sendable, Equatable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
         try container.encode(arguments, forKey: .arguments)
+    }
+}
+
+public struct JazzUsageFunnelDrop: Codable, Sendable, Equatable {
+    public var flowId: String
+    public var flowVersion: String?
+    public var step: String
+    public var before: Double
+    public var after: Double
+
+    enum CodingKeys: String, CodingKey {
+        case flowId = "flowId"
+        case flowVersion = "flowVersion"
+        case step = "step"
+        case before = "before"
+        case after = "after"
+    }
+
+    public init(
+        flowId: String,
+        flowVersion: String? = nil,
+        step: String,
+        before: Double,
+        after: Double
+    ) {
+        self.flowId = flowId
+        self.flowVersion = flowVersion
+        self.step = step
+        self.before = before
+        self.after = after
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.flowId = try container.decode(String.self, forKey: .flowId)
+        self.flowVersion = try container.decodeIfPresent(String.self, forKey: .flowVersion)
+        self.step = try container.decode(String.self, forKey: .step)
+        self.before = try container.decode(Double.self, forKey: .before)
+        self.after = try container.decode(Double.self, forKey: .after)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(flowId, forKey: .flowId)
+        try container.encodeIfPresent(flowVersion, forKey: .flowVersion)
+        try container.encode(step, forKey: .step)
+        try container.encode(before, forKey: .before)
+        try container.encode(after, forKey: .after)
+    }
+}
+
+public struct JazzUsageMetrics: Codable, Sendable, Equatable {
+    public var sessionsAffected: Int
+    public var shareOfSessions: Double
+    public var trendVsPrevWeek: Double?
+    public var funnelDrop: JazzUsageFunnelDrop?
+
+    enum CodingKeys: String, CodingKey {
+        case sessionsAffected = "sessionsAffected"
+        case shareOfSessions = "shareOfSessions"
+        case trendVsPrevWeek = "trendVsPrevWeek"
+        case funnelDrop = "funnelDrop"
+    }
+
+    public init(
+        sessionsAffected: Int,
+        shareOfSessions: Double,
+        trendVsPrevWeek: Double? = nil,
+        funnelDrop: JazzUsageFunnelDrop? = nil
+    ) {
+        self.sessionsAffected = sessionsAffected
+        self.shareOfSessions = shareOfSessions
+        self.trendVsPrevWeek = trendVsPrevWeek
+        self.funnelDrop = funnelDrop
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.sessionsAffected = try container.decode(Int.self, forKey: .sessionsAffected)
+        self.shareOfSessions = try container.decode(Double.self, forKey: .shareOfSessions)
+        self.trendVsPrevWeek = try container.decodeIfPresent(Double.self, forKey: .trendVsPrevWeek)
+        self.funnelDrop = try container.decodeIfPresent(JazzUsageFunnelDrop.self, forKey: .funnelDrop)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(sessionsAffected, forKey: .sessionsAffected)
+        try container.encode(shareOfSessions, forKey: .shareOfSessions)
+        try container.encodeIfPresent(trendVsPrevWeek, forKey: .trendVsPrevWeek)
+        try container.encodeIfPresent(funnelDrop, forKey: .funnelDrop)
+    }
+}
+
+public struct JazzUsageOpportunity: Codable, Sendable, Equatable {
+    public var id: String
+    public var title: String
+    public var problem: String
+    public var suggestedDirection: String?
+    public var metrics: JazzUsageMetrics
+    public var score: Double
+    public var screens: [String]
+    public var flowId: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case title = "title"
+        case problem = "problem"
+        case suggestedDirection = "suggestedDirection"
+        case metrics = "metrics"
+        case score = "score"
+        case screens = "screens"
+        case flowId = "flowId"
+    }
+
+    public init(
+        id: String,
+        title: String,
+        problem: String,
+        suggestedDirection: String? = nil,
+        metrics: JazzUsageMetrics,
+        score: Double,
+        screens: [String] = [],
+        flowId: String? = nil
+    ) {
+        self.id = id
+        self.title = title
+        self.problem = problem
+        self.suggestedDirection = suggestedDirection
+        self.metrics = metrics
+        self.score = score
+        self.screens = screens
+        self.flowId = flowId
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.problem = try container.decode(String.self, forKey: .problem)
+        self.suggestedDirection = try container.decodeIfPresent(String.self, forKey: .suggestedDirection)
+        self.metrics = try container.decode(JazzUsageMetrics.self, forKey: .metrics)
+        self.score = try container.decode(Double.self, forKey: .score)
+        self.screens = try container.decodeIfPresent([String].self, forKey: .screens) ?? []
+        self.flowId = try container.decodeIfPresent(String.self, forKey: .flowId)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encode(problem, forKey: .problem)
+        try container.encodeIfPresent(suggestedDirection, forKey: .suggestedDirection)
+        try container.encode(metrics, forKey: .metrics)
+        try container.encode(score, forKey: .score)
+        try container.encode(screens, forKey: .screens)
+        try container.encodeIfPresent(flowId, forKey: .flowId)
     }
 }
 

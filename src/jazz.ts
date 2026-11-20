@@ -215,7 +215,8 @@ export type JazzContext = z.infer<typeof JazzContextSchema>;
  * - `issue`: an issue or pull request (`issue#123`).
  * - `plan`: an item in a plan, roadmap or follow-ups doc (`path:line`).
  * - `web`: a source from problem-space research (`ref` is its title, `url` the page).
- * - `metric`: a value from a metrics digest (`api.p95`).
+ * - `metric`: a value from a metrics digest (`api.p95`), or a usage measurement behind a
+ *   `usage-friction` proposal (`ref` is the usage opportunity's id, `quote` the measurement).
  * - `absence`: a search that found nothing, so a gap claim can be checked again later. `ref` is the
  *   query and `scope` where it looked.
  */
@@ -246,7 +247,12 @@ export const JazzDomainSchema = z.object({
   /** Agent skill files whose tool tables list what agents can do here. */
   skills: z.array(z.string().min(1)).max(50).default([]),
   /** Issue labels that put an issue in this domain. */
-  labels: z.array(z.string().min(1)).max(20).default([])
+  labels: z.array(z.string().min(1)).max(20).default([]),
+  /**
+   * Route-template prefixes of the screens that belong to this domain (e.g. `/silo/:id/bucket`), so
+   * a usage opportunity about a screen maps to it. The longest matching prefix wins.
+   */
+  routes: z.array(z.string().min(1).max(200)).max(50).default([])
 });
 export type JazzDomain = z.infer<typeof JazzDomainSchema>;
 export type JazzDomainInput = z.input<typeof JazzDomainSchema>;
@@ -281,8 +287,9 @@ export type JazzCapabilityIndex = z.infer<typeof JazzCapabilityIndexSchema>;
  * - `follow-up`: the next step after work that just landed.
  * - `interop`: import, export or round trips with the tools people already use.
  * - `agent-path`: a capability agents can't reach.
+ * - `usage-friction`: where real users struggle, from an aggregated usage opportunity.
  */
-export const JazzProposalKindSchema = z.enum(["new-capability", "follow-up", "interop", "agent-path"]);
+export const JazzProposalKindSchema = z.enum(["new-capability", "follow-up", "interop", "agent-path", "usage-friction"]);
 export type JazzProposalKind = z.infer<typeof JazzProposalKindSchema>;
 
 /** A written-up proposal, ready to stage as an issue. Sections are Markdown. */
@@ -308,6 +315,58 @@ export const JazzProposalDraftSchema = z.object({
   evidence: z.array(JazzEvidenceSchema).min(1).max(50)
 });
 export type JazzProposalDraft = z.infer<typeof JazzProposalDraftSchema>;
+
+// --- Usage opportunities ---
+// What a host's usage source (e.g. piggyback's opportunities endpoint) tells jazz about where real
+// users struggle. Aggregated only: no sessions, no user ids. The host maps its own records to this
+// shape, so jazz depends on no particular analytics product.
+
+/** A drop between two steps of a flow: the share of sessions that reached each. */
+export const JazzUsageFunnelDropSchema = z.object({
+  flowId: z.string().min(1).max(200),
+  /** The flow spec's version, as text. */
+  flowVersion: z.string().max(50).optional(),
+  /** The step where people drop out. */
+  step: z.string().min(1).max(200),
+  /** Share (0–1) of sessions that reached the step before. */
+  before: z.number().min(0).max(1),
+  /** Share (0–1) that went on past it. */
+  after: z.number().min(0).max(1)
+});
+export type JazzUsageFunnelDrop = z.infer<typeof JazzUsageFunnelDropSchema>;
+
+/** The measurements behind a usage opportunity, for one week. */
+export const JazzUsageMetricsSchema = z.object({
+  sessionsAffected: z.number().int().min(0),
+  /** Share (0–1) of the week's sessions affected. */
+  shareOfSessions: z.number().min(0).max(1),
+  /** Change against the week before, as a fraction (`0.35` is 35% more). */
+  trendVsPrevWeek: z.number().optional(),
+  funnelDrop: JazzUsageFunnelDropSchema.optional()
+});
+export type JazzUsageMetrics = z.infer<typeof JazzUsageMetricsSchema>;
+
+/** A ranked, evidence-backed problem real users have, as a host's usage source reports it. */
+export const JazzUsageOpportunitySchema = z.object({
+  /** Stable across weeks, so the source can update it rather than add another. */
+  id: z.string().min(1).max(200),
+  title: z.string().min(1).max(200),
+  /** What goes wrong, as Markdown (two to five sentences). */
+  problem: z.string().min(1).max(4000),
+  suggestedDirection: z.string().max(4000).optional(),
+  metrics: JazzUsageMetricsSchema,
+  /** 0–1: reach, severity and trend together. Higher is more worth fixing. */
+  score: z.number().min(0).max(1),
+  /** Normalized route templates where it happens (e.g. `/silo/:id/bucket`). */
+  screens: z.array(z.string().min(1).max(500)).max(50).default([]),
+  flowId: z.string().max(200).optional()
+});
+export type JazzUsageOpportunity = z.infer<typeof JazzUsageOpportunitySchema>;
+export type JazzUsageOpportunityInput = z.input<typeof JazzUsageOpportunitySchema>;
+
+/** What jazz reports back about an opportunity: a draft was filed, then accepted or rejected. */
+export const JazzUsageReportStatusSchema = z.enum(["drafted", "accepted", "rejected"]);
+export type JazzUsageReportStatus = z.infer<typeof JazzUsageReportStatusSchema>;
 
 // --- Text lead (Swash writing partner) ---
 // v1, superseded by text lead v2 below (Pixerate/schemas#87); kept until Swash moves over.

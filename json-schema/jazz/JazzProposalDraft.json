@@ -117,7 +117,8 @@
         "new-capability",
         "follow-up",
         "interop",
-        "agent-path"
+        "agent-path",
+        "usage-friction"
       ]
     }
   },

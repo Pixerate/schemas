@@ -14,6 +14,8 @@ import {
   JazzTargetSchema,
   JazzEvidenceSchema,
   JazzDomainSchema,
+  JazzUsageOpportunitySchema,
+  JazzUsageReportStatusSchema,
   JazzCapabilitySchema,
   JazzCapabilityIndexSchema,
   JazzProposalDraftSchema,
@@ -195,9 +197,25 @@ describe("jazz product-proposal contracts", () => {
 
   it("parses a domain with defaults and refuses bad ids", () => {
     const domain = JazzDomainSchema.parse({ id: "image-editor", name: "Image editor", paths: ["packages/core/src/image-editor"] });
-    assert.deepEqual(domain, { id: "image-editor", name: "Image editor", paths: ["packages/core/src/image-editor"], docs: [], skills: [], labels: [] });
+    assert.deepEqual(domain, { id: "image-editor", name: "Image editor", paths: ["packages/core/src/image-editor"], docs: [], skills: [], labels: [], routes: [] });
     assert.equal(JazzDomainSchema.safeParse({ ...domain, id: "Image Editor" }).success, false);
     assert.equal(JazzDomainSchema.safeParse({ ...domain, paths: [] }).success, false);
+    assert.deepEqual(JazzDomainSchema.parse({ ...domain, routes: ["/silo/:id/bucket"] }).routes, ["/silo/:id/bucket"]);
+  });
+
+  it("parses a usage opportunity and the usage-friction kind", () => {
+    const opportunity = JazzUsageOpportunitySchema.parse({
+      id: "opp-1",
+      title: "People abandon bucket upload",
+      problem: "Most sessions that open the upload dialog leave without uploading.",
+      metrics: { sessionsAffected: 42, shareOfSessions: 0.18, trendVsPrevWeek: 0.35, funnelDrop: { flowId: "upload", step: "choose-file", before: 0.8, after: 0.41 } },
+      score: 0.62
+    });
+    assert.deepEqual(opportunity.screens, []);
+    assert.equal(JazzUsageOpportunitySchema.safeParse({ ...opportunity, score: 1.2 }).success, false);
+    assert.equal(JazzUsageOpportunitySchema.safeParse({ ...opportunity, metrics: { sessionsAffected: 1, shareOfSessions: 2 } }).success, false);
+    assert.equal(JazzProposalDraftSchema.safeParse({ ...draft, kind: "usage-friction" }).success, true);
+    assert.deepEqual(JazzUsageReportStatusSchema.options, ["drafted", "accepted", "rejected"]);
   });
 
   it("parses a capability index", () => {
