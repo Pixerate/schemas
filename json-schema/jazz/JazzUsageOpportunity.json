@@ -1,0 +1,121 @@
+{
+  "$ref": "#/definitions/JazzUsageOpportunity",
+  "definitions": {
+    "JazzUsageFunnelDrop": {
+      "type": "object",
+      "properties": {
+        "flowId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "flowVersion": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "step": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "before": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "after": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "flowId",
+        "step",
+        "before",
+        "after"
+      ],
+      "additionalProperties": false
+    },
+    "JazzUsageMetrics": {
+      "type": "object",
+      "properties": {
+        "sessionsAffected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "shareOfSessions": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "trendVsPrevWeek": {
+          "type": "number"
+        },
+        "funnelDrop": {
+          "$ref": "#/definitions/JazzUsageFunnelDrop"
+        }
+      },
+      "required": [
+        "sessionsAffected",
+        "shareOfSessions"
+      ],
+      "additionalProperties": false
+    },
+    "JazzUsageOpportunity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "problem": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "suggestedDirection": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "metrics": {
+          "$ref": "#/definitions/JazzUsageMetrics"
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "screens": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "maxItems": 50,
+          "default": []
+        },
+        "flowId": {
+          "type": "string",
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "problem",
+        "metrics",
+        "score"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

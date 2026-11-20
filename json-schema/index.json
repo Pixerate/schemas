@@ -1706,6 +1706,26 @@
   },
   {
     "module": "jazz",
+    "name": "JazzUsageFunnelDrop",
+    "file": "jazz/JazzUsageFunnelDrop.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzUsageMetrics",
+    "file": "jazz/JazzUsageMetrics.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzUsageOpportunity",
+    "file": "jazz/JazzUsageOpportunity.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzUsageReportStatus",
+    "file": "jazz/JazzUsageReportStatus.json"
+  },
+  {
+    "module": "jazz",
     "name": "JazzVerdict",
     "file": "jazz/JazzVerdict.json"
   },

@@ -49,6 +49,16 @@
           },
           "maxItems": 20,
           "default": []
+        },
+        "routes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "maxItems": 50,
+          "default": []
         }
       },
       "required": [

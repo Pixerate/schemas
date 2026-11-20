@@ -1,0 +1,42 @@
+{
+  "$ref": "#/definitions/JazzUsageFunnelDrop",
+  "definitions": {
+    "JazzUsageFunnelDrop": {
+      "type": "object",
+      "properties": {
+        "flowId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "flowVersion": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "step": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "before": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "after": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "flowId",
+        "step",
+        "before",
+        "after"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
