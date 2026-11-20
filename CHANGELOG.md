@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 2.5.0
+
+### Minor Changes
+
+- 6d3070e: Jazz usage proposals (Pixerate/jazz#53): a `usage-friction` proposal kind, optional `routes` on `JazzDomain` (route-template prefixes that map a screen to a domain), and `JazzUsageOpportunity` (with `JazzUsageMetrics`, `JazzUsageFunnelDrop` and `JazzUsageReportStatus`), the shape a host maps its usage source's opportunities to.
+
 ## 2.4.0
 
 ### Minor Changes
