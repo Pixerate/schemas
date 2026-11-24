@@ -1,0 +1,56 @@
+{
+  "$ref": "#/definitions/UiFallback",
+  "definitions": {
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/JsonValue"
+          }
+        }
+      ]
+    },
+    "UiFallback": {
+      "type": "object",
+      "properties": {
+        "implements": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The baseline type it renders as, e.g. 'table' or 'progress'"
+        },
+        "props": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/JsonValue"
+          },
+          "description": "That type's props, made from the item's data"
+        }
+      },
+      "required": [
+        "implements",
+        "props"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

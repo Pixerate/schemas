@@ -251,6 +251,31 @@ export type UiComponentContract = z.infer<typeof UiComponentContractSchema>;
 export type UiComponentContractInput = z.input<typeof UiComponentContractSchema>;
 
 /**
+ * What a data visual or paradigm renders as where it can't run (no WebGL or script, reduced
+ * motion): a baseline component type and its props, made from the item's own data by the
+ * provider's runtime (e.g. a chart as a `table`, a gauge as a `progress`).
+ */
+export const UiFallbackSchema = z.object({
+  implements: z.string().min(1).describe("The baseline type it renders as, e.g. 'table' or 'progress'"),
+  props: z.record(z.string(), JsonValueSchema).describe("That type's props, made from the item's data")
+});
+export type UiFallback = z.infer<typeof UiFallbackSchema>;
+
+/**
+ * The baseline `table` type's props, shared so providers can produce a table fallback without
+ * depending on a component library: a caption, column headings and rows of cells.
+ */
+export const UiTablePropsSchema = z.object({
+  caption: z.string().optional().describe("What the table shows; also its accessible name"),
+  columns: z.array(z.string()).min(1).describe("Column headings, in order"),
+  rows: z
+    .array(z.array(z.union([z.string(), z.number(), z.null()])))
+    .describe("Rows of cells, one per column; null for an empty cell"),
+  rowHeaders: z.boolean().optional().describe("The first cell of each row names the row (a row header)")
+});
+export type UiTableProps = z.infer<typeof UiTablePropsSchema>;
+
+/**
  * What a provider (Flair, editor, …) attaches to an item it offers as a UI component. A registry
  * stores it as it is, so a sync copies rather than translates. An item without one isn't UI.
  */
@@ -261,6 +286,11 @@ export const UiDescriptorSchema = z.object({
   platforms: z.array(PlatformTargetSchema).default([]).describe("Platforms the provider can render it on"),
   swiftReady: z.boolean().optional(),
   example: z.record(z.string(), JsonValueSchema).optional().describe("Example props or data, for previews and checks"),
+  fallback: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("For a data visual or paradigm: the baseline type its runtime's fallback(data) renders as (UiFallbackSchema)"),
   contentHash: z.string().optional().describe("Changes whenever the item's output changes, so a sync can tell")
 });
 export type UiDescriptor = z.infer<typeof UiDescriptorSchema>;
