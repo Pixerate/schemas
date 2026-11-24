@@ -1,0 +1,177 @@
+{
+  "$ref": "#/definitions/UiDreamResult",
+  "definitions": {
+    "UiDreamClip": {
+      "type": "object",
+      "properties": {
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!data:)",
+          "description": "Storage path or URL of the video"
+        },
+        "mimeType": {
+          "type": "string",
+          "pattern": "^video\\/[a-z0-9.+-]+$",
+          "description": "e.g. 'video/mp4'"
+        },
+        "durationMs": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "keyframes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiDreamFrame"
+          },
+          "maxItems": 12,
+          "default": [],
+          "description": "Frames extracted at fixed times, for analysis and comparison; each has atMs"
+        }
+      },
+      "required": [
+        "ref",
+        "mimeType",
+        "durationMs",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamFrame": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The frame id from the request (for a keyframe, its own id)"
+        },
+        "state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8000000,
+          "pattern": "^(?:data:image\\/(?:png|jpeg|webp);base64,|(?!data:))",
+          "description": "Storage path or URL of the image, or a PNG, JPEG or WebP data URL"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "The image's own px; it may differ from the target viewport"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "The image's own px; it may differ from the target viewport"
+        },
+        "atMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "For a clip keyframe: where in the clip it was taken"
+        }
+      },
+      "required": [
+        "id",
+        "state",
+        "ref",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamFuel": {
+      "type": "object",
+      "properties": {
+        "charged": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Fuel charged for this dream"
+        },
+        "balance": {
+          "type": "integer",
+          "description": "Remaining balance after dreaming"
+        }
+      },
+      "required": [
+        "charged"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamMedium": {
+      "type": "string",
+      "enum": [
+        "stills",
+        "clip"
+      ]
+    },
+    "UiDreamResult": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The dream's id; analyses and comparisons point at it"
+        },
+        "medium": {
+          "$ref": "#/definitions/UiDreamMedium"
+        },
+        "frames": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiDreamFrame"
+          },
+          "minItems": 1,
+          "maxItems": 6,
+          "description": "The stills, in request order"
+        },
+        "clip": {
+          "$ref": "#/definitions/UiDreamClip",
+          "description": "Present when medium is 'clip'"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "The model that made it (for a clip, the video model)"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "latencyMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Wall time for the whole dream"
+        },
+        "fuel": {
+          "$ref": "#/definitions/UiDreamFuel"
+        }
+      },
+      "required": [
+        "id",
+        "medium",
+        "frames",
+        "model",
+        "createdAt",
+        "latencyMs"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

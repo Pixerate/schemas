@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/UiDreamProvenance",
+  "definitions": {
+    "UiDreamProvenance": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "implied",
+        "embellishment"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

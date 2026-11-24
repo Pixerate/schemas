@@ -921,6 +921,141 @@
   },
   {
     "module": "genui",
+    "name": "UiDreamAnalysis",
+    "file": "genui/UiDreamAnalysis.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamBox",
+    "file": "genui/UiDreamBox.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamClip",
+    "file": "genui/UiDreamClip.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamClipPlan",
+    "file": "genui/UiDreamClipPlan.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamComparison",
+    "file": "genui/UiDreamComparison.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamComparisonPair",
+    "file": "genui/UiDreamComparisonPair.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamComponent",
+    "file": "genui/UiDreamComponent.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamComponentMatch",
+    "file": "genui/UiDreamComponentMatch.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamDropReason",
+    "file": "genui/UiDreamDropReason.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamElement",
+    "file": "genui/UiDreamElement.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamFrame",
+    "file": "genui/UiDreamFrame.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamFramePlan",
+    "file": "genui/UiDreamFramePlan.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamFuel",
+    "file": "genui/UiDreamFuel.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamLayout",
+    "file": "genui/UiDreamLayout.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamMedium",
+    "file": "genui/UiDreamMedium.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamMotion",
+    "file": "genui/UiDreamMotion.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamMotionKind",
+    "file": "genui/UiDreamMotionKind.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamProvenance",
+    "file": "genui/UiDreamProvenance.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamRequest",
+    "file": "genui/UiDreamRequest.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamResult",
+    "file": "genui/UiDreamResult.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamState",
+    "file": "genui/UiDreamState.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamStateValue",
+    "file": "genui/UiDreamStateValue.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamTarget",
+    "file": "genui/UiDreamTarget.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamTransition",
+    "file": "genui/UiDreamTransition.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamTrigger",
+    "file": "genui/UiDreamTrigger.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamTriggerKind",
+    "file": "genui/UiDreamTriggerKind.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiDreamViewport",
+    "file": "genui/UiDreamViewport.json"
+  },
+  {
+    "module": "genui",
     "name": "UiEvent",
     "file": "genui/UiEvent.json"
   },
@@ -1743,6 +1878,21 @@
     "module": "jazz",
     "name": "JazzToolCall",
     "file": "jazz/JazzToolCall.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzUiDream",
+    "file": "jazz/JazzUiDream.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzUiDreamGroup",
+    "file": "jazz/JazzUiDreamGroup.json"
+  },
+  {
+    "module": "jazz",
+    "name": "JazzUiDreamMedium",
+    "file": "jazz/JazzUiDreamMedium.json"
   },
   {
     "module": "jazz",

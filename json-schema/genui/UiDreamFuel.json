@@ -1,0 +1,24 @@
+{
+  "$ref": "#/definitions/UiDreamFuel",
+  "definitions": {
+    "UiDreamFuel": {
+      "type": "object",
+      "properties": {
+        "charged": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Fuel charged for this dream"
+        },
+        "balance": {
+          "type": "integer",
+          "description": "Remaining balance after dreaming"
+        }
+      },
+      "required": [
+        "charged"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

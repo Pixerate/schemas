@@ -6,7 +6,8 @@
       "enum": [
         "used-up",
         "stale",
-        "undone"
+        "undone",
+        "dismissed"
       ]
     }
   },

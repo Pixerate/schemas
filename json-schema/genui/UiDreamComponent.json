@@ -1,0 +1,105 @@
+{
+  "$ref": "#/definitions/UiDreamComponent",
+  "definitions": {
+    "UiComponentGroup": {
+      "type": "string",
+      "enum": [
+        "baseline",
+        "data-visual",
+        "paradigm"
+      ],
+      "description": "baseline: the shadcn set; data-visual: charts and diagrams whose layout follows the data; paradigm: new kinds of UI (3-D, instruments)"
+    },
+    "UiDreamComponent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "elementIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "description": "The layout elements it covers"
+        },
+        "componentTypeId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "A UIComponentType.id from the catalog, or a proposed id for a new type"
+        },
+        "match": {
+          "$ref": "#/definitions/UiDreamComponentMatch"
+        },
+        "group": {
+          "$ref": "#/definitions/UiComponentGroup",
+          "description": "For a new type: which group it belongs to"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "props": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ],
+            "description": "A flat JSON value (string, number, boolean or null)"
+          },
+          "description": "Guessed props (label, variant, size); placeholder text is listed in inventedText"
+        },
+        "inventedText": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "maxItems": 50,
+          "description": "Copy the dream made up: never used verbatim"
+        },
+        "provenance": {
+          "$ref": "#/definitions/UiDreamProvenance"
+        }
+      },
+      "required": [
+        "id",
+        "elementIds",
+        "componentTypeId",
+        "match",
+        "confidence",
+        "provenance"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamComponentMatch": {
+      "type": "string",
+      "enum": [
+        "catalog",
+        "close",
+        "new-type",
+        "unmapped"
+      ]
+    },
+    "UiDreamProvenance": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "implied",
+        "embellishment"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

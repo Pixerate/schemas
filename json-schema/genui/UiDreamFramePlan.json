@@ -1,0 +1,33 @@
+{
+  "$ref": "#/definitions/UiDreamFramePlan",
+  "definitions": {
+    "UiDreamFramePlan": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "Frame id, unique in the request, e.g. 'default' or 'f1'"
+        },
+        "state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The state it shows, e.g. 'default', 'hover', 'open', 'empty', 'loading', 'error'"
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "What this frame should show, e.g. 'the menu open with three items'"
+        }
+      },
+      "required": [
+        "id",
+        "state"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

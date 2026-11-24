@@ -1,0 +1,92 @@
+{
+  "$ref": "#/definitions/UiDreamState",
+  "definitions": {
+    "UiDreamState": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "e.g. 'default', 'hover', 'open', 'empty', 'loading', 'error'"
+        },
+        "frameIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "maxItems": 18,
+          "default": []
+        },
+        "clipSpanMs": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            }
+          ],
+          "description": "[from, to] in milliseconds from the start of the clip"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiDreamStateValue"
+          },
+          "maxItems": 50,
+          "default": []
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamStateValue": {
+      "type": "object",
+      "properties": {
+        "componentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "field": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "A UiStateField name, e.g. 'open', 'checked', 'value'"
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ],
+          "description": "A flat JSON value (string, number, boolean or null)"
+        }
+      },
+      "required": [
+        "componentId",
+        "field",
+        "value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

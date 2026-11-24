@@ -435,6 +435,15 @@ describe('JSON Schema export', () => {
         strokesSince: 7,
         drawn: ['the sun', 'two birds']
       }),
+      'jazz_ui_dream.json': jazz.JazzUiDreamSchema.parse({
+        id: 'ui-dream-1',
+        dreamId: 'dream-1',
+        medium: 'clip',
+        group: 'paradigm',
+        createdAt: '2026-11-24T12:00:00.000Z',
+        changesSince: 2,
+        taken: ['c1', 's-open']
+      }),
       'jazz_dream_request.json': jazz.JazzDreamRequestSchema.parse({
         image: 'data:image/png;base64,iVBORw0KGgo=',
         prompt: 'Imagine where this painting could go next.',

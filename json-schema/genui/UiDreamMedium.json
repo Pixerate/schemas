@@ -1,0 +1,13 @@
+{
+  "$ref": "#/definitions/UiDreamMedium",
+  "definitions": {
+    "UiDreamMedium": {
+      "type": "string",
+      "enum": [
+        "stills",
+        "clip"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

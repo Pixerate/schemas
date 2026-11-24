@@ -1,0 +1,127 @@
+{
+  "$ref": "#/definitions/UiDreamElement",
+  "definitions": {
+    "UiDreamBox": {
+      "type": "object",
+      "properties": {
+        "frameId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Left edge, as a fraction of the frame's width"
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Top edge, as a fraction of the frame's height"
+        },
+        "w": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Width, as a fraction of the frame's width"
+        },
+        "h": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Height, as a fraction of the frame's height"
+        }
+      },
+      "required": [
+        "frameId",
+        "x",
+        "y",
+        "w",
+        "h"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamElement": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "parentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "What it is, e.g. 'primary action', 'results list'"
+        },
+        "boxes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiDreamBox"
+          },
+          "maxItems": 18,
+          "default": []
+        },
+        "layout": {
+          "$ref": "#/definitions/UiDreamLayout",
+          "description": "How its children are laid out"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamLayout": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "type": "string",
+          "enum": [
+            "row",
+            "column",
+            "grid",
+            "stack",
+            "overlay"
+          ]
+        },
+        "align": {
+          "type": "string",
+          "enum": [
+            "start",
+            "center",
+            "end",
+            "stretch",
+            "between"
+          ]
+        },
+        "gap": {
+          "type": "string",
+          "enum": [
+            "tight",
+            "regular",
+            "loose"
+          ],
+          "description": "A name, never px: the skill sets the spacing"
+        },
+        "wrap": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "direction"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

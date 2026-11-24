@@ -781,8 +781,12 @@ export const JazzDreamResponseSchema = z.object({
 });
 export type JazzDreamResponse = z.infer<typeof JazzDreamResponseSchema>;
 
-/** Why a dream was dropped: everything useful was drawn from it, the painting moved on, or the painter undid what was drawn from it. */
-export const JazzDreamDropReasonSchema = z.enum(["used-up", "stale", "undone"]);
+/**
+ * Why a dream was dropped: everything useful was drawn (or taken) from it (`used-up`), the work
+ * moved on (`stale`), the user undid or rejected what came from it (`undone`), or the user
+ * rejected the dream itself before anything was built from it (`dismissed`, UI dreams only).
+ */
+export const JazzDreamDropReasonSchema = z.enum(["used-up", "stale", "undone", "dismissed"]);
 export type JazzDreamDropReason = z.infer<typeof JazzDreamDropReasonSchema>;
 
 /** A dream as jazz keeps it across pauses, until it is used up or the painting has moved on. */
@@ -800,3 +804,34 @@ export const JazzDreamSchema = z.object({
 });
 export type JazzDream = z.infer<typeof JazzDreamSchema>;
 export type JazzDreamInput = z.input<typeof JazzDreamSchema>;
+
+// --- Dream (UI) ---
+// A UI dream is made by the host's `ui_dream` endpoint (`UiDreamRequest` / `UiDreamResult` in
+// `@pixerate/schemas/genui`) and analysed by genui-core (`UiDreamAnalysis`). Jazz keeps only what
+// it needs to decide when to dream again and to learn: weights per (component group, medium).
+// See Pixerate/jazz#42.
+
+/** A UI dream's medium. The same values as `UiDreamMedium` in `@pixerate/schemas/genui`. */
+export const JazzUiDreamMediumSchema = z.enum(["stills", "clip"]);
+export type JazzUiDreamMedium = z.infer<typeof JazzUiDreamMediumSchema>;
+
+/** The component group a UI dream was for. The same values as `UiComponentGroup` in `@pixerate/schemas/genui`. */
+export const JazzUiDreamGroupSchema = z.enum(["baseline", "data-visual", "paradigm"]);
+export type JazzUiDreamGroup = z.infer<typeof JazzUiDreamGroupSchema>;
+
+/** A UI dream as jazz keeps it across pauses, until it is used up, stale, undone or dismissed. */
+export const JazzUiDreamSchema = z.object({
+  id: z.string().min(1),
+  /** The `UiDreamResult.id` it tracks. */
+  dreamId: z.string().min(1).max(64),
+  medium: JazzUiDreamMediumSchema,
+  /** The component group it was dreamt for, for learning per (group, medium). Absent for a whole page. */
+  group: JazzUiDreamGroupSchema.optional(),
+  createdAt: IsoDateTimeSchema,
+  /** Changes to the brief, target or component type since it was dreamt (the UI analogue of `strokesSince`). */
+  changesSince: z.number().int().min(0).default(0),
+  /** What builds took from it, oldest first: `UiDreamAnalysis` element, component or state ids. */
+  taken: z.array(z.string().min(1).max(64)).max(50).default([])
+});
+export type JazzUiDream = z.infer<typeof JazzUiDreamSchema>;
+export type JazzUiDreamInput = z.input<typeof JazzUiDreamSchema>;

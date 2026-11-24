@@ -29,6 +29,7 @@ import {
   JazzDreamResponseSchema,
   JazzDreamDropReasonSchema,
   JazzDreamSchema,
+  JazzUiDreamSchema,
   JazzTextFlavorSchema,
   JazzTextVoiceIdSchema,
   JazzTextVoiceStatsSchema,
@@ -394,12 +395,29 @@ describe("jazz text-lead contracts (Swash writing partner)", () => {
     assert.equal(JazzDreamElementSchema.safeParse("x".repeat(JAZZ_DREAM_MAX_ELEMENT_CHARS + 1)).success, false);
     assert.equal(JazzDreamSchema.safeParse({ ...used, createdAt: "yesterday" }).success, false);
 
-    assert.deepEqual(JazzDreamDropReasonSchema.options, ["used-up", "stale", "undone"]);
+    assert.deepEqual(JazzDreamDropReasonSchema.options, ["used-up", "stale", "undone", "dismissed"]);
     assert.equal(JazzDreamDropReasonSchema.safeParse("bored").success, false);
   });
 
+  it("validates a kept UI dream and fills in its defaults", () => {
+    const fresh = JazzUiDreamSchema.parse({ id: "ui-dream-1", dreamId: "dream-1", medium: "stills", createdAt: "2026-11-24T12:00:00.000Z" });
+    assert.equal(fresh.changesSince, 0);
+    assert.deepEqual(fresh.taken, []);
+    assert.equal(fresh.group, undefined);
+
+    const used = JazzUiDreamSchema.parse({ ...fresh, medium: "clip", group: "paradigm", changesSince: 2, taken: ["c1", "s-open"] });
+    assert.deepEqual(used.taken, ["c1", "s-open"]);
+
+    assert.equal(JazzUiDreamSchema.safeParse({ ...used, medium: "video" }).success, false);
+    assert.equal(JazzUiDreamSchema.safeParse({ ...used, group: "fancy" }).success, false);
+    assert.equal(JazzUiDreamSchema.safeParse({ ...used, changesSince: -1 }).success, false);
+    assert.equal(JazzUiDreamSchema.safeParse({ ...used, taken: [""] }).success, false);
+    assert.equal(JazzUiDreamSchema.safeParse({ ...used, dreamId: "" }).success, false);
+    assert.equal(JazzDreamDropReasonSchema.parse("dismissed"), "dismissed");
+  });
+
   it("re-exports the dream schemas from the root", () => {
-    for (const schema of [JazzDreamImageSchema, JazzDreamElementSchema, JazzDreamRequestSchema, JazzDreamResponseSchema, JazzDreamDropReasonSchema, JazzDreamSchema]) {
+    for (const schema of [JazzDreamImageSchema, JazzDreamElementSchema, JazzDreamRequestSchema, JazzDreamResponseSchema, JazzDreamDropReasonSchema, JazzDreamSchema, JazzUiDreamSchema]) {
       assert.ok(Object.values(rootExports).includes(schema));
     }
   });

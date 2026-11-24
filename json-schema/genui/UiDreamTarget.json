@@ -1,0 +1,73 @@
+{
+  "$ref": "#/definitions/UiDreamTarget",
+  "definitions": {
+    "PageThemeMode": {
+      "type": "string",
+      "enum": [
+        "light",
+        "dark"
+      ]
+    },
+    "PlatformTarget": {
+      "type": "string",
+      "enum": [
+        "svelte",
+        "react",
+        "webcomponent",
+        "swiftui",
+        "compose",
+        "html-page"
+      ]
+    },
+    "UiDreamTarget": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "$ref": "#/definitions/PlatformTarget"
+        },
+        "viewport": {
+          "$ref": "#/definitions/UiDreamViewport"
+        },
+        "themes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PageThemeMode"
+          },
+          "minItems": 1,
+          "maxItems": 2,
+          "default": [
+            "light"
+          ]
+        }
+      },
+      "required": [
+        "platform",
+        "viewport"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamViewport": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 10000,
+          "description": "CSS px"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 10000,
+          "description": "CSS px"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

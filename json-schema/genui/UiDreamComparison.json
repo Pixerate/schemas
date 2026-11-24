@@ -1,0 +1,149 @@
+{
+  "$ref": "#/definitions/UiDreamComparison",
+  "definitions": {
+    "LookFinding": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What a look (vision) check saw"
+        },
+        "severity": {
+          "$ref": "#/definitions/LookStatus",
+          "default": "warn"
+        },
+        "ruleId": {
+          "type": "string",
+          "description": "The aesthetic rule it relates to"
+        },
+        "referenceId": {
+          "type": "string",
+          "description": "The aesthetic reference it relates to"
+        },
+        "picture": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "LookStatus": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "warn",
+        "fail"
+      ]
+    },
+    "UiDreamComparison": {
+      "type": "object",
+      "properties": {
+        "dreamId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The UiDreamResult compared against"
+        },
+        "pairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiDreamComparisonPair"
+          },
+          "maxItems": 18,
+          "default": []
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Overall structural match; 1 is a perfect match"
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LookFinding"
+          },
+          "default": [],
+          "description": "The comparison's findings, also in LookResult.findings with referenceId 'dream:<frameId>'"
+        }
+      },
+      "required": [
+        "score"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamComparisonPair": {
+      "type": "object",
+      "properties": {
+        "frameId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The dream frame"
+        },
+        "picture": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Index into LookResult.pictures"
+        },
+        "state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The state both show"
+        },
+        "componentsPresent": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "maxItems": 100,
+          "default": [],
+          "description": "Analysis component ids found in the picture"
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "maxItems": 100,
+          "default": [],
+          "description": "Analysis component ids not found in the picture"
+        },
+        "extra": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "maxItems": 100,
+          "default": [],
+          "description": "What the picture has that the dream doesn't, described"
+        },
+        "layoutMatch": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "How closely the layout matches; 1 is the same arrangement"
+        }
+      },
+      "required": [
+        "frameId",
+        "picture",
+        "state",
+        "layoutMatch"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

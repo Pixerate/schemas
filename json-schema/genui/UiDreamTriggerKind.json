@@ -1,0 +1,22 @@
+{
+  "$ref": "#/definitions/UiDreamTriggerKind",
+  "definitions": {
+    "UiDreamTriggerKind": {
+      "type": "string",
+      "enum": [
+        "click",
+        "hover",
+        "focus",
+        "press",
+        "drag",
+        "swipe",
+        "scroll",
+        "pinch",
+        "keyboard",
+        "timer",
+        "data"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

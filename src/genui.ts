@@ -1745,13 +1745,440 @@ export const LookFindingSchema = z.object({
 });
 export type LookFinding = z.infer<typeof LookFindingSchema>;
 
+// --- UI dreams ---
+// Before generating a UI, an image model can dream key states (stills) and, optionally, a video
+// model a short clip of one interaction between two of them. An agent analyses the dream into
+// layout, components, states and motion (`UiDreamAnalysis`), which feeds generation and
+// render-and-look (`UiDreamComparison` on `LookResult.dream`). The dream is reference material:
+// no dream pixel ever ships. See Pixerate/surreal-ui `plans/ui-dreams.md` and Pixerate/schemas#89.
+//
+// Rules: the analysis has no pixel geometry (boxes are 0–1 fractions of their frame, because image
+// models return their own sizes), and no literal colours or milliseconds (the aesthetic skill owns
+// the look, so motion durations and easings are names from `UiAestheticProfile.motion`).
+//
+// Privacy rule: a dream request sends the brief (and any skill references) to an image or video
+// model, so a host dreams only when the user has turned dreaming on.
+
+/** Most frames (key states) in one dream. */
+export const UI_DREAM_MAX_FRAMES = 6;
+
+/** Most keyframes extracted from one dream clip. */
+export const UI_DREAM_MAX_KEYFRAMES = 12;
+
+/** Maximum characters in the user's brief. */
+export const UI_DREAM_MAX_BRIEF_CHARS = 4000;
+
+/** Maximum characters in the image or video model's prompt. */
+export const UI_DREAM_MAX_PROMPT_CHARS = 8000;
+
+/** Maximum characters in a frame's `ref` when it is a data URL (about 6 MB of image). Clips are never data URLs. */
+export const UI_DREAM_MAX_IMAGE_CHARS = 8_000_000;
+
+const UiDreamIdSchema = z.string().min(1).max(64);
+const UiDreamNameSchema = z
+  .string()
+  .regex(/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/)
+  .max(64);
+const UiDreamUnitSchema = z.number().min(0).max(1);
+const UiDreamSpanMsSchema = z
+  .tuple([z.number().int().nonnegative(), z.number().int().nonnegative()])
+  .refine(([from, to]) => from <= to, "A clip span runs forwards: [from, to] with from <= to")
+  .describe("[from, to] in milliseconds from the start of the clip");
+const UiDreamFlatValueSchema = z
+  .union([z.string(), z.number(), z.boolean(), z.null()])
+  .describe("A flat JSON value (string, number, boolean or null)");
+
+/** What a dream is made of: key-state stills, or stills plus one clip between two of them. */
+export const UiDreamMediumSchema = z.enum(["stills", "clip"]);
+export type UiDreamMedium = z.infer<typeof UiDreamMediumSchema>;
+
+/** The target viewport, in CSS px. Every box in an analysis is a fraction of a frame, never of this. */
+export const UiDreamViewportSchema = z.object({
+  width: z.number().int().positive().max(10_000).describe("CSS px"),
+  height: z.number().int().positive().max(10_000).describe("CSS px")
+});
+export type UiDreamViewport = z.infer<typeof UiDreamViewportSchema>;
+
+/** What the dream is for: the platform, the viewport and the themes to dream in. */
+export const UiDreamTargetSchema = z.object({
+  platform: PlatformTargetSchema,
+  viewport: UiDreamViewportSchema,
+  themes: z.array(PageThemeModeSchema).min(1).max(2).default(["light"])
+});
+export type UiDreamTarget = z.infer<typeof UiDreamTargetSchema>;
+export type UiDreamTargetInput = z.input<typeof UiDreamTargetSchema>;
+
+/** One still to dream: a key state such as `default`, `hover`, `open`, `empty`, `loading` or `error`. */
+export const UiDreamFramePlanSchema = z.object({
+  id: UiDreamIdSchema.describe("Frame id, unique in the request, e.g. 'default' or 'f1'"),
+  state: z.string().min(1).max(64).describe("The state it shows, e.g. 'default', 'hover', 'open', 'empty', 'loading', 'error'"),
+  note: z.string().max(500).optional().describe("What this frame should show, e.g. 'the menu open with three items'")
+});
+export type UiDreamFramePlan = z.infer<typeof UiDreamFramePlanSchema>;
+
+/** The clip to dream: one interaction between two dreamed stills, which are its first and last frames. */
+export const UiDreamClipPlanSchema = z
+  .object({
+    fromFrame: UiDreamIdSchema.describe("The still the clip starts on (the video model's first frame)"),
+    toFrame: UiDreamIdSchema.describe("The still the clip ends on (the video model's last frame)"),
+    interaction: z.string().min(1).max(500).describe("What happens, e.g. 'drag the third card to the top of the list'"),
+    durationSeconds: z.number().int().min(4).max(8).describe("Clip length in seconds, 4 to 8")
+  })
+  .refine((clip) => clip.fromFrame !== clip.toFrame, { message: "A clip runs between two different frames", path: ["toFrame"] });
+export type UiDreamClipPlan = z.infer<typeof UiDreamClipPlanSchema>;
+
+/** Request body for a host's UI dream endpoint (`POST /api/agent/ui-dream`, the `ui_dream` capability). */
+export const UiDreamRequestSchema = z
+  .object({
+    brief: z.string().min(1).max(UI_DREAM_MAX_BRIEF_CHARS).describe("The user's request, as given"),
+    target: UiDreamTargetSchema,
+    medium: UiDreamMediumSchema,
+    frames: z.array(UiDreamFramePlanSchema).min(1).max(UI_DREAM_MAX_FRAMES).describe("The stills to dream, frame 1 first"),
+    clip: UiDreamClipPlanSchema.optional().describe("Required when medium is 'clip'; absent otherwise"),
+    componentTypeIds: z.array(z.string().min(1).max(128)).max(20).optional().describe("Catalog hints: UIComponentType ids"),
+    aesthetic: UiAestheticRefSchema.optional().describe("The ui-aesthetic skill to dream in"),
+    prompt: z.string().min(1).max(UI_DREAM_MAX_PROMPT_CHARS).describe("The model's prompt, built by genui-core"),
+    teamId: z.string().min(1).max(128).optional().describe("Team to bill fuel against when the caller belongs to it")
+  })
+  .superRefine((request, ctx) => {
+    const ids = new Set<string>();
+    request.frames.forEach((frame, i) => {
+      if (ids.has(frame.id)) ctx.addIssue({ code: "custom", message: `Duplicate frame id '${frame.id}'`, path: ["frames", i, "id"] });
+      ids.add(frame.id);
+    });
+    if (request.medium === "clip" && !request.clip) {
+      ctx.addIssue({ code: "custom", message: "A 'clip' dream needs a clip", path: ["clip"] });
+    }
+    if (request.medium === "stills" && request.clip) {
+      ctx.addIssue({ code: "custom", message: "A 'stills' dream has no clip", path: ["clip"] });
+    }
+    if (request.clip) {
+      for (const key of ["fromFrame", "toFrame"] as const) {
+        if (!ids.has(request.clip[key])) {
+          ctx.addIssue({ code: "custom", message: `Clip ${key} '${request.clip[key]}' is not one of the frames`, path: ["clip", key] });
+        }
+      }
+    }
+  });
+export type UiDreamRequest = z.infer<typeof UiDreamRequestSchema>;
+export type UiDreamRequestInput = z.input<typeof UiDreamRequestSchema>;
+
+/** One dreamed image: a still, or a keyframe extracted from a clip. */
+export const UiDreamFrameSchema = z.object({
+  id: UiDreamIdSchema.describe("The frame id from the request (for a keyframe, its own id)"),
+  state: z.string().min(1).max(64),
+  ref: z
+    .string()
+    .min(1)
+    .max(UI_DREAM_MAX_IMAGE_CHARS)
+    .regex(/^(?:data:image\/(?:png|jpeg|webp);base64,|(?!data:))/, "A storage ref or URL, or a PNG, JPEG or WebP data URL")
+    .describe("Storage path or URL of the image, or a PNG, JPEG or WebP data URL"),
+  width: z.number().int().positive().describe("The image's own px; it may differ from the target viewport"),
+  height: z.number().int().positive().describe("The image's own px; it may differ from the target viewport"),
+  atMs: z.number().int().nonnegative().optional().describe("For a clip keyframe: where in the clip it was taken")
+});
+export type UiDreamFrame = z.infer<typeof UiDreamFrameSchema>;
+
+/** A dreamed clip. Always a ref: a clip is too big for a data URL. */
+export const UiDreamClipSchema = z
+  .object({
+    ref: z
+      .string()
+      .min(1)
+      .max(2048)
+      .regex(/^(?!data:)/, "A clip is a storage ref or URL, never a data URL")
+      .describe("Storage path or URL of the video"),
+    mimeType: z.string().regex(/^video\/[a-z0-9.+-]+$/).describe("e.g. 'video/mp4'"),
+    durationMs: z.number().int().positive(),
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+    keyframes: z
+      .array(UiDreamFrameSchema)
+      .max(UI_DREAM_MAX_KEYFRAMES)
+      .default([])
+      .describe("Frames extracted at fixed times, for analysis and comparison; each has atMs")
+  })
+  .superRefine((clip, ctx) => {
+    clip.keyframes.forEach((frame, i) => {
+      if (frame.atMs === undefined || frame.atMs > clip.durationMs) {
+        ctx.addIssue({ code: "custom", message: "A keyframe needs an atMs within the clip", path: ["keyframes", i, "atMs"] });
+      }
+    });
+  });
+export type UiDreamClip = z.infer<typeof UiDreamClipSchema>;
+export type UiDreamClipInput = z.input<typeof UiDreamClipSchema>;
+
+/** Fuel a dream cost, when metered. */
+export const UiDreamFuelSchema = z.object({
+  charged: z.number().int().nonnegative().describe("Fuel charged for this dream"),
+  balance: z.number().int().optional().describe("Remaining balance after dreaming")
+});
+export type UiDreamFuel = z.infer<typeof UiDreamFuelSchema>;
+
+/** Response from a host's UI dream endpoint. */
+export const UiDreamResultSchema = z
+  .object({
+    id: UiDreamIdSchema.describe("The dream's id; analyses and comparisons point at it"),
+    medium: UiDreamMediumSchema,
+    frames: z.array(UiDreamFrameSchema).min(1).max(UI_DREAM_MAX_FRAMES).describe("The stills, in request order"),
+    clip: UiDreamClipSchema.optional().describe("Present when medium is 'clip'"),
+    model: z.string().min(1).max(128).describe("The model that made it (for a clip, the video model)"),
+    createdAt: z.string().datetime({ offset: true }),
+    latencyMs: z.number().int().nonnegative().describe("Wall time for the whole dream"),
+    fuel: UiDreamFuelSchema.optional()
+  })
+  .superRefine((result, ctx) => {
+    if (result.medium === "clip" && !result.clip) ctx.addIssue({ code: "custom", message: "A 'clip' dream has a clip", path: ["clip"] });
+    if (result.medium === "stills" && result.clip) ctx.addIssue({ code: "custom", message: "A 'stills' dream has no clip", path: ["clip"] });
+  });
+export type UiDreamResult = z.infer<typeof UiDreamResultSchema>;
+export type UiDreamResultInput = z.input<typeof UiDreamResultSchema>;
+
+// --- UI dream analysis ---
+
+/** Where an element sits in one frame, as fractions (0–1) of that frame. Never pixels. */
+export const UiDreamBoxSchema = z
+  .object({
+    frameId: UiDreamIdSchema,
+    x: UiDreamUnitSchema.describe("Left edge, as a fraction of the frame's width"),
+    y: UiDreamUnitSchema.describe("Top edge, as a fraction of the frame's height"),
+    w: UiDreamUnitSchema.describe("Width, as a fraction of the frame's width"),
+    h: UiDreamUnitSchema.describe("Height, as a fraction of the frame's height")
+  })
+  .refine((box) => box.x + box.w <= 1 + 1e-6 && box.y + box.h <= 1 + 1e-6, "A box stays inside its frame");
+export type UiDreamBox = z.infer<typeof UiDreamBoxSchema>;
+
+export const UiDreamLayoutSchema = z.object({
+  direction: z.enum(["row", "column", "grid", "stack", "overlay"]),
+  align: z.enum(["start", "center", "end", "stretch", "between"]).optional(),
+  gap: z.enum(["tight", "regular", "loose"]).optional().describe("A name, never px: the skill sets the spacing"),
+  wrap: z.boolean().optional()
+});
+export type UiDreamLayout = z.infer<typeof UiDreamLayoutSchema>;
+
+/** A node of the dream's layout tree, with its box in each frame it appears in. */
+export const UiDreamElementSchema = z.object({
+  id: UiDreamIdSchema,
+  parentId: UiDreamIdSchema.optional(),
+  label: z.string().min(1).max(120).describe("What it is, e.g. 'primary action', 'results list'"),
+  boxes: z.array(UiDreamBoxSchema).max(UI_DREAM_MAX_FRAMES + UI_DREAM_MAX_KEYFRAMES).default([]),
+  layout: UiDreamLayoutSchema.optional().describe("How its children are laid out")
+});
+export type UiDreamElement = z.infer<typeof UiDreamElementSchema>;
+export type UiDreamElementInput = z.input<typeof UiDreamElementSchema>;
+
+/**
+ * How a dreamed component maps to the catalog: `catalog` (an existing type), `close` (an existing
+ * type that needs a variant), `new-type` (a proposed new type) or `unmapped` (nothing fits).
+ */
+export const UiDreamComponentMatchSchema = z.enum(["catalog", "close", "new-type", "unmapped"]);
+export type UiDreamComponentMatch = z.infer<typeof UiDreamComponentMatchSchema>;
+
+/**
+ * Why something is in the dream: the brief asked for it (`requested`), it is needed for what was
+ * asked (`implied`), or the model added it (`embellishment`, dropped from generation by default).
+ */
+export const UiDreamProvenanceSchema = z.enum(["requested", "implied", "embellishment"]);
+export type UiDreamProvenance = z.infer<typeof UiDreamProvenanceSchema>;
+
+/** A component in the dream, mapped to the catalog. */
+export const UiDreamComponentSchema = z.object({
+  id: UiDreamIdSchema,
+  elementIds: z.array(UiDreamIdSchema).min(1).max(20).describe("The layout elements it covers"),
+  componentTypeId: z.string().min(1).max(128).describe("A UIComponentType.id from the catalog, or a proposed id for a new type"),
+  match: UiDreamComponentMatchSchema,
+  group: UiComponentGroupSchema.optional().describe("For a new type: which group it belongs to"),
+  confidence: UiDreamUnitSchema,
+  props: z
+    .record(z.string(), UiDreamFlatValueSchema)
+    .optional()
+    .describe("Guessed props (label, variant, size); placeholder text is listed in inventedText"),
+  inventedText: z.array(z.string().max(500)).max(50).optional().describe("Copy the dream made up: never used verbatim"),
+  provenance: UiDreamProvenanceSchema
+});
+export type UiDreamComponent = z.infer<typeof UiDreamComponentSchema>;
+
+/** One controlled value a state sets, in `UiStateField` terms, e.g. `{ componentId, field: 'open', value: true }`. */
+export const UiDreamStateValueSchema = z.object({
+  componentId: UiDreamIdSchema,
+  field: z.string().min(1).max(64).describe("A UiStateField name, e.g. 'open', 'checked', 'value'"),
+  value: UiDreamFlatValueSchema
+});
+export type UiDreamStateValue = z.infer<typeof UiDreamStateValueSchema>;
+
+/** What a frame (or a span of the clip) shows. */
+export const UiDreamStateSchema = z.object({
+  id: UiDreamIdSchema,
+  name: z.string().min(1).max(64).describe("e.g. 'default', 'hover', 'open', 'empty', 'loading', 'error'"),
+  frameIds: z.array(UiDreamIdSchema).max(UI_DREAM_MAX_FRAMES + UI_DREAM_MAX_KEYFRAMES).default([]),
+  clipSpanMs: UiDreamSpanMsSchema.optional(),
+  values: z.array(UiDreamStateValueSchema).max(50).default([])
+});
+export type UiDreamState = z.infer<typeof UiDreamStateSchema>;
+export type UiDreamStateInput = z.input<typeof UiDreamStateSchema>;
+
+export const UiDreamTriggerKindSchema = z.enum(["click", "hover", "focus", "press", "drag", "swipe", "scroll", "pinch", "keyboard", "timer", "data"]);
+export type UiDreamTriggerKind = z.infer<typeof UiDreamTriggerKindSchema>;
+
+export const UiDreamTriggerSchema = z.object({
+  kind: UiDreamTriggerKindSchema,
+  componentId: UiDreamIdSchema.optional().describe("The component the user acts on"),
+  key: z.string().min(1).max(32).optional().describe("For a keyboard trigger, e.g. 'Enter', 'Escape', 'ArrowDown'"),
+  direction: z.enum(["up", "down", "left", "right", "in", "out"]).optional().describe("For a drag, swipe, scroll or pinch")
+});
+export type UiDreamTrigger = z.infer<typeof UiDreamTriggerSchema>;
+
+export const UiDreamMotionKindSchema = z.enum([
+  "none",
+  "fade",
+  "slide",
+  "scale",
+  "expand",
+  "morph",
+  "shared-element",
+  "stagger",
+  "spring",
+  "follow-pointer"
+]);
+export type UiDreamMotionKind = z.infer<typeof UiDreamMotionKindSchema>;
+
+/** How a transition moves. Durations and easings are names from `UiAestheticProfile.motion`, never ms or CSS. */
+export const UiDreamMotionSchema = z.object({
+  kind: UiDreamMotionKindSchema,
+  duration: UiDreamNameSchema.optional().describe("A name from UiAestheticProfile.motion.durations, e.g. 'short' (never ms)"),
+  easing: UiDreamNameSchema.optional().describe("A name from UiAestheticProfile.motion.easing, e.g. 'standard' (never CSS)"),
+  choreography: z.string().max(280).optional().describe("e.g. 'list items stagger in after the panel'"),
+  reducedMotion: z.enum(["static", "fade", "shorten"]).optional()
+});
+export type UiDreamMotion = z.infer<typeof UiDreamMotionSchema>;
+
+/** A move from one state to another: what triggers it, the event it fires and how it moves. */
+export const UiDreamTransitionSchema = z.object({
+  id: UiDreamIdSchema,
+  from: UiDreamIdSchema.describe("State id"),
+  to: UiDreamIdSchema.describe("State id"),
+  trigger: UiDreamTriggerSchema,
+  event: z.string().min(1).max(64).optional().describe("The UiEvent name it fires, e.g. 'change', 'open'"),
+  motion: UiDreamMotionSchema,
+  evidence: z
+    .object({
+      frameIds: z.array(UiDreamIdSchema).max(UI_DREAM_MAX_FRAMES + UI_DREAM_MAX_KEYFRAMES).optional(),
+      clipSpanMs: UiDreamSpanMsSchema.optional()
+    })
+    .default({}),
+  confidence: UiDreamUnitSchema
+});
+export type UiDreamTransition = z.infer<typeof UiDreamTransitionSchema>;
+export type UiDreamTransitionInput = z.input<typeof UiDreamTransitionSchema>;
+
+export const UiDreamDropReasonSchema = z.enum(["embellishment", "invented", "inconsistent", "unmapped"]);
+export type UiDreamDropReason = z.infer<typeof UiDreamDropReasonSchema>;
+
+/**
+ * A dream analysed into structure and behaviour, grounded in the catalog (version 1). Generation
+ * uses the requested and implied components, the states and the transitions; the aesthetic skill
+ * always wins on look. Ids are unique per list, and every reference points at an item in the
+ * analysis (frame ids point at the dream's frames, which aren't in it).
+ */
+export const UiDreamAnalysisSchema = z
+  .object({
+    version: z.literal(1),
+    dreamId: UiDreamIdSchema.describe("The UiDreamResult it analyses"),
+    model: z.string().min(1).max(128).describe("The vision model that analysed it"),
+    brief: z.string().min(1).max(UI_DREAM_MAX_BRIEF_CHARS),
+    viewport: UiDreamViewportSchema.describe("The target viewport; boxes are fractions of a frame, not of this"),
+    elements: z.array(UiDreamElementSchema).max(200).default([]),
+    components: z.array(UiDreamComponentSchema).max(100).default([]),
+    states: z.array(UiDreamStateSchema).max(20).default([]),
+    transitions: z.array(UiDreamTransitionSchema).max(40).default([]),
+    a11y: z
+      .object({
+        keyboard: z.record(z.string(), z.string()).default({}).describe("Key → what it does; folds into UiA11y.keyboard"),
+        focusOrder: z.array(UiDreamIdSchema).max(100).optional().describe("Component ids in focus order")
+      })
+      .optional(),
+    conflicts: z
+      .array(z.object({ ruleId: z.string().optional().describe("The aesthetic rule it contradicts"), text: z.string().min(1).max(500) }))
+      .max(50)
+      .default([])
+      .describe("Where the dream contradicts the aesthetic: the skill wins"),
+    dropped: z
+      .array(z.object({ what: z.string().min(1).max(280), reason: UiDreamDropReasonSchema }))
+      .max(100)
+      .default([])
+  })
+  .superRefine((analysis, ctx) => {
+    const unique = (list: { id: string }[], path: string) => {
+      const ids = new Set<string>();
+      list.forEach((item, i) => {
+        if (ids.has(item.id)) ctx.addIssue({ code: "custom", message: `Duplicate ${path} id '${item.id}'`, path: [path, i, "id"] });
+        ids.add(item.id);
+      });
+      return ids;
+    };
+    const elements = unique(analysis.elements, "elements");
+    const components = unique(analysis.components, "components");
+    const states = unique(analysis.states, "states");
+    unique(analysis.transitions, "transitions");
+    const check = (ok: boolean, message: string, path: (string | number)[]) => {
+      if (!ok) ctx.addIssue({ code: "custom", message, path });
+    };
+    analysis.elements.forEach((el, i) => {
+      if (el.parentId !== undefined) check(elements.has(el.parentId) && el.parentId !== el.id, `Unknown parent '${el.parentId}'`, ["elements", i, "parentId"]);
+    });
+    analysis.components.forEach((c, i) =>
+      c.elementIds.forEach((id, j) => check(elements.has(id), `Unknown element '${id}'`, ["components", i, "elementIds", j]))
+    );
+    analysis.states.forEach((s, i) =>
+      s.values.forEach((v, j) => check(components.has(v.componentId), `Unknown component '${v.componentId}'`, ["states", i, "values", j, "componentId"]))
+    );
+    analysis.transitions.forEach((t, i) => {
+      check(states.has(t.from), `Unknown state '${t.from}'`, ["transitions", i, "from"]);
+      check(states.has(t.to), `Unknown state '${t.to}'`, ["transitions", i, "to"]);
+      if (t.trigger.componentId !== undefined) {
+        check(components.has(t.trigger.componentId), `Unknown component '${t.trigger.componentId}'`, ["transitions", i, "trigger", "componentId"]);
+      }
+    });
+    analysis.a11y?.focusOrder?.forEach((id, i) => check(components.has(id), `Unknown component '${id}'`, ["a11y", "focusOrder", i]));
+  });
+export type UiDreamAnalysis = z.infer<typeof UiDreamAnalysisSchema>;
+export type UiDreamAnalysisInput = z.input<typeof UiDreamAnalysisSchema>;
+
+// --- UI dream comparison (render-and-look) ---
+
+/** One rendered picture compared with the dream frame of the same state. Structure only: the skill owns the look. */
+export const UiDreamComparisonPairSchema = z.object({
+  frameId: UiDreamIdSchema.describe("The dream frame"),
+  picture: z.number().int().nonnegative().describe("Index into LookResult.pictures"),
+  state: z.string().min(1).max(64).describe("The state both show"),
+  componentsPresent: z.array(UiDreamIdSchema).max(100).default([]).describe("Analysis component ids found in the picture"),
+  missing: z.array(UiDreamIdSchema).max(100).default([]).describe("Analysis component ids not found in the picture"),
+  extra: z.array(z.string().min(1).max(120)).max(100).default([]).describe("What the picture has that the dream doesn't, described"),
+  layoutMatch: UiDreamUnitSchema.describe("How closely the layout matches; 1 is the same arrangement")
+});
+export type UiDreamComparisonPair = z.infer<typeof UiDreamComparisonPairSchema>;
+
+/** How a generated result compares with its dream (`LookResult.dream`). */
+export const UiDreamComparisonSchema = z.object({
+  dreamId: UiDreamIdSchema.optional().describe("The UiDreamResult compared against"),
+  pairs: z.array(UiDreamComparisonPairSchema).max(UI_DREAM_MAX_FRAMES + UI_DREAM_MAX_KEYFRAMES).default([]),
+  score: UiDreamUnitSchema.describe("Overall structural match; 1 is a perfect match"),
+  findings: z
+    .array(LookFindingSchema)
+    .default([])
+    .describe("The comparison's findings, also in LookResult.findings with referenceId 'dream:<frameId>'")
+});
+export type UiDreamComparison = z.infer<typeof UiDreamComparisonSchema>;
+export type UiDreamComparisonInput = z.input<typeof UiDreamComparisonSchema>;
+
 /** The outcome of rendering something and checking the pictures. */
 export const LookResultSchema = z.object({
   pictures: z.array(PictureRefSchema).default([]),
   checks: z.array(LookCheckSchema).default([]),
   findings: z.array(LookFindingSchema).default([]),
   score: z.number().min(0).max(1).optional().describe("Overall, from a look check; 1 is a perfect match to the aesthetic"),
-  aesthetic: UiAestheticRefSchema.optional()
+  aesthetic: UiAestheticRefSchema.optional(),
+  dream: UiDreamComparisonSchema.optional().describe("How the result compares with the UI dream it was built from")
 });
 export type LookResult = z.infer<typeof LookResultSchema>;
 

@@ -1,0 +1,98 @@
+{
+  "$ref": "#/definitions/UiDreamClip",
+  "definitions": {
+    "UiDreamClip": {
+      "type": "object",
+      "properties": {
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!data:)",
+          "description": "Storage path or URL of the video"
+        },
+        "mimeType": {
+          "type": "string",
+          "pattern": "^video\\/[a-z0-9.+-]+$",
+          "description": "e.g. 'video/mp4'"
+        },
+        "durationMs": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "keyframes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiDreamFrame"
+          },
+          "maxItems": 12,
+          "default": [],
+          "description": "Frames extracted at fixed times, for analysis and comparison; each has atMs"
+        }
+      },
+      "required": [
+        "ref",
+        "mimeType",
+        "durationMs",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamFrame": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The frame id from the request (for a keyframe, its own id)"
+        },
+        "state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8000000,
+          "pattern": "^(?:data:image\\/(?:png|jpeg|webp);base64,|(?!data:))",
+          "description": "Storage path or URL of the image, or a PNG, JPEG or WebP data URL"
+        },
+        "width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "The image's own px; it may differ from the target viewport"
+        },
+        "height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "The image's own px; it may differ from the target viewport"
+        },
+        "atMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "For a clip keyframe: where in the clip it was taken"
+        }
+      },
+      "required": [
+        "id",
+        "state",
+        "ref",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

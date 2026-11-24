@@ -21,6 +21,7 @@ public enum JazzDreamDropReason: String, Codable, Sendable, CaseIterable {
     case usedUp = "used-up"
     case stale = "stale"
     case undone = "undone"
+    case dismissed = "dismissed"
 }
 
 public enum JazzEvidenceKind: String, Codable, Sendable, CaseIterable {
@@ -138,6 +139,17 @@ public enum JazzTextVoiceId: String, Codable, Sendable, CaseIterable {
     case punctuate = "punctuate"
     case smartTypography = "smart-typography"
     case chat = "chat"
+}
+
+public enum JazzUiDreamGroup: String, Codable, Sendable, CaseIterable {
+    case baseline = "baseline"
+    case dataVisual = "data-visual"
+    case paradigm = "paradigm"
+}
+
+public enum JazzUiDreamMedium: String, Codable, Sendable, CaseIterable {
+    case stills = "stills"
+    case clip = "clip"
 }
 
 public enum JazzUsageReportStatus: String, Codable, Sendable, CaseIterable {
@@ -1805,6 +1817,66 @@ public struct JazzToolCall: Codable, Sendable, Equatable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
         try container.encode(arguments, forKey: .arguments)
+    }
+}
+
+public struct JazzUiDream: Codable, Sendable, Equatable {
+    public var id: String
+    public var dreamId: String
+    public var medium: JazzUiDreamMedium
+    public var group: JazzUiDreamGroup?
+    public var createdAt: String
+    public var changesSince: Int
+    public var taken: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case dreamId = "dreamId"
+        case medium = "medium"
+        case group = "group"
+        case createdAt = "createdAt"
+        case changesSince = "changesSince"
+        case taken = "taken"
+    }
+
+    public init(
+        id: String,
+        dreamId: String,
+        medium: JazzUiDreamMedium,
+        group: JazzUiDreamGroup? = nil,
+        createdAt: String,
+        changesSince: Int = 0,
+        taken: [String] = []
+    ) {
+        self.id = id
+        self.dreamId = dreamId
+        self.medium = medium
+        self.group = group
+        self.createdAt = createdAt
+        self.changesSince = changesSince
+        self.taken = taken
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.dreamId = try container.decode(String.self, forKey: .dreamId)
+        self.medium = try container.decode(JazzUiDreamMedium.self, forKey: .medium)
+        self.group = try container.decodeIfPresent(JazzUiDreamGroup.self, forKey: .group)
+        self.createdAt = try container.decode(String.self, forKey: .createdAt)
+        self.changesSince = try container.decodeIfPresent(Int.self, forKey: .changesSince) ?? 0
+        self.taken = try container.decodeIfPresent([String].self, forKey: .taken) ?? []
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(dreamId, forKey: .dreamId)
+        try container.encode(medium, forKey: .medium)
+        try container.encodeIfPresent(group, forKey: .group)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(changesSince, forKey: .changesSince)
+        try container.encode(taken, forKey: .taken)
     }
 }
 
