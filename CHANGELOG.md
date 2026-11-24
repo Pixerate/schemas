@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 2.7.0
+
+### Minor Changes
+
+- d3991cc: Add weekly opportunity contracts to `@pixerate/schemas/insights` (`OpportunitySchema`, `OpportunityStatusSchema`, `OpportunityMetricsSchema`, `OpportunityFunnelDropSchema`, `OpportunityScorePartsSchema`, `OpportunityStatusUpdateSchema`) with generated Swift types, for piggyback's `OpportunitySynthesizer` and opportunities route (Pixerate/piggyback#18).
+
 ## 2.6.0
 
 ### Minor Changes
