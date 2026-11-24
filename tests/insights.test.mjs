@@ -5,7 +5,9 @@ import {
   SessionSummarySchema,
   FindingSchema,
   FlowSpecSchema,
-  FlowProgressSchema
+  FlowProgressSchema,
+  OpportunitySchema,
+  OpportunityStatusUpdateSchema
 } from "../dist/insights.js";
 
 test("IngestBatchSchema accepts valid session batch without GA4 100-char limit", () => {
@@ -216,4 +218,30 @@ test("FlowSpecSchema, flow_progress on SessionSummary, and flow_id on Finding va
     flow_id: "onboarding"
   });
   assert.equal(finding.flow_id, "onboarding");
+});
+
+test("OpportunitySchema applies defaults and enforces evidence limits", () => {
+  const base = {
+    id: "opp_slopmachine_1a2b3c4d",
+    product: "slopmachine",
+    title: "Reduce drop-off at workspace creation",
+    problem: "Sessions abandon onboarding at the workspace step.",
+    metrics: { sessions_affected: 12, share_of_sessions: 0.6 },
+    score: 0.81,
+    score_parts: { reach: 0.6, severity: 0.9, trend: 0.5 },
+    created_at: "2026-11-23T00:00:00.000Z",
+    updated_at: "2026-11-23T00:00:00.000Z",
+    week: "2026-W48"
+  };
+  const opp = OpportunitySchema.parse(base);
+  assert.equal(opp.status, "open");
+  assert.deepEqual(opp.screens, []);
+  assert.deepEqual(opp.example_narratives, []);
+
+  assert.throws(() => OpportunitySchema.parse({ ...base, example_narratives: ["a", "b", "c", "d"] }));
+  assert.throws(() => OpportunitySchema.parse({ ...base, score: 1.2 }));
+  assert.throws(() => OpportunitySchema.parse({ ...base, week: "2026-48" }));
+
+  assert.equal(OpportunityStatusUpdateSchema.parse({ id: "opp_1", status: "drafted" }).status, "drafted");
+  assert.throws(() => OpportunityStatusUpdateSchema.parse({ id: "opp_1", status: "done" }));
 });

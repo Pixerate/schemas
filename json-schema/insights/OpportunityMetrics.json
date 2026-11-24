@@ -1,0 +1,64 @@
+{
+  "$ref": "#/definitions/OpportunityMetrics",
+  "definitions": {
+    "OpportunityFunnelDrop": {
+      "type": "object",
+      "properties": {
+        "flow_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "flow_version": {
+          "type": "string"
+        },
+        "step": {
+          "type": "string",
+          "minLength": 1
+        },
+        "before": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "after": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "flow_id",
+        "step",
+        "before",
+        "after"
+      ],
+      "additionalProperties": false
+    },
+    "OpportunityMetrics": {
+      "type": "object",
+      "properties": {
+        "sessions_affected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "share_of_sessions": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "trend_vs_prev_week": {
+          "type": "number"
+        },
+        "funnel_drop": {
+          "$ref": "#/definitions/OpportunityFunnelDrop"
+        }
+      },
+      "required": [
+        "sessions_affected",
+        "share_of_sessions"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

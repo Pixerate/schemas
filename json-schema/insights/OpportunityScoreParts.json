@@ -1,0 +1,32 @@
+{
+  "$ref": "#/definitions/OpportunityScoreParts",
+  "definitions": {
+    "OpportunityScoreParts": {
+      "type": "object",
+      "properties": {
+        "reach": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "severity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "trend": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "reach",
+        "severity",
+        "trend"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

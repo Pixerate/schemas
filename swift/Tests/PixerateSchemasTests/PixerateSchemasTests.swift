@@ -205,3 +205,12 @@ extension PixerateSchemasTests {
         XCTAssertEqual(policy.tempo.idleMs, 1500)
     }
 }
+
+extension PixerateSchemasTests {
+    func testInsightsOpportunity() throws {
+        let opp = try roundTrip(Opportunity.self, fixtureName: "insights_opportunity.json")
+        XCTAssertEqual(opp.status, .`open`)
+        XCTAssertEqual(opp.metrics.funnelDrop?.step, "workspace")
+        XCTAssertEqual(opp.scoreParts.reach, 0.6)
+    }
+}

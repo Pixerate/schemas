@@ -1,0 +1,39 @@
+{
+  "$ref": "#/definitions/OpportunityFunnelDrop",
+  "definitions": {
+    "OpportunityFunnelDrop": {
+      "type": "object",
+      "properties": {
+        "flow_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "flow_version": {
+          "type": "string"
+        },
+        "step": {
+          "type": "string",
+          "minLength": 1
+        },
+        "before": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "after": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "flow_id",
+        "step",
+        "before",
+        "after"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
