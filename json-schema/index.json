@@ -931,6 +931,11 @@
   },
   {
     "module": "genui",
+    "name": "UiFallback",
+    "file": "genui/UiFallback.json"
+  },
+  {
+    "module": "genui",
     "name": "UIGenerationOptions",
     "file": "genui/UIGenerationOptions.json"
   },
@@ -948,6 +953,11 @@
     "module": "genui",
     "name": "UiStateField",
     "file": "genui/UiStateField.json"
+  },
+  {
+    "module": "genui",
+    "name": "UiTableProps",
+    "file": "genui/UiTableProps.json"
   },
   {
     "module": "genui",

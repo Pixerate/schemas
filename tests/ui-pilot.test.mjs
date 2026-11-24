@@ -19,6 +19,8 @@ import {
   UIComponentTypeSchema,
   UiComponentContractSchema,
   UiDescriptorSchema,
+  UiFallbackSchema,
+  UiTablePropsSchema,
   UIGenerationOptionsSchema,
   PageMessageSchema,
   PictureRequestSchema,
@@ -153,6 +155,23 @@ describe("component contracts and descriptors (#78)", () => {
     });
     assert.equal(d.implements, "switch");
     assert.equal(d.contract.a11y, undefined, "a descriptor may give only part of a contract");
+  });
+
+  it("describes a data visual's fallback: the type it renders as, and a table's props", () => {
+    const d = UiDescriptorSchema.parse({ implements: "bar-chart", group: "data-visual", fallback: "table" });
+    assert.equal(d.fallback, "table");
+    assert.throws(() => UiDescriptorSchema.parse({ implements: "gauge", fallback: "" }));
+    const table = UiTablePropsSchema.parse({
+      caption: "Quarterly revenue",
+      columns: ["Quarter", "2025", "2026"],
+      rows: [["Q1", 120, 140], ["Q2", 135, null]],
+      rowHeaders: true
+    });
+    const fallback = UiFallbackSchema.parse({ implements: "table", props: table });
+    assert.equal(fallback.props.columns.length, 3);
+    assert.throws(() => UiTablePropsSchema.parse({ columns: [], rows: [] }), "a table needs a column");
+    assert.throws(() => UiTablePropsSchema.parse({ columns: ["A"], rows: [[{ x: 1 }]] }), "cells are text, numbers or null");
+    assert.throws(() => UiFallbackSchema.parse({ implements: "", props: {} }));
   });
 
   it("validates an editor chart type as a data visual with an engine package", () => {

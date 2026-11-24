@@ -169,6 +169,11 @@
           },
           "description": "Example props or data, for previews and checks"
         },
+        "fallback": {
+          "type": "string",
+          "minLength": 1,
+          "description": "For a data visual or paradigm: the baseline type its runtime's fallback(data) renders as (UiFallbackSchema)"
+        },
         "contentHash": {
           "type": "string",
           "description": "Changes whenever the item's output changes, so a sync can tell"
