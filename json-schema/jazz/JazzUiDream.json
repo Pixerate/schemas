@@ -1,0 +1,67 @@
+{
+  "$ref": "#/definitions/JazzUiDream",
+  "definitions": {
+    "JazzUiDream": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dreamId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "medium": {
+          "$ref": "#/definitions/JazzUiDreamMedium"
+        },
+        "group": {
+          "$ref": "#/definitions/JazzUiDreamGroup"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "changesSince": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "taken": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "maxItems": 50,
+          "default": []
+        }
+      },
+      "required": [
+        "id",
+        "dreamId",
+        "medium",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "JazzUiDreamGroup": {
+      "type": "string",
+      "enum": [
+        "baseline",
+        "data-visual",
+        "paradigm"
+      ]
+    },
+    "JazzUiDreamMedium": {
+      "type": "string",
+      "enum": [
+        "stills",
+        "clip"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

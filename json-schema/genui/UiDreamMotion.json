@@ -1,0 +1,58 @@
+{
+  "$ref": "#/definitions/UiDreamMotion",
+  "definitions": {
+    "UiDreamMotion": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/UiDreamMotionKind"
+        },
+        "duration": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "maxLength": 64,
+          "description": "A name from UiAestheticProfile.motion.durations, e.g. 'short' (never ms)"
+        },
+        "easing": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "maxLength": 64,
+          "description": "A name from UiAestheticProfile.motion.easing, e.g. 'standard' (never CSS)"
+        },
+        "choreography": {
+          "type": "string",
+          "maxLength": 280,
+          "description": "e.g. 'list items stagger in after the panel'"
+        },
+        "reducedMotion": {
+          "type": "string",
+          "enum": [
+            "static",
+            "fade",
+            "shorten"
+          ]
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamMotionKind": {
+      "type": "string",
+      "enum": [
+        "none",
+        "fade",
+        "slide",
+        "scale",
+        "expand",
+        "morph",
+        "shared-element",
+        "stagger",
+        "spring",
+        "follow-pointer"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

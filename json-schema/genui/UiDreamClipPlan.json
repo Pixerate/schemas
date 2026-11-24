@@ -1,0 +1,42 @@
+{
+  "$ref": "#/definitions/UiDreamClipPlan",
+  "definitions": {
+    "UiDreamClipPlan": {
+      "type": "object",
+      "properties": {
+        "fromFrame": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The still the clip starts on (the video model's first frame)"
+        },
+        "toFrame": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The still the clip ends on (the video model's last frame)"
+        },
+        "interaction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "description": "What happens, e.g. 'drag the third card to the top of the list'"
+        },
+        "durationSeconds": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 8,
+          "description": "Clip length in seconds, 4 to 8"
+        }
+      },
+      "required": [
+        "fromFrame",
+        "toFrame",
+        "interaction",
+        "durationSeconds"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

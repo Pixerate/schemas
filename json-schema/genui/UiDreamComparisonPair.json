@@ -1,0 +1,74 @@
+{
+  "$ref": "#/definitions/UiDreamComparisonPair",
+  "definitions": {
+    "UiDreamComparisonPair": {
+      "type": "object",
+      "properties": {
+        "frameId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The dream frame"
+        },
+        "picture": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Index into LookResult.pictures"
+        },
+        "state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The state both show"
+        },
+        "componentsPresent": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "maxItems": 100,
+          "default": [],
+          "description": "Analysis component ids found in the picture"
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "maxItems": 100,
+          "default": [],
+          "description": "Analysis component ids not found in the picture"
+        },
+        "extra": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "maxItems": 100,
+          "default": [],
+          "description": "What the picture has that the dream doesn't, described"
+        },
+        "layoutMatch": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "How closely the layout matches; 1 is the same arrangement"
+        }
+      },
+      "required": [
+        "frameId",
+        "picture",
+        "state",
+        "layoutMatch"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

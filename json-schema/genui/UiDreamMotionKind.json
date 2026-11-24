@@ -1,0 +1,21 @@
+{
+  "$ref": "#/definitions/UiDreamMotionKind",
+  "definitions": {
+    "UiDreamMotionKind": {
+      "type": "string",
+      "enum": [
+        "none",
+        "fade",
+        "slide",
+        "scale",
+        "expand",
+        "morph",
+        "shared-element",
+        "stagger",
+        "spring",
+        "follow-pointer"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

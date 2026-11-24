@@ -1,0 +1,48 @@
+{
+  "$ref": "#/definitions/UiDreamBox",
+  "definitions": {
+    "UiDreamBox": {
+      "type": "object",
+      "properties": {
+        "frameId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Left edge, as a fraction of the frame's width"
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Top edge, as a fraction of the frame's height"
+        },
+        "w": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Width, as a fraction of the frame's width"
+        },
+        "h": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Height, as a fraction of the frame's height"
+        }
+      },
+      "required": [
+        "frameId",
+        "x",
+        "y",
+        "w",
+        "h"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

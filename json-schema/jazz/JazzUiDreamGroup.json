@@ -1,0 +1,14 @@
+{
+  "$ref": "#/definitions/JazzUiDreamGroup",
+  "definitions": {
+    "JazzUiDreamGroup": {
+      "type": "string",
+      "enum": [
+        "baseline",
+        "data-visual",
+        "paradigm"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

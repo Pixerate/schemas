@@ -1,0 +1,190 @@
+{
+  "$ref": "#/definitions/UiDreamTransition",
+  "definitions": {
+    "UiDreamMotion": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/UiDreamMotionKind"
+        },
+        "duration": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "maxLength": 64,
+          "description": "A name from UiAestheticProfile.motion.durations, e.g. 'short' (never ms)"
+        },
+        "easing": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "maxLength": 64,
+          "description": "A name from UiAestheticProfile.motion.easing, e.g. 'standard' (never CSS)"
+        },
+        "choreography": {
+          "type": "string",
+          "maxLength": 280,
+          "description": "e.g. 'list items stagger in after the panel'"
+        },
+        "reducedMotion": {
+          "type": "string",
+          "enum": [
+            "static",
+            "fade",
+            "shorten"
+          ]
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamMotionKind": {
+      "type": "string",
+      "enum": [
+        "none",
+        "fade",
+        "slide",
+        "scale",
+        "expand",
+        "morph",
+        "shared-element",
+        "stagger",
+        "spring",
+        "follow-pointer"
+      ]
+    },
+    "UiDreamTransition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "from": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "State id"
+        },
+        "to": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "State id"
+        },
+        "trigger": {
+          "$ref": "#/definitions/UiDreamTrigger"
+        },
+        "event": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The UiEvent name it fires, e.g. 'change', 'open'"
+        },
+        "motion": {
+          "$ref": "#/definitions/UiDreamMotion"
+        },
+        "evidence": {
+          "type": "object",
+          "properties": {
+            "frameIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "maxItems": 18
+            },
+            "clipSpanMs": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              ],
+              "description": "[from, to] in milliseconds from the start of the clip"
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "id",
+        "from",
+        "to",
+        "trigger",
+        "motion",
+        "confidence"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamTrigger": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/UiDreamTriggerKind"
+        },
+        "componentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The component the user acts on"
+        },
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "description": "For a keyboard trigger, e.g. 'Enter', 'Escape', 'ArrowDown'"
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "up",
+            "down",
+            "left",
+            "right",
+            "in",
+            "out"
+          ],
+          "description": "For a drag, swipe, scroll or pinch"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamTriggerKind": {
+      "type": "string",
+      "enum": [
+        "click",
+        "hover",
+        "focus",
+        "press",
+        "drag",
+        "swipe",
+        "scroll",
+        "pinch",
+        "keyboard",
+        "timer",
+        "data"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

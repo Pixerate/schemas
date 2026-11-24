@@ -1,0 +1,15 @@
+{
+  "$ref": "#/definitions/UiDreamDropReason",
+  "definitions": {
+    "UiDreamDropReason": {
+      "type": "string",
+      "enum": [
+        "embellishment",
+        "invented",
+        "inconsistent",
+        "unmapped"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,47 @@
+{
+  "$ref": "#/definitions/UiDreamLayout",
+  "definitions": {
+    "UiDreamLayout": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "type": "string",
+          "enum": [
+            "row",
+            "column",
+            "grid",
+            "stack",
+            "overlay"
+          ]
+        },
+        "align": {
+          "type": "string",
+          "enum": [
+            "start",
+            "center",
+            "end",
+            "stretch",
+            "between"
+          ]
+        },
+        "gap": {
+          "type": "string",
+          "enum": [
+            "tight",
+            "regular",
+            "loose"
+          ],
+          "description": "A name, never px: the skill sets the spacing"
+        },
+        "wrap": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "direction"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

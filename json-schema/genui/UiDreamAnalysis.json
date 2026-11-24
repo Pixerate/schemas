@@ -1,0 +1,665 @@
+{
+  "$ref": "#/definitions/UiDreamAnalysis",
+  "definitions": {
+    "UiComponentGroup": {
+      "type": "string",
+      "enum": [
+        "baseline",
+        "data-visual",
+        "paradigm"
+      ],
+      "description": "baseline: the shadcn set; data-visual: charts and diagrams whose layout follows the data; paradigm: new kinds of UI (3-D, instruments)"
+    },
+    "UiDreamAnalysis": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "number",
+          "const": 1
+        },
+        "dreamId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The UiDreamResult it analyses"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "The vision model that analysed it"
+        },
+        "brief": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "viewport": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 10000,
+              "description": "CSS px"
+            },
+            "height": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 10000,
+              "description": "CSS px"
+            }
+          },
+          "required": [
+            "width",
+            "height"
+          ],
+          "additionalProperties": false,
+          "description": "The target viewport; boxes are fractions of a frame, not of this"
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiDreamElement"
+          },
+          "maxItems": 200,
+          "default": []
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiDreamComponent"
+          },
+          "maxItems": 100,
+          "default": []
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiDreamState"
+          },
+          "maxItems": 20,
+          "default": []
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiDreamTransition"
+          },
+          "maxItems": 40,
+          "default": []
+        },
+        "a11y": {
+          "type": "object",
+          "properties": {
+            "keyboard": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "default": {},
+              "description": "Key → what it does; folds into UiA11y.keyboard"
+            },
+            "focusOrder": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "maxItems": 100,
+              "description": "Component ids in focus order"
+            }
+          },
+          "additionalProperties": false
+        },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ruleId": {
+                "type": "string",
+                "description": "The aesthetic rule it contradicts"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 50,
+          "default": [],
+          "description": "Where the dream contradicts the aesthetic: the skill wins"
+        },
+        "dropped": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "what": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 280
+              },
+              "reason": {
+                "$ref": "#/definitions/UiDreamDropReason"
+              }
+            },
+            "required": [
+              "what",
+              "reason"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100,
+          "default": []
+        }
+      },
+      "required": [
+        "version",
+        "dreamId",
+        "model",
+        "brief",
+        "viewport"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamBox": {
+      "type": "object",
+      "properties": {
+        "frameId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Left edge, as a fraction of the frame's width"
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Top edge, as a fraction of the frame's height"
+        },
+        "w": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Width, as a fraction of the frame's width"
+        },
+        "h": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Height, as a fraction of the frame's height"
+        }
+      },
+      "required": [
+        "frameId",
+        "x",
+        "y",
+        "w",
+        "h"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamComponent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "elementIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "description": "The layout elements it covers"
+        },
+        "componentTypeId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "A UIComponentType.id from the catalog, or a proposed id for a new type"
+        },
+        "match": {
+          "$ref": "#/definitions/UiDreamComponentMatch"
+        },
+        "group": {
+          "$ref": "#/definitions/UiComponentGroup",
+          "description": "For a new type: which group it belongs to"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "props": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ],
+            "description": "A flat JSON value (string, number, boolean or null)"
+          },
+          "description": "Guessed props (label, variant, size); placeholder text is listed in inventedText"
+        },
+        "inventedText": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "maxItems": 50,
+          "description": "Copy the dream made up: never used verbatim"
+        },
+        "provenance": {
+          "$ref": "#/definitions/UiDreamProvenance"
+        }
+      },
+      "required": [
+        "id",
+        "elementIds",
+        "componentTypeId",
+        "match",
+        "confidence",
+        "provenance"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamComponentMatch": {
+      "type": "string",
+      "enum": [
+        "catalog",
+        "close",
+        "new-type",
+        "unmapped"
+      ]
+    },
+    "UiDreamDropReason": {
+      "type": "string",
+      "enum": [
+        "embellishment",
+        "invented",
+        "inconsistent",
+        "unmapped"
+      ]
+    },
+    "UiDreamElement": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "parentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "What it is, e.g. 'primary action', 'results list'"
+        },
+        "boxes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiDreamBox"
+          },
+          "maxItems": 18,
+          "default": []
+        },
+        "layout": {
+          "$ref": "#/definitions/UiDreamLayout",
+          "description": "How its children are laid out"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamLayout": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "type": "string",
+          "enum": [
+            "row",
+            "column",
+            "grid",
+            "stack",
+            "overlay"
+          ]
+        },
+        "align": {
+          "type": "string",
+          "enum": [
+            "start",
+            "center",
+            "end",
+            "stretch",
+            "between"
+          ]
+        },
+        "gap": {
+          "type": "string",
+          "enum": [
+            "tight",
+            "regular",
+            "loose"
+          ],
+          "description": "A name, never px: the skill sets the spacing"
+        },
+        "wrap": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "direction"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamMotion": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/UiDreamMotionKind"
+        },
+        "duration": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "maxLength": 64,
+          "description": "A name from UiAestheticProfile.motion.durations, e.g. 'short' (never ms)"
+        },
+        "easing": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "maxLength": 64,
+          "description": "A name from UiAestheticProfile.motion.easing, e.g. 'standard' (never CSS)"
+        },
+        "choreography": {
+          "type": "string",
+          "maxLength": 280,
+          "description": "e.g. 'list items stagger in after the panel'"
+        },
+        "reducedMotion": {
+          "type": "string",
+          "enum": [
+            "static",
+            "fade",
+            "shorten"
+          ]
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamMotionKind": {
+      "type": "string",
+      "enum": [
+        "none",
+        "fade",
+        "slide",
+        "scale",
+        "expand",
+        "morph",
+        "shared-element",
+        "stagger",
+        "spring",
+        "follow-pointer"
+      ]
+    },
+    "UiDreamProvenance": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "implied",
+        "embellishment"
+      ]
+    },
+    "UiDreamState": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "e.g. 'default', 'hover', 'open', 'empty', 'loading', 'error'"
+        },
+        "frameIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "maxItems": 18,
+          "default": []
+        },
+        "clipSpanMs": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            }
+          ],
+          "description": "[from, to] in milliseconds from the start of the clip"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UiDreamStateValue"
+          },
+          "maxItems": 50,
+          "default": []
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamStateValue": {
+      "type": "object",
+      "properties": {
+        "componentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "field": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "A UiStateField name, e.g. 'open', 'checked', 'value'"
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ],
+          "description": "A flat JSON value (string, number, boolean or null)"
+        }
+      },
+      "required": [
+        "componentId",
+        "field",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamTransition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "from": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "State id"
+        },
+        "to": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "State id"
+        },
+        "trigger": {
+          "$ref": "#/definitions/UiDreamTrigger"
+        },
+        "event": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The UiEvent name it fires, e.g. 'change', 'open'"
+        },
+        "motion": {
+          "$ref": "#/definitions/UiDreamMotion"
+        },
+        "evidence": {
+          "type": "object",
+          "properties": {
+            "frameIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "maxItems": 18
+            },
+            "clipSpanMs": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              ],
+              "description": "[from, to] in milliseconds from the start of the clip"
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "id",
+        "from",
+        "to",
+        "trigger",
+        "motion",
+        "confidence"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamTrigger": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/UiDreamTriggerKind"
+        },
+        "componentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The component the user acts on"
+        },
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "description": "For a keyboard trigger, e.g. 'Enter', 'Escape', 'ArrowDown'"
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "up",
+            "down",
+            "left",
+            "right",
+            "in",
+            "out"
+          ],
+          "description": "For a drag, swipe, scroll or pinch"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "UiDreamTriggerKind": {
+      "type": "string",
+      "enum": [
+        "click",
+        "hover",
+        "focus",
+        "press",
+        "drag",
+        "swipe",
+        "scroll",
+        "pinch",
+        "keyboard",
+        "timer",
+        "data"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
