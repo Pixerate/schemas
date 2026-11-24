@@ -1,0 +1,39 @@
+{
+  "$ref": "#/definitions/OpportunityStatusUpdate",
+  "definitions": {
+    "OpportunityStatus": {
+      "type": "string",
+      "enum": [
+        "open",
+        "drafted",
+        "accepted",
+        "rejected",
+        "resolved"
+      ]
+    },
+    "OpportunityStatusUpdate": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "$ref": "#/definitions/OpportunityStatus"
+        },
+        "external_ref": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "status"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1406,6 +1406,36 @@
   },
   {
     "module": "insights",
+    "name": "Opportunity",
+    "file": "insights/Opportunity.json"
+  },
+  {
+    "module": "insights",
+    "name": "OpportunityFunnelDrop",
+    "file": "insights/OpportunityFunnelDrop.json"
+  },
+  {
+    "module": "insights",
+    "name": "OpportunityMetrics",
+    "file": "insights/OpportunityMetrics.json"
+  },
+  {
+    "module": "insights",
+    "name": "OpportunityScoreParts",
+    "file": "insights/OpportunityScoreParts.json"
+  },
+  {
+    "module": "insights",
+    "name": "OpportunityStatus",
+    "file": "insights/OpportunityStatus.json"
+  },
+  {
+    "module": "insights",
+    "name": "OpportunityStatusUpdate",
+    "file": "insights/OpportunityStatusUpdate.json"
+  },
+  {
+    "module": "insights",
     "name": "ProbeAnswer",
     "file": "insights/ProbeAnswer.json"
   },

@@ -1,0 +1,198 @@
+{
+  "$ref": "#/definitions/Opportunity",
+  "definitions": {
+    "Opportunity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "product": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "problem": {
+          "type": "string",
+          "minLength": 1
+        },
+        "suggested_direction": {
+          "type": "string"
+        },
+        "metrics": {
+          "$ref": "#/definitions/OpportunityMetrics"
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "score_parts": {
+          "$ref": "#/definitions/OpportunityScoreParts"
+        },
+        "screens": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": []
+        },
+        "flow_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "finding_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": []
+        },
+        "example_narratives": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 3,
+          "default": []
+        },
+        "status": {
+          "$ref": "#/definitions/OpportunityStatus",
+          "default": "open"
+        },
+        "external_ref": {
+          "type": "string"
+        },
+        "status_reason": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "updated_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "week": {
+          "type": "string",
+          "pattern": "^\\d{4}-W\\d{2}$"
+        }
+      },
+      "required": [
+        "id",
+        "product",
+        "title",
+        "problem",
+        "metrics",
+        "score",
+        "score_parts",
+        "created_at",
+        "updated_at",
+        "week"
+      ],
+      "additionalProperties": false
+    },
+    "OpportunityFunnelDrop": {
+      "type": "object",
+      "properties": {
+        "flow_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "flow_version": {
+          "type": "string"
+        },
+        "step": {
+          "type": "string",
+          "minLength": 1
+        },
+        "before": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "after": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "flow_id",
+        "step",
+        "before",
+        "after"
+      ],
+      "additionalProperties": false
+    },
+    "OpportunityMetrics": {
+      "type": "object",
+      "properties": {
+        "sessions_affected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "share_of_sessions": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "trend_vs_prev_week": {
+          "type": "number"
+        },
+        "funnel_drop": {
+          "$ref": "#/definitions/OpportunityFunnelDrop"
+        }
+      },
+      "required": [
+        "sessions_affected",
+        "share_of_sessions"
+      ],
+      "additionalProperties": false
+    },
+    "OpportunityScoreParts": {
+      "type": "object",
+      "properties": {
+        "reach": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "severity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "trend": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "reach",
+        "severity",
+        "trend"
+      ],
+      "additionalProperties": false
+    },
+    "OpportunityStatus": {
+      "type": "string",
+      "enum": [
+        "open",
+        "drafted",
+        "accepted",
+        "rejected",
+        "resolved"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

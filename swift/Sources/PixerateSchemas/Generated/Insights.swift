@@ -42,6 +42,14 @@ public enum InteractionOutcome: String, Codable, Sendable, CaseIterable {
     case unknown = "unknown"
 }
 
+public enum OpportunityStatus: String, Codable, Sendable, CaseIterable {
+    case `open` = "open"
+    case drafted = "drafted"
+    case accepted = "accepted"
+    case rejected = "rejected"
+    case resolved = "resolved"
+}
+
 public enum SessionOutcome: String, Codable, Sendable, CaseIterable {
     case activated = "activated"
     case progressed = "progressed"
@@ -694,6 +702,300 @@ public struct MilestonePayload: Codable, Sendable, Equatable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
         try container.encodeIfPresent(props, forKey: .props)
+    }
+}
+
+public struct Opportunity: Codable, Sendable, Equatable {
+    public var id: String
+    public var product: String
+    public var title: String
+    public var problem: String
+    public var suggestedDirection: String?
+    public var metrics: OpportunityMetrics
+    public var score: Double
+    public var scoreParts: OpportunityScoreParts
+    public var screens: [String]
+    public var flowId: String?
+    public var findingIds: [String]
+    public var exampleNarratives: [String]
+    public var status: OpportunityStatus
+    public var externalRef: String?
+    public var statusReason: String?
+    public var createdAt: String
+    public var updatedAt: String
+    public var week: String
+
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case product = "product"
+        case title = "title"
+        case problem = "problem"
+        case suggestedDirection = "suggested_direction"
+        case metrics = "metrics"
+        case score = "score"
+        case scoreParts = "score_parts"
+        case screens = "screens"
+        case flowId = "flow_id"
+        case findingIds = "finding_ids"
+        case exampleNarratives = "example_narratives"
+        case status = "status"
+        case externalRef = "external_ref"
+        case statusReason = "status_reason"
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+        case week = "week"
+    }
+
+    public init(
+        id: String,
+        product: String,
+        title: String,
+        problem: String,
+        suggestedDirection: String? = nil,
+        metrics: OpportunityMetrics,
+        score: Double,
+        scoreParts: OpportunityScoreParts,
+        screens: [String] = [],
+        flowId: String? = nil,
+        findingIds: [String] = [],
+        exampleNarratives: [String] = [],
+        status: OpportunityStatus = .`open`,
+        externalRef: String? = nil,
+        statusReason: String? = nil,
+        createdAt: String,
+        updatedAt: String,
+        week: String
+    ) {
+        self.id = id
+        self.product = product
+        self.title = title
+        self.problem = problem
+        self.suggestedDirection = suggestedDirection
+        self.metrics = metrics
+        self.score = score
+        self.scoreParts = scoreParts
+        self.screens = screens
+        self.flowId = flowId
+        self.findingIds = findingIds
+        self.exampleNarratives = exampleNarratives
+        self.status = status
+        self.externalRef = externalRef
+        self.statusReason = statusReason
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+        self.week = week
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.product = try container.decode(String.self, forKey: .product)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.problem = try container.decode(String.self, forKey: .problem)
+        self.suggestedDirection = try container.decodeIfPresent(String.self, forKey: .suggestedDirection)
+        self.metrics = try container.decode(OpportunityMetrics.self, forKey: .metrics)
+        self.score = try container.decode(Double.self, forKey: .score)
+        self.scoreParts = try container.decode(OpportunityScoreParts.self, forKey: .scoreParts)
+        self.screens = try container.decodeIfPresent([String].self, forKey: .screens) ?? []
+        self.flowId = try container.decodeIfPresent(String.self, forKey: .flowId)
+        self.findingIds = try container.decodeIfPresent([String].self, forKey: .findingIds) ?? []
+        self.exampleNarratives = try container.decodeIfPresent([String].self, forKey: .exampleNarratives) ?? []
+        self.status = try container.decodeIfPresent(OpportunityStatus.self, forKey: .status) ?? .`open`
+        self.externalRef = try container.decodeIfPresent(String.self, forKey: .externalRef)
+        self.statusReason = try container.decodeIfPresent(String.self, forKey: .statusReason)
+        self.createdAt = try container.decode(String.self, forKey: .createdAt)
+        self.updatedAt = try container.decode(String.self, forKey: .updatedAt)
+        self.week = try container.decode(String.self, forKey: .week)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(product, forKey: .product)
+        try container.encode(title, forKey: .title)
+        try container.encode(problem, forKey: .problem)
+        try container.encodeIfPresent(suggestedDirection, forKey: .suggestedDirection)
+        try container.encode(metrics, forKey: .metrics)
+        try container.encode(score, forKey: .score)
+        try container.encode(scoreParts, forKey: .scoreParts)
+        try container.encode(screens, forKey: .screens)
+        try container.encodeIfPresent(flowId, forKey: .flowId)
+        try container.encode(findingIds, forKey: .findingIds)
+        try container.encode(exampleNarratives, forKey: .exampleNarratives)
+        try container.encode(status, forKey: .status)
+        try container.encodeIfPresent(externalRef, forKey: .externalRef)
+        try container.encodeIfPresent(statusReason, forKey: .statusReason)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+        try container.encode(week, forKey: .week)
+    }
+}
+
+public struct OpportunityFunnelDrop: Codable, Sendable, Equatable {
+    public var flowId: String
+    public var flowVersion: String?
+    public var step: String
+    public var before: Double
+    public var after: Double
+
+    enum CodingKeys: String, CodingKey {
+        case flowId = "flow_id"
+        case flowVersion = "flow_version"
+        case step = "step"
+        case before = "before"
+        case after = "after"
+    }
+
+    public init(
+        flowId: String,
+        flowVersion: String? = nil,
+        step: String,
+        before: Double,
+        after: Double
+    ) {
+        self.flowId = flowId
+        self.flowVersion = flowVersion
+        self.step = step
+        self.before = before
+        self.after = after
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.flowId = try container.decode(String.self, forKey: .flowId)
+        self.flowVersion = try container.decodeIfPresent(String.self, forKey: .flowVersion)
+        self.step = try container.decode(String.self, forKey: .step)
+        self.before = try container.decode(Double.self, forKey: .before)
+        self.after = try container.decode(Double.self, forKey: .after)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(flowId, forKey: .flowId)
+        try container.encodeIfPresent(flowVersion, forKey: .flowVersion)
+        try container.encode(step, forKey: .step)
+        try container.encode(before, forKey: .before)
+        try container.encode(after, forKey: .after)
+    }
+}
+
+public struct OpportunityMetrics: Codable, Sendable, Equatable {
+    public var sessionsAffected: Int
+    public var shareOfSessions: Double
+    public var trendVsPrevWeek: Double?
+    public var funnelDrop: OpportunityFunnelDrop?
+
+    enum CodingKeys: String, CodingKey {
+        case sessionsAffected = "sessions_affected"
+        case shareOfSessions = "share_of_sessions"
+        case trendVsPrevWeek = "trend_vs_prev_week"
+        case funnelDrop = "funnel_drop"
+    }
+
+    public init(
+        sessionsAffected: Int,
+        shareOfSessions: Double,
+        trendVsPrevWeek: Double? = nil,
+        funnelDrop: OpportunityFunnelDrop? = nil
+    ) {
+        self.sessionsAffected = sessionsAffected
+        self.shareOfSessions = shareOfSessions
+        self.trendVsPrevWeek = trendVsPrevWeek
+        self.funnelDrop = funnelDrop
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.sessionsAffected = try container.decode(Int.self, forKey: .sessionsAffected)
+        self.shareOfSessions = try container.decode(Double.self, forKey: .shareOfSessions)
+        self.trendVsPrevWeek = try container.decodeIfPresent(Double.self, forKey: .trendVsPrevWeek)
+        self.funnelDrop = try container.decodeIfPresent(OpportunityFunnelDrop.self, forKey: .funnelDrop)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(sessionsAffected, forKey: .sessionsAffected)
+        try container.encode(shareOfSessions, forKey: .shareOfSessions)
+        try container.encodeIfPresent(trendVsPrevWeek, forKey: .trendVsPrevWeek)
+        try container.encodeIfPresent(funnelDrop, forKey: .funnelDrop)
+    }
+}
+
+public struct OpportunityScoreParts: Codable, Sendable, Equatable {
+    public var reach: Double
+    public var severity: Double
+    public var trend: Double
+
+    enum CodingKeys: String, CodingKey {
+        case reach = "reach"
+        case severity = "severity"
+        case trend = "trend"
+    }
+
+    public init(
+        reach: Double,
+        severity: Double,
+        trend: Double
+    ) {
+        self.reach = reach
+        self.severity = severity
+        self.trend = trend
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.reach = try container.decode(Double.self, forKey: .reach)
+        self.severity = try container.decode(Double.self, forKey: .severity)
+        self.trend = try container.decode(Double.self, forKey: .trend)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(reach, forKey: .reach)
+        try container.encode(severity, forKey: .severity)
+        try container.encode(trend, forKey: .trend)
+    }
+}
+
+public struct OpportunityStatusUpdate: Codable, Sendable, Equatable {
+    public var id: String
+    public var status: OpportunityStatus
+    public var externalRef: String?
+    public var reason: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case status = "status"
+        case externalRef = "external_ref"
+        case reason = "reason"
+    }
+
+    public init(
+        id: String,
+        status: OpportunityStatus,
+        externalRef: String? = nil,
+        reason: String? = nil
+    ) {
+        self.id = id
+        self.status = status
+        self.externalRef = externalRef
+        self.reason = reason
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.status = try container.decode(OpportunityStatus.self, forKey: .status)
+        self.externalRef = try container.decodeIfPresent(String.self, forKey: .externalRef)
+        self.reason = try container.decodeIfPresent(String.self, forKey: .reason)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(status, forKey: .status)
+        try container.encodeIfPresent(externalRef, forKey: .externalRef)
+        try container.encodeIfPresent(reason, forKey: .reason)
     }
 }
 

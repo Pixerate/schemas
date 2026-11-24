@@ -546,6 +546,28 @@ describe('JSON Schema export', () => {
         lastUsedAt: '2026-11-03T13:00:00.000Z',
         revokedAt: null
       }),
+      'insights_opportunity.json': insights.OpportunitySchema.parse({
+        id: 'opp_slopmachine_1a2b3c4d',
+        product: 'slopmachine',
+        title: 'Reduce drop-off at workspace creation',
+        problem: 'Twelve sessions abandoned onboarding at the workspace step.',
+        metrics: {
+          sessions_affected: 12,
+          share_of_sessions: 0.6,
+          trend_vs_prev_week: 0.35,
+          funnel_drop: { flow_id: 'onboarding', flow_version: '1', step: 'workspace', before: 1, after: 0.4 }
+        },
+        score: 0.81,
+        score_parts: { reach: 0.6, severity: 0.9, trend: 0.68 },
+        screens: ['/workspace/new'],
+        flow_id: 'onboarding',
+        finding_ids: ['f_017'],
+        example_narratives: ['User left after the workspace form.'],
+        external_ref: 'task_123',
+        created_at: '2026-11-23T00:00:00.000Z',
+        updated_at: '2026-11-23T00:00:00.000Z',
+        week: '2026-W48'
+      }),
       'common_aspect_ratio.json': common.AspectRatioSchema.parse('16:9'),
       'common_video_attachment_url.json': common.VideoAttachmentSchema.parse('https://example.com/clip.mp4'),
       'common_video_attachment_object.json': common.VideoAttachmentSchema.parse({

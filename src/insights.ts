@@ -277,3 +277,84 @@ export const FindingSchema = z.object({
   updated_at: z.string().min(1).optional()
 });
 export type Finding = z.infer<typeof FindingSchema>;
+
+// --- Opportunities ---
+// Weekly, ranked, evidence-backed problems worth fixing, synthesized per product from findings
+// and session summaries (piggyback's `OpportunitySynthesizer`). Aggregated only: no raw sessions,
+// no actor ids. `example_narratives` are copied from session summaries, which are already redacted.
+
+export const OpportunityStatusSchema = z.enum(["open", "drafted", "accepted", "rejected", "resolved"]);
+export type OpportunityStatus = z.infer<typeof OpportunityStatusSchema>;
+
+/** A drop between two steps of a flow, as shares (0–1) of sessions that entered the flow. */
+export const OpportunityFunnelDropSchema = z.object({
+  flow_id: z.string().min(1),
+  /** The flow spec's version, as text. */
+  flow_version: z.string().optional(),
+  /** The step people drop out at. */
+  step: z.string().min(1),
+  /** Share of entered sessions that reached the step before. */
+  before: z.number().min(0).max(1),
+  /** Share of entered sessions that completed this step. */
+  after: z.number().min(0).max(1)
+});
+export type OpportunityFunnelDrop = z.infer<typeof OpportunityFunnelDropSchema>;
+
+/** The week's measurements behind an opportunity. */
+export const OpportunityMetricsSchema = z.object({
+  sessions_affected: z.number().int().min(0),
+  /** Share (0–1) of the week's sessions affected. */
+  share_of_sessions: z.number().min(0).max(1),
+  /** Change against the previous week, as a fraction (`0.35` is 35% more). */
+  trend_vs_prev_week: z.number().optional(),
+  funnel_drop: OpportunityFunnelDropSchema.optional()
+});
+export type OpportunityMetrics = z.infer<typeof OpportunityMetricsSchema>;
+
+/** The parts of an opportunity's score, each 0–1. */
+export const OpportunityScorePartsSchema = z.object({
+  reach: z.number().min(0).max(1),
+  severity: z.number().min(0).max(1),
+  trend: z.number().min(0).max(1)
+});
+export type OpportunityScoreParts = z.infer<typeof OpportunityScorePartsSchema>;
+
+export const OpportunitySchema = z.object({
+  /** Stable across weeks: a hash of `product` and the problem key, so re-runs update the same record. */
+  id: z.string().min(1),
+  product: z.string().min(1),
+  title: z.string().min(1),
+  /** What goes wrong, as Markdown (two to five sentences). */
+  problem: z.string().min(1),
+  /** Markdown. */
+  suggested_direction: z.string().optional(),
+  metrics: OpportunityMetricsSchema,
+  /** 0–1: reach, severity and trend together. Higher is more worth fixing. */
+  score: z.number().min(0).max(1),
+  score_parts: OpportunityScorePartsSchema,
+  /** Normalized route templates (e.g. `/silo/:id/bucket`). */
+  screens: z.array(z.string().min(1)).default([]),
+  flow_id: z.string().min(1).optional(),
+  /** Ids of existing findings that support it. */
+  finding_ids: z.array(z.string().min(1)).default([]),
+  /** At most three, word for word from (already redacted) session summaries. */
+  example_narratives: z.array(z.string()).max(3).default([]),
+  status: OpportunityStatusSchema.default("open"),
+  /** The task system's id for it (e.g. an Uchiage task). */
+  external_ref: z.string().optional(),
+  status_reason: z.string().optional(),
+  created_at: z.string().min(1),
+  updated_at: z.string().min(1),
+  /** ISO week, e.g. `2026-W48`. */
+  week: z.string().regex(/^\d{4}-W\d{2}$/)
+});
+export type Opportunity = z.infer<typeof OpportunitySchema>;
+
+/** Body of a status update sent to a host's opportunities route (`PATCH`). */
+export const OpportunityStatusUpdateSchema = z.object({
+  id: z.string().min(1),
+  status: OpportunityStatusSchema,
+  external_ref: z.string().optional(),
+  reason: z.string().optional()
+});
+export type OpportunityStatusUpdate = z.infer<typeof OpportunityStatusUpdateSchema>;
