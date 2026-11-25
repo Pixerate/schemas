@@ -2411,6 +2411,21 @@
   },
   {
     "module": "realtime",
+    "name": "RelayCallRecord",
+    "file": "realtime/RelayCallRecord.json"
+  },
+  {
+    "module": "realtime",
+    "name": "RelayHostRecord",
+    "file": "realtime/RelayHostRecord.json"
+  },
+  {
+    "module": "realtime",
+    "name": "RelayResultRecord",
+    "file": "realtime/RelayResultRecord.json"
+  },
+  {
+    "module": "realtime",
     "name": "TypingIndicator",
     "file": "realtime/TypingIndicator.json"
   },

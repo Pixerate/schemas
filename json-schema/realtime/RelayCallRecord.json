@@ -1,0 +1,30 @@
+{
+  "$ref": "#/definitions/RelayCallRecord",
+  "definitions": {
+    "RelayCallRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "payload": {},
+        "callerId": {
+          "type": "string"
+        },
+        "at": {
+          "type": "number"
+        },
+        "deadline": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "at"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -2,7 +2,8 @@ import { z } from "zod";
 
 /**
  * Realtime collaboration contracts used by @pixerate/realtime: presence, cursors,
- * indicators, record locks, activity, OT/CRDT, channels and grid events.
+ * indicators, record locks, activity, OT/CRDT, channels, grid events and the request / response
+ * relay.
  *
  * Also available as the `@pixerate/schemas/realtime` entry point, which client bundles
  * should prefer: it doesn't pull in the rest of the schemas.
@@ -465,3 +466,52 @@ export type GridOTOp =
   | { type: "delete_col"; colId: string }
   | { type: "insert_row"; index: number; row: any }
   | { type: "delete_row"; rowId: string };
+
+// --- Request / Response Relay ---
+// A host (for example an app open in a browser tab) advertises itself in a room and answers
+// calls addressed to it; a client (for example a server) lists live hosts, posts a call and
+// waits for its result. Layout under `{basePath}/{roomKey}/`: `hosts/{hostKey}`,
+// `calls/{hostKey}/{callId}`, `results/{hostKey}/{callId}`. A call removed before its result is
+// written is cancelled.
+
+/** A host advertising itself in a relay room. Removed when the host disconnects. */
+export const RelayHostRecordSchema = z.object({
+  /** Stable id of this host within the room (one per tab or process). */
+  id: z.string().min(1),
+  /** The user the host runs as; security rules let only them write the record and its results. */
+  ownerId: z.string().min(1),
+  /** What the host offers, in the application's own format (e.g. a tool list). */
+  info: z.unknown(),
+  /** When the host connected (epoch ms). */
+  startedAt: z.number(),
+  /** Last heartbeat (epoch ms); clients treat hosts without a recent one as gone. */
+  heartbeatAt: z.number()
+});
+export type RelayHostRecord = z.infer<typeof RelayHostRecordSchema>;
+
+/** A call posted to one host. */
+export const RelayCallRecordSchema = z.object({
+  id: z.string().min(1),
+  /** The request, in the application's own format. */
+  payload: z.unknown(),
+  /** Who asked (e.g. an agent or API key id), for the host's logs and display. */
+  callerId: z.string().optional(),
+  /** When the call was posted (epoch ms). */
+  at: z.number(),
+  /** When the caller stops waiting (epoch ms); the host may give up after it. */
+  deadline: z.number().optional()
+});
+export type RelayCallRecord = z.infer<typeof RelayCallRecordSchema>;
+
+/** A host's answer to a call. */
+export const RelayResultRecordSchema = z.object({
+  id: z.string().min(1),
+  /** `false` when the host could not run the call at all (`error` says why). */
+  ok: z.boolean(),
+  /** The response, in the application's own format. */
+  payload: z.unknown().optional(),
+  error: z.string().optional(),
+  /** When the host answered (epoch ms). */
+  at: z.number()
+});
+export type RelayResultRecord = z.infer<typeof RelayResultRecordSchema>;
