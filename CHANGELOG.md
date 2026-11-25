@@ -1,5 +1,11 @@
 # @pixerate/schemas
 
+## 2.9.0
+
+### Minor Changes
+
+- 98eefef: Add `AgentInteractionSourceSchema` (`{ url, title?, redirectUrl? }`) and an optional `sources` array on `AgentInteractionResultSchema` (Pixerate/agent-core#105). This lets an interaction's cited web pages travel on the result itself instead of in `metadata.sources`. The Swift types are regenerated.
+
 ## 2.8.0
 
 ### Minor Changes
