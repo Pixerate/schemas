@@ -11,7 +11,9 @@
         "ok": {
           "type": "boolean"
         },
-        "payload": {},
+        "payload": {
+          "type": "string"
+        },
         "error": {
           "type": "string"
         },
