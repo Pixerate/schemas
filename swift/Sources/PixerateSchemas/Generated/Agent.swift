@@ -606,6 +606,7 @@ public struct AgentInteractionResult: Codable, Sendable, Equatable {
     public var error: String?
     public var latencyMs: Double?
     public var metadata: [String: JSONValue]?
+    public var sources: [AgentInteractionSource]?
     public var createdAt: String?
     public var updatedAt: String?
 
@@ -617,6 +618,7 @@ public struct AgentInteractionResult: Codable, Sendable, Equatable {
         case error = "error"
         case latencyMs = "latencyMs"
         case metadata = "metadata"
+        case sources = "sources"
         case createdAt = "createdAt"
         case updatedAt = "updatedAt"
     }
@@ -629,6 +631,7 @@ public struct AgentInteractionResult: Codable, Sendable, Equatable {
         error: String? = nil,
         latencyMs: Double? = nil,
         metadata: [String: JSONValue]? = nil,
+        sources: [AgentInteractionSource]? = nil,
         createdAt: String? = nil,
         updatedAt: String? = nil
     ) {
@@ -639,6 +642,7 @@ public struct AgentInteractionResult: Codable, Sendable, Equatable {
         self.error = error
         self.latencyMs = latencyMs
         self.metadata = metadata
+        self.sources = sources
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
@@ -652,6 +656,7 @@ public struct AgentInteractionResult: Codable, Sendable, Equatable {
         self.error = try container.decodeIfPresent(String.self, forKey: .error)
         self.latencyMs = try container.decodeIfPresent(Double.self, forKey: .latencyMs)
         self.metadata = try container.decodeIfPresent([String: JSONValue].self, forKey: .metadata)
+        self.sources = try container.decodeIfPresent([AgentInteractionSource].self, forKey: .sources)
         self.createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt)
         self.updatedAt = try container.decodeIfPresent(String.self, forKey: .updatedAt)
     }
@@ -665,8 +670,45 @@ public struct AgentInteractionResult: Codable, Sendable, Equatable {
         try container.encodeIfPresent(error, forKey: .error)
         try container.encodeIfPresent(latencyMs, forKey: .latencyMs)
         try container.encodeIfPresent(metadata, forKey: .metadata)
+        try container.encodeIfPresent(sources, forKey: .sources)
         try container.encodeIfPresent(createdAt, forKey: .createdAt)
         try container.encodeIfPresent(updatedAt, forKey: .updatedAt)
+    }
+}
+
+public struct AgentInteractionSource: Codable, Sendable, Equatable {
+    public var url: String
+    public var title: String?
+    public var redirectUrl: String?
+
+    enum CodingKeys: String, CodingKey {
+        case url = "url"
+        case title = "title"
+        case redirectUrl = "redirectUrl"
+    }
+
+    public init(
+        url: String,
+        title: String? = nil,
+        redirectUrl: String? = nil
+    ) {
+        self.url = url
+        self.title = title
+        self.redirectUrl = redirectUrl
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.url = try container.decode(String.self, forKey: .url)
+        self.title = try container.decodeIfPresent(String.self, forKey: .title)
+        self.redirectUrl = try container.decodeIfPresent(String.self, forKey: .redirectUrl)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(url, forKey: .url)
+        try container.encodeIfPresent(title, forKey: .title)
+        try container.encodeIfPresent(redirectUrl, forKey: .redirectUrl)
     }
 }
 

@@ -76,6 +76,15 @@ export const AgentInteractionRequestSchema = z.object({
 });
 export type AgentInteractionRequest = z.infer<typeof AgentInteractionRequestSchema>;
 
+/** A web page an interaction's output cites. */
+export const AgentInteractionSourceSchema = z.object({
+  url: z.string(),
+  title: z.string().optional(),
+  /** The citation's original grounding-redirect link, when `url` was resolved from it to the real page. */
+  redirectUrl: z.string().optional()
+});
+export type AgentInteractionSource = z.infer<typeof AgentInteractionSourceSchema>;
+
 export const AgentInteractionResultSchema = z.object({
   id: z.string(),
   agent: z.string(),
@@ -84,6 +93,8 @@ export const AgentInteractionResultSchema = z.object({
   error: z.string().optional(),
   latencyMs: z.number().optional(),
   metadata: z.record(z.string(), z.any()).optional(),
+  /** Web pages the output cites, in the order they first appear. */
+  sources: z.array(AgentInteractionSourceSchema).optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 });

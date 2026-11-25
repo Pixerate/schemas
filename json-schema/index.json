@@ -61,6 +61,11 @@
   },
   {
     "module": "agent",
+    "name": "AgentInteractionSource",
+    "file": "agent/AgentInteractionSource.json"
+  },
+  {
+    "module": "agent",
     "name": "AgentInteractionStatus",
     "file": "agent/AgentInteractionStatus.json"
   },

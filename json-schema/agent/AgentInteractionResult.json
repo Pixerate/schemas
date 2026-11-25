@@ -26,6 +26,12 @@
           "type": "object",
           "additionalProperties": {}
         },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AgentInteractionSource"
+          }
+        },
         "createdAt": {
           "type": "string"
         },
@@ -37,6 +43,24 @@
         "id",
         "agent",
         "status"
+      ],
+      "additionalProperties": false
+    },
+    "AgentInteractionSource": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "redirectUrl": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
       ],
       "additionalProperties": false
     },
