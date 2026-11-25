@@ -1,0 +1,33 @@
+{
+  "$ref": "#/definitions/RelayResultRecord",
+  "definitions": {
+    "RelayResultRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "payload": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        },
+        "at": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "ok",
+        "at"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
